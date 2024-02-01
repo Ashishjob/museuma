@@ -46,3 +46,8 @@
   font-family: 'Neue';
   src: url('./fonts/neue.ttf') ;
 }
+
+.parent {
+  display: flex;
+  align-items: center;
+}
