@@ -16,7 +16,7 @@ export default function Home() {
               </h3>
             </div>
             <img
-              src="/museuma2.png"
+              src="/museuma1.png"
               alt="Museuma Logo"
               width={200}
               height={200}
