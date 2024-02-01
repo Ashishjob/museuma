@@ -34,7 +34,7 @@ export default function ThreeJSPage() {
 
     // const controls = new OrbitControls(camera, renderer.domElement);
 
-    const redLight = new THREE.SpotLight(0xb4a08c, 50);
+    const redLight = new THREE.SpotLight(0xEFEDE5, 50);
     redLight.position.set(10, 5, 2.5);
     scene.add(redLight);
 
@@ -42,7 +42,7 @@ export default function ThreeJSPage() {
     blueLight.position.set(-10, -5, -2.5);
     scene.add(blueLight);
 
-    const spotLight = new THREE.SpotLight(0xb4a08c, 100);
+    const spotLight = new THREE.SpotLight(0xEFEDE5, 100);
     spotLight.position.set(10, 5, 2.5);
     spotLight.angle = Math.PI / 8;
     spotLight.penumbra = 0;
@@ -63,7 +63,7 @@ export default function ThreeJSPage() {
       function (geometry) {
         const material = new THREE.MeshLambertMaterial();
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.set(0.0032, 0.0032, 0.0032);
+        mesh.scale.set(0.0028, 0.0028, 0.0028);
         mesh.rotation.x = -Math.PI / 2;
         mesh.rotation.z = Math.PI / 1;
         mesh.position.x = 2;
