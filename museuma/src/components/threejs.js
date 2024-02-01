@@ -32,7 +32,7 @@ export default function ThreeJSPage() {
     );
     camera.position.z = 4;
 
-    // const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
     const redLight = new THREE.SpotLight(0xEFEDE5, 50);
     redLight.position.set(10, 5, 2.5);
@@ -72,7 +72,7 @@ export default function ThreeJSPage() {
         mesh.receiveShadow = true;
         scene.add(mesh);
         mesh.geometry.computeVertexNormals();
-      },
+      },()=>{},
       function (error) {
         console.error("An error occurred while loading the model:", error);
       }
