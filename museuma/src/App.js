@@ -23,7 +23,7 @@ export default function Home() {
                 height={200}
                 className="w-full"
               />
-              <span className="mt-4 text-2xl">
+              <span className="mt-4 text-2xl text-[#313639]">
                 <a href="/exhibitions">View Exhibitions</a>
               </span>
             </div>

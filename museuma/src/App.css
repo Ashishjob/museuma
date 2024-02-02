@@ -76,3 +76,19 @@
   background-color: #615D51;
   height: 10px;
 }
+
+.left-side,
+.right-side {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: #615D51;
+}
+
+.left-side {
+  left: 0;
+}
+
+.right-side {
+  right: 0;
+}
