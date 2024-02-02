@@ -66,7 +66,7 @@ export default function ThreeJSPage() {
         mesh.scale.set(0.0028, 0.0028, 0.0028);
         mesh.rotation.x = -Math.PI / 2;
         mesh.rotation.z = Math.PI / 1;
-        mesh.position.x = 2;
+        mesh.position.x = 2.5;
         mesh.position.y = -0.5;
         mesh.castShadow = true;
         mesh.receiveShadow = true;
