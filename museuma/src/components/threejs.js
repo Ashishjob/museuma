@@ -32,7 +32,7 @@ export default function ThreeJSPage() {
     );
     camera.position.z = 4;
 
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // const controls = new OrbitControls(camera, renderer.domElement);
 
     const redLight = new THREE.SpotLight(0xEFEDE5, 50);
     redLight.position.set(10, 5, 2.5);
@@ -100,7 +100,7 @@ export default function ThreeJSPage() {
 
   return (
     <div ref={containerRef} style={{ 
-        width: '33vw', 
+        width: '50vw', 
         height: '100vh', 
         backgroundImage: `url(${'./homebg.svg'})`, 
         backgroundRepeat: 'no-repeat', 
