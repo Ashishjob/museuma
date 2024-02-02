@@ -32,7 +32,9 @@ export default function ThreeJSPage() {
     );
     camera.position.z = 4;
 
-    // const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enablePan = false;
 
     const redLight = new THREE.SpotLight(0xEFEDE5, 50);
     redLight.position.set(10, 5, 2.5);
@@ -58,16 +60,17 @@ export default function ThreeJSPage() {
 
     scene.add(spotLight);
 
+    let mesh;
+
     new PLYLoader().load(
       "./statue.ply",
       function (geometry) {
+        geometry.center();
         const material = new THREE.MeshLambertMaterial();
-        const mesh = new THREE.Mesh(geometry, material);
+        mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(0.0028, 0.0028, 0.0028);
         mesh.rotation.x = -Math.PI / 2;
         mesh.rotation.z = Math.PI / 1;
-        mesh.position.x = 2.5;
-        mesh.position.y = -0.5;
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         scene.add(mesh);
@@ -80,14 +83,19 @@ export default function ThreeJSPage() {
 
     console.log("Camera position:", camera.position);
 
-    const lightHelper = new THREE.SpotLightHelper(spotLight);
+    // const lightHelper = new THREE.SpotLightHelper(spotLight);
     const animate = function () {
       requestAnimationFrame(animate);
       spotLight.position.x = Math.cos(Date.now() / 3000) * 2.5;
       spotLight.position.z = Math.sin(Date.now() / 3000) * 2.5;
-      lightHelper.update();
+      // lightHelper.update();
       renderer.render(scene, camera);
-    };
+      if (mesh) {
+        mesh.rotation.z += 0.001;
+      }
+    
+      renderer.render(scene, camera);
+    }
 
     animate();
 
