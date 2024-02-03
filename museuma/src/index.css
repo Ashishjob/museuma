@@ -11,6 +11,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Neue', sans-serif;
   overflow: hidden;
+  cursor: url('./cursor.png'), auto;
 }
 
 code {
