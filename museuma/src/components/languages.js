@@ -7,7 +7,7 @@ function Languages() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const languages = ['स्वागतम्‌', 'ברוך הבא', 'καλως', 'مرحباً', '歡迎'];
+    const languages = ['स्वागतम्‌', 'ברוך הבא', 'καλως', 'مرحباً', '歡迎', 'እንኳን'];
     let i = 0;
     const intervalId = setInterval(() => {
       setFade(false);
