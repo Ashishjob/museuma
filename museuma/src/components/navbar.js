@@ -1,4 +1,12 @@
+import React, { useState } from 'react';
+
 export default function NavBar() {
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+
+  const handleLoginClick = () => {
+    setShowLoginPopup(true);
+  };
+
     return (
         <header className="text-[#313639] body-font z-1">
         <div className="w-full flex justify-between items-center pl-5 pt-5 pb-5 pr-2">
@@ -25,7 +33,9 @@ export default function NavBar() {
               </a>
             </nav>
           </div>
-          <button className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base mt-8 md:mt-0 ml-auto">
+          <button 
+          onClick={handleLoginClick}
+          className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base mt-8 md:mt-0 ml-auto">
             Log In
             <svg
               fill="none"
@@ -39,6 +49,37 @@ export default function NavBar() {
               <path d="M5 12h14M12 5l7 7-7 7"></path>
             </svg>
           </button>
+          {showLoginPopup && (
+        <div className="login-popup z-50 flex items-center justify-center">
+        <div className="login-popup-inner bg-[#EFEDE5] rounded-lg shadow-lg p-8 relative">
+          <button 
+            onClick={() => setShowLoginPopup(false)} 
+            className="absolute top-2 left-2 bg-[#DCD7C5] text-black rounded-full w-6 h-6 flex items-center justify-center hover:bg-[#C4BFAC]"
+          >
+            X
+          </button>
+          <h2 className="text-2xl font-bold mb-6 text-center text-[#333]">Login</h2>
+          <form>
+            <input 
+              type="text" 
+              placeholder="Username" 
+              className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              className="w-full p-2 mb-6 border border-[#DCD7C5] rounded"
+            />
+            <button 
+              type="submit" 
+              className="w-full py-2 px-4 bg-[#DCD7C5] text-black rounded hover:bg-[#C4BFAC]"
+            >
+              Log in
+            </button>
+          </form>
+        </div>
+      </div>
+      )}
         </div>
       </header>
     );
