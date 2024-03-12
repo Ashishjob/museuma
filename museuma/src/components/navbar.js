@@ -25,7 +25,7 @@ export default function NavBar() {
         <div className="flex items-center">
           <img src="./logo.svg" alt="logo" className="w-12 mx-10"></img>
           <a
-            href="/local"
+            href="/"
             className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
           >
             <span className="ml-3 text-xl">Baker Museum</span>
