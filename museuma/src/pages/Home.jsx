@@ -1,11 +1,12 @@
-import ThreeJSPage from "./components/threejs";
-import Languages from "./components/languages";
+import { Link } from "react-router-dom";
+import ThreeJSPage from "../components/threejs";
+import Languages from "../components/languages";
 import { useEffect, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./App.css";
-import "./index.css";
+import "../App.css";
+import "../index.css";
 
-export default function Home() {
+function Home() {
   const images = [
     "/museuma1.png",
     "/museuma2.png",
@@ -59,3 +60,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default Home;
