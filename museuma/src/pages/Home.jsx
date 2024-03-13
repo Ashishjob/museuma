@@ -1,11 +1,37 @@
-import ThreeJSPage from "./components/threejs";
-import Languages from "./components/languages";
+import { Link } from "react-router-dom";
+import ThreeJSPage from "../components/threejs";
+import Languages from "../components/languages";
 import { useEffect, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./App.css";
-import "./index.css";
+import "../App.css";
+import "../index.css";
+import { motion } from 'framer-motion';
 
-export default function Home() {
+const LeftSide = () => {
+  return (
+    <motion.div
+      initial={{ width: '100%' }}
+      animate={{ width: '0%' }}
+      transition={{ duration: 3 }}
+      className="left-side"
+    >
+    </motion.div>
+  );
+};
+
+const RightSide = () => {
+  return (
+    <motion.div
+      initial={{ width: '100%' }}
+      animate={{ width: '0%' }}
+      transition={{ duration: 3 }}
+      className="right-side"
+    >
+    </motion.div>
+  );
+};
+
+function Home() {
   const images = [
     "/museuma1.png",
     "/museuma2.png",
@@ -23,6 +49,9 @@ export default function Home() {
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
   return (
+    <>
+    <LeftSide />
+    <RightSide />
     <main className="h-screen bg-[#EFEDE5] w-screen">
       <div className="w-full flex flex-row justify-between">
         <div className="flex ml-40 mt-20 w-2/3">
@@ -57,5 +86,8 @@ export default function Home() {
         </div>
       </div>
     </main>
+    </>
   );
 }
+
+export default Home;
