@@ -56,7 +56,7 @@ export default function NavBar() {
         </div>
         <div className="flex items-center">
           <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto">
-            My Cart
+            <a href="/cart">My Cart</a>
           </button>
           <button
             onClick={handleLoginClick}
