@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function Artworks() {
     // This will be replaced with actual data later
-    const artworks = Array(5).fill([
+    const artworks = [
         {
             title: 'The Whispering Wind',
             artist: 'Joseph Michael Baker',
@@ -43,7 +43,7 @@ function Artworks() {
             date: '05/17/2008',
             image: '/museuma5.png',
         },
-    ]).flat();
+    ];
 
     const [searchTerm, setSearchTerm] = useState('');
     const [order, setOrder] = useState('asc');
