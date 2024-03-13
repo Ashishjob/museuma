@@ -9,6 +9,7 @@ import "./index.css";
 import Home from "./pages/Home";
 import Restaurant from "./pages/restaurant";
 import Complaints from "./pages/complaints";
+import Artworks from "./pages/artworks";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/complaints" element={<Complaints />} />
         <Route path="/restaurant" element={<Restaurant />} />
+        <Route path="/artworks" element={<Artworks />} />
       </Routes>
     </Router>
   );
