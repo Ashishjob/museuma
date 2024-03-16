@@ -1,31 +1,58 @@
-const express = require('express');
+const http = require('http');
 const mysql = require('mysql');
+const url = require('url');
 const cors = require('cors');
 
-const app = express();
-app.use(cors());
+const PORT = 8081;
 
-//connecting to our database
-const db = mysql.createConnection({
+const pool = mysql.createPool({
+    connectionLimit: 10,
     host: "bakermuseum.mysql.database.azure.com",
     user: 'mrbaker',
     password: 'Meowmeow!!!',
-    database: 'BakerMuseumDatabase'
-})
-
-app.get('/', (re, res)=>{
-    return res.json("From backend side");
+    database: 'museum',
+    ssl: {
+        rejectUnauthorized: true
+    }
 });
 
-app.get('/employees', (req, res)=>{ //will add in more queries later. For now get one working until we get more pages up that require them
-    const sql = "SELECT * FROM Employees";
-    db.query(sql, (err, data) => {
-        if(err) return res.json(err);
-        return res.json(data);
-    })
-})
 
-//listening on port 8081, will change later
-app.listen(8081, ()=>{
-    console.log("listening");
+const corsMiddleware = cors();
+
+const server = http.createServer((req, res) => {
+    corsMiddleware(req, res, () => {
+        const parsedUrl = url.parse(req.url, true);
+
+        if (parsedUrl.pathname === '/') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify("From backend side"));
+        } else if (parsedUrl.pathname === '/branch-directors') {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(err));
+                    return;
+                }
+
+                connection.query("SELECT * FROM branch_directors", (err, data) => {
+                    connection.release();
+
+                    if (err) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify(err));
+                    } else {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify(data));
+                    }
+                });
+            });
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Route not found' }));
+        }
+    });
+});
+
+server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
 });
