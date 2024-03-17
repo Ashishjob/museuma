@@ -30,28 +30,25 @@ export default function NavBar() {
           >
             <span className="ml-3 text-xl">Baker Museum</span>
           </a>
-          <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap flex-just items-center text-base justify-center">
-            <div className="flex space-x-4">
-              <a href="/exhibitions" className="hover:text-gray-900">
-                Exhibitions
-              </a>
-              <p>|</p>
-              <a href="/artworks" className="hover:text-gray-900">
-                Artworks
-              </a>
-              <p>|</p>
-              <a href="/giftshop" className="hover:text-gray-900">
-                Gift Shop
-              </a>
-              <p>|</p>
-              <a href="/restaurant" className="hover:text-gray-900">
-                Restaurant
-              </a>
-              <p>|</p>
-              <a href="/tickets" className="hover:text-gray-900">
-                Get Tickets
-              </a>
-            </div>
+          <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
+            <a href="/local" className="mr-5 hover:text-gray-900">
+              Our Collections
+            </a>
+            <a href="/local" className="mr-5 hover:text-gray-900">
+              Current Exhibitions
+            </a>
+            <a href="/local" className="mr-5 hover:text-gray-900">
+              Tickets
+            </a>
+            <a href="/local" className="mr-5 hover:text-gray-900">
+              Gift Shop
+            </a>
+            <a href="/dining" className="mr-5 hover:text-gray-900">
+              Dining
+            </a>
+            <a href="/complaints" className="mr-5 hover:text-gray-900">
+              Report a Problem
+            </a>
           </nav>
         </div>
         <div className="flex items-center">

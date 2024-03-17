@@ -7,7 +7,7 @@ import {
 import "./App.css";
 import "./index.css";
 import Home from "./pages/Home";
-import Restaurant from "./pages/restaurant";
+import Dining from "./pages/dining";
 import Complaints from "./pages/complaints";
 import Artworks from "./pages/artworks";
 
@@ -18,8 +18,7 @@ function App() {
         <Route index element={<Navigate to="/home" />} />
         <Route path="/home" element={<Home />} />
         <Route path="/complaints" element={<Complaints />} />
-        <Route path="/restaurant" element={<Restaurant />} />
-        <Route path="/artworks" element={<Artworks />} />
+        <Route path="/dining" element={<Dining />} />
       </Routes>
     </Router>
   );

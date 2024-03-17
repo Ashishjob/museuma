@@ -1,7 +1,7 @@
 function Complaints() {
   return (
     <main className="h-screen bg-[#EFEDE5] w-screen">
-      <h3 className="text-[#313639] text-7xl mb-2 ml-12 tracking-widest">
+      <h3 className="text-[#313639] text-7xl mb-2 ml-12 tracking-widest flex flex-col items-center">
         Complaints?
       </h3>
       <p className="text-[#313639] text-3xl ml-12 tracking-wider">
