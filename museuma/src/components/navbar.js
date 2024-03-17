@@ -43,6 +43,12 @@ export default function NavBar() {
             <a href="/local" className="mr-5 hover:text-gray-900">
               Gift Shop
             </a>
+            <a href="/dining" className="mr-5 hover:text-gray-900">
+              Dining
+            </a>
+            <a href="/complaints" className="mr-5 hover:text-gray-900">
+              Report a Problem
+            </a>
           </nav>
         </div>
         <button 
