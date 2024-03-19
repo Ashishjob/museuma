@@ -12,7 +12,7 @@ const AdminHome = () => {
             <div className="w-full flex flex-row justify-center">
                 <div className="flex mt-20 w-2/3 justify-center">
                     <div className="flex flex-col items-center">
-                        <h3 className="text-[#313639] text-4xl mt-12 justify-center mb-2 tracking-wide w-fit items-center text-nowrap">
+                        <h3 className="text-[#313639] text-4xl justify-center mb-2 tracking-wide w-fit items-center text-nowrap">
                             Admin Dashboard
                         </h3>
                         <div className="flex flex-col tracking-wide">
