@@ -11,6 +11,13 @@ import AdminHome from "./adminPages/Home";
 import Dining from "./pages/dining";
 import Complaints from "./pages/complaints";
 import Artworks from "./pages/artworks";
+import ManageEmployees from "./adminPages/manageEmployees";
+import TicketReport from "./adminPages/ticketReport";
+import GiftshopReport from "./adminPages/giftshopReport";
+import TotalReport from "./adminPages/totalReport";
+import ManageExhibit from "./adminPages/manageExhibits";
+import ManageArtwork from "./adminPages/manageArtworks";
+import ViewComplaints from "./adminPages/viewComplaints";
 
 function App() {
   return (
@@ -20,8 +27,15 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/complaints" element={<Complaints />} />
         <Route path="/dining" element={<Dining />} />
-        <Route oath="/artworks" element={<Artworks />} />
+        <Route path="/artworks" element={<Artworks />} />
         <Route path="/admin" element={<AdminHome />} />
+        <Route path="/admin/manage-employees" element={<ManageEmployees />} />
+        <Route path="/admin/ticket-report" element={<TicketReport />} />
+        <Route path="/admin/giftshop-report" element={<GiftshopReport />} />
+        <Route path="/admin/total-report" element={<TotalReport />} />
+        <Route path="/admin/manage-exhibits" element={<ManageExhibit />} />
+        <Route path="/admin/manage-artworks" element={<ManageArtwork />} />
+        <Route path="/admin/view-complaints" element={<ViewComplaints />} />
       </Routes>
     </Router>
   );
