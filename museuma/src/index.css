@@ -10,7 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Neue', sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
   cursor: url('./cursor.png'), auto;
 }
 
