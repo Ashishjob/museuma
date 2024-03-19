@@ -1,18 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { FaTrash } from 'react-icons/fa'; // Import the trash icon
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import '../App.css'; // Import your CSS file here for global styles
-import '../index.css'; // Import your CSS file here for global styles
+import { FaTrash, FaEdit } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import '../App.css';
+import '../index.css';
 
 const ManageEmployees = () => {
   const [employees, setEmployees] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editedEmployee, setEditedEmployee] = useState({
+    id: "",
+    FirstName: "",
+    LastName: "",
+    Email: "",
+  });
   const [newEmployee, setNewEmployee] = useState({
     FirstName: "",
     LastName: "",
     Email: "",
   });
+  const [selectedEmployeeForDeletion, setSelectedEmployeeForDeletion] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedEmployee({ ...editedEmployee, [name]: value });
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    // Update the employee in the employees array
+    const updatedEmployees = employees.map((employee) =>
+      employee.id === editedEmployee.id ? { ...employee, ...editedEmployee } : employee
+    );
+    setEmployees(updatedEmployees);
+    setSelectedEmployee(null); // Clear selected employee
+    setShowEditForm(false); // Hide edit form
+  };
+
 
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
@@ -23,15 +49,11 @@ const ManageEmployees = () => {
     });
   };
 
-  // useEffect to simulate fetching data
   useEffect(() => {
-    // Simulating data fetching
     const fetchEmployees = async () => {
-      // Simulated data
       const simulatedData = [
         { id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com" },
         { id: 2, FirstName: "Jane", LastName: "Doe", Email: "jane@example.com" },
-        // Add more simulated data if needed
       ];
       setEmployees(simulatedData);
     };
@@ -40,9 +62,8 @@ const ManageEmployees = () => {
   }, []);
 
   const addEmployee = () => {
-    // Simulated function to add employee
     const newEmp = {
-      id: Date.now(), // Generating a unique id (simulate backend)
+      id: Date.now(),
       FirstName: newEmployee.FirstName,
       LastName: newEmployee.LastName,
       Email: newEmployee.Email,
@@ -52,20 +73,34 @@ const ManageEmployees = () => {
   };
 
   const deleteEmployee = (employee) => {
-    setSelectedEmployee(employee);
+    setSelectedEmployeeForDeletion(employee); // Set the selected employee for deletion
   };
 
+
   const confirmDelete = () => {
-    // Filter out the selected employee
-    const updatedEmployees = employees.filter((employee) => employee.id !== selectedEmployee.id);
+    const updatedEmployees = employees.filter((employee) => employee.id !== selectedEmployeeForDeletion.id);
     setEmployees(updatedEmployees);
-    setSelectedEmployee(null); // Reset selected employee after deletion
+    setSelectedEmployeeForDeletion(null); // Clear the selected employee for deletion
   };
+
+  const editEmployee = (employee) => {
+    setSelectedEmployee(employee); // Set the selected employee for editing
+    setShowEditForm(true); // Show the edit form
+    // Initialize the editedEmployee state with the details of the selected employee
+    setEditedEmployee({
+      id: employee.id,
+      FirstName: employee.FirstName,
+      LastName: employee.LastName,
+      Email: employee.Email,
+    });
+  };
+
+
 
   return (
     <main className="h-screen bg-[#EFEDE5] w-screen flex justify-center">
       <div className="container mx-auto p-6">
-        <Link to="/admin" className="top-4 -ml-24 text-lg text-[#313639]">&lt; Back</Link>
+        <Link to="/admin" className="top-4 -ml-24 text-lg text-[#313639] hover:text-[#C0BAA4]">&lt; Back</Link>
         <h1 className="text-3xl text-center mb-6 mt-24 text-[#313639]">Employee Management</h1>
 
         <ul className="divide-y divide-gray-300 mb-6">
@@ -75,19 +110,26 @@ const ManageEmployees = () => {
                 <span className="font-semibold">{`${employee.FirstName} ${employee.LastName}`}</span>
                 <span className="text-sm">{employee.Email}</span>
               </div>
-              <button
-                onClick={() => deleteEmployee(employee)}
-                className="ml-auto"
-              >
-                <FaTrash />
-              </button>
+              <div className="ml-auto flex">
+                <button
+                  onClick={() => editEmployee(employee)}
+                  className="mr-2"
+                >
+                  <FaEdit className="hover:text-[#C0BAA4]" />
+                </button>
+                <button
+                  onClick={() => deleteEmployee(employee)}
+                >
+                  <FaTrash className="hover:text-[#C0BAA4]" />
+                </button>
+              </div>
             </li>
           ))}
         </ul>
 
         <button
           onClick={toggleAddForm}
-          className="text-2xl mb-4"
+          className="text-2xl mb-4 hover:text-[#C0BAA4]"
         >
           {showAddForm ? "Cancel" : "Add Employee"}
         </button>
@@ -126,15 +168,61 @@ const ManageEmployees = () => {
           </div>
         )}
 
-        {/* Confirmation Modal */}
-        {selectedEmployee && (
+{selectedEmployeeForDeletion && (
+  <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div className="bg-white p-6 rounded-md">
+      <p className="mb-4">Are you sure you want to delete this employee?</p>
+      <div className="flex justify-between">
+        <button onClick={() => setSelectedEmployeeForDeletion(null)} className="admin-button mr-2">Cancel</button>
+        <button onClick={confirmDelete} className="admin-button bg-red-500 hover:bg-red-700">Delete</button>
+      </div>
+    </div>
+  </div>
+)}
+
+        {showEditForm && selectedEmployee && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-md">
-              <p className="mb-4">Are you sure you want to delete this employee?</p>
-              <div className="flex justify-between">
-                <button onClick={() => setSelectedEmployee(null)} className="admin-button mr-2">Cancel</button>
-                <button onClick={confirmDelete} className="admin-button bg-red-500 hover:bg-red-700">Delete</button>
-              </div>
+              <h2 className="text-xl font-semibold mb-4">Edit Employee</h2>
+              <form onSubmit={handleEditSubmit}>
+                <div className="mb-4">
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="FirstName"
+                    className="mt-1 p-2 border rounded-md w-full"
+                    value={editedEmployee.FirstName}
+                    onChange={handleEditInputChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="LastName"
+                    className="mt-1 p-2 border rounded-md w-full"
+                    value={editedEmployee.LastName}
+                    onChange={handleEditInputChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="Email"
+                    className="mt-1 p-2 border rounded-md w-full"
+                    value={editedEmployee.Email}
+                    onChange={handleEditInputChange}
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button type="button" onClick={() => setShowEditForm(false)} className="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Changes</button>
+                </div>
+              </form>
             </div>
           </div>
         )}
