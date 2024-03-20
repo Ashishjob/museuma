@@ -7,10 +7,12 @@ import {
 import "./App.css";
 import "./index.css";
 import Home from "./pages/Home";
-import AdminHome from "./adminPages/Home";
 import Dining from "./pages/dining";
 import Complaints from "./pages/complaints";
 import Artworks from "./pages/artworks";
+import ShoppingCart from "./pages/shoppingCart";
+import Checkout from "./pages/checkout";
+import AdminHome from "./adminPages/Home";
 import ManageEmployees from "./adminPages/manageEmployees";
 import TotalReport from "./adminPages/totalReport";
 import ManageExhibit from "./adminPages/manageExhibits";
@@ -26,6 +28,8 @@ function App() {
         <Route path="/complaints" element={<Complaints />} />
         <Route path="/dining" element={<Dining />} />
         <Route path="/artworks" element={<Artworks />} />
+        <Route path="/cart" element={<ShoppingCart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/manage-employees" element={<ManageEmployees />} />
         <Route path="/admin/total-report" element={<TotalReport />} />

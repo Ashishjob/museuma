@@ -72,7 +72,7 @@ function Home() {
                   ))}
                 </div>
                 <span className="mt-32 text-2xl text-[#313639]">
-                  <a href="/exhibitions">View Exhibitions</a>
+                  <a href="/exhibits">View Exhibitions</a>
                 </span>
               </div>
             </div>
