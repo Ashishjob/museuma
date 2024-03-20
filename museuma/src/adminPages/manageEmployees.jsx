@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaTrash, FaEdit } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../App.css';
 import '../index.css';
@@ -30,13 +30,12 @@ const ManageEmployees = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    // Update the employee in the employees array
     const updatedEmployees = employees.map((employee) =>
       employee.id === editedEmployee.id ? { ...employee, ...editedEmployee } : employee
     );
     setEmployees(updatedEmployees);
-    setSelectedEmployee(null); // Clear selected employee
-    setShowEditForm(false); // Hide edit form
+    setSelectedEmployee(null);
+    setShowEditForm(false);
   };
 
 
@@ -73,20 +72,19 @@ const ManageEmployees = () => {
   };
 
   const deleteEmployee = (employee) => {
-    setSelectedEmployeeForDeletion(employee); // Set the selected employee for deletion
+    setSelectedEmployeeForDeletion(employee);
   };
 
 
   const confirmDelete = () => {
     const updatedEmployees = employees.filter((employee) => employee.id !== selectedEmployeeForDeletion.id);
     setEmployees(updatedEmployees);
-    setSelectedEmployeeForDeletion(null); // Clear the selected employee for deletion
+    setSelectedEmployeeForDeletion(null);
   };
 
   const editEmployee = (employee) => {
-    setSelectedEmployee(employee); // Set the selected employee for editing
-    setShowEditForm(true); // Show the edit form
-    // Initialize the editedEmployee state with the details of the selected employee
+    setSelectedEmployee(employee);
+    setShowEditForm(true);
     setEditedEmployee({
       id: employee.id,
       FirstName: employee.FirstName,
@@ -100,7 +98,9 @@ const ManageEmployees = () => {
   return (
     <main className="h-screen bg-[#EFEDE5] w-screen flex justify-center">
       <div className="container mx-auto p-6">
-        <Link to="/admin" className="top-4 -ml-24 text-lg text-[#313639] hover:text-[#C0BAA4]">&lt; Back</Link>
+        <Link to="/admin" className="absolute top-32 left-10 inline-block text-2xl text-[#313639] hover:text-[#C0BAA4]">
+          <FaArrowLeft />
+        </Link>
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">Employee Management</h1>
 
         <ul className="divide-y divide-gray-300 mb-6">
@@ -168,17 +168,17 @@ const ManageEmployees = () => {
           </div>
         )}
 
-{selectedEmployeeForDeletion && (
-  <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-6 rounded-md">
-      <p className="mb-4">Are you sure you want to delete this employee?</p>
-      <div className="flex justify-between">
-        <button onClick={() => setSelectedEmployeeForDeletion(null)} className="admin-button mr-2">Cancel</button>
-        <button onClick={confirmDelete} className="admin-button bg-red-500 hover:bg-red-700">Delete</button>
-      </div>
-    </div>
-  </div>
-)}
+        {selectedEmployeeForDeletion && (
+          <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white p-6 rounded-md">
+              <p className="mb-4">Are you sure you want to delete this employee?</p>
+              <div className="flex justify-between">
+                <button onClick={() => setSelectedEmployeeForDeletion(null)} className="admin-button mr-2">Cancel</button>
+                <button onClick={confirmDelete} className="admin-button bg-red-500 hover:bg-red-700">Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {showEditForm && selectedEmployee && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
