@@ -17,8 +17,6 @@ const AdminHome = () => {
                         </h3>
                         <div className="flex flex-col tracking-wide">
                             <a href="/admin/manage-employees"><button onClick={() => console.log('Manage Employees')} className="admin-button">Manage Employees</button></a>
-                            <a href="/admin/ticket-report"><button onClick={() => console.log('View Ticket Sales Reports')} className="admin-button">View Ticket Sales Reports</button></a>
-                            <a href="/admin/giftshop-report"><button onClick={() => console.log('View Gift Shop Sales Reports')} className="admin-button">View Gift Shop Sales Reports</button></a>
                             <a href="/admin/total-report"><button onClick={() => console.log('View Total Sale Reports')} className="admin-button">View Total Sale Reports</button></a>
                             <a href="/admin/manage-exhibits"><button onClick={() => console.log('Manage Exhibits')} className="admin-button">Manage Exhibits</button></a>
                             <a href="/admin/manage-artworks"><button onClick={() => console.log('Manage Artworks')} className="admin-button">Manage Artworks</button></a>

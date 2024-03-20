@@ -23,11 +23,11 @@ export default function NavBar() {
     <header className="text-[#313639] body-font z-1 shadow">
       <div className="w-full flex justify-between items-center pl-5 pt-5 pb-5 pr-2">
         <div className="flex items-center">
-          <img src="./logo.svg" alt="logo" className="w-12 mx-10"></img>
+          
           <a
             href="/"
             className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
-          >
+          ><img src="/logo.svg" alt="logo" className="w-12 mx-10"></img>
             <span className="ml-3 text-xl">Baker Museum</span>
           </a>
           <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
