@@ -10,6 +10,8 @@ import Home from "./pages/Home";
 import Dining from "./pages/dining";
 import Complaints from "./pages/complaints";
 import Artworks from "./pages/artworks";
+import Giftshop from "./pages/giftshop";
+import Tickets from "./pages/tickets";
 import ShoppingCart from "./pages/shoppingCart";
 import Checkout from "./pages/checkout";
 import AdminHome from "./adminPages/Home";
@@ -27,6 +29,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/complaints" element={<Complaints />} />
         <Route path="/dining" element={<Dining />} />
+        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/giftshop" element={<Giftshop />} />
         <Route path="/artworks" element={<Artworks />} />
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<Checkout />} />
