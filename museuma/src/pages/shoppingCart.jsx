@@ -24,7 +24,7 @@ function ShoppingCart() {
     };
 
     return (
-        <main className="min-h-screen bg-[#EFEDE5] w-screen">
+        <main className="min-h-screen bg-[#EFEDE5] w-screen pb-16">
             <div class="mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-center">
                 <h1 className="text-4xl mb-4 text-center mt-24 rounded-xl pl-2">Your Cart</h1>

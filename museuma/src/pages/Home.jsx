@@ -48,7 +48,7 @@ function Home() {
     <>
       <LeftSide />
       <RightSide />
-      <main className="h-screen bg-[#EFEDE5] w-screen">
+      <main className="min-h-screen bg-[#EFEDE5] w-screen">
         <div className="w-full flex flex-row justify-between">
           <div className="flex ml-40 mt-20 w-2/3">
             <div className="flex flex-col mr-8">

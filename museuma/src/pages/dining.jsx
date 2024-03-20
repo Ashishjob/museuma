@@ -2,7 +2,7 @@ import cus from "../components/cuisine.jpg";
 
 function dining() {
   return (
-    <main className="h-screen bg-[#EFEDE5] w-screen overflow-y-auto relative">
+    <main className="min-h-screen bg-[#EFEDE5] w-screen overflow-y-auto overflow-x-hidden relative">
       <h3 className="text-[#313639] text-7xl mb-2 tracking-widest text-center">
         Dining
       </h3>
@@ -20,7 +20,7 @@ function dining() {
         <br></br> dining experiences.
       </p>
       <div className="absolute flex justify-end h-3/4 top-72 right-60 z-10">
-        <img src={cus} />
+        <img src={cus} className="h-2/3"/>
       </div>
       <h1 className="text-[#313639] text-center text-3xl">
         Our top 3 chef's recommendation:
