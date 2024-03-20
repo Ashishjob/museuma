@@ -32,7 +32,8 @@ function TotalReport() {
       <div className="container mx-auto p-6">
         <Link to="/admin" className="absolute top-32 left-10 inline-block text-2xl text-[#313639] hover:text-[#C0BAA4]">
           <FaArrowLeft />
-        </Link>        <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">Total Report</h1>
+        </Link>
+        <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">Total Report</h1>
         <div className="mb-4 flex justify-center space-x-4">
           <button onClick={() => setFilter('totalSales')} className="text-2xl mb-4 bg-[#313639] hover:bg-[#C0BAA4] text-white py-2 px-4 rounded">Total Sales</button>
           <button onClick={() => setFilter('giftShopSales')} className="text-2xl mb-4 bg-[#313639] hover:bg-[#C0BAA4] text-white py-2 px-4 rounded">Gift Shop Sales</button>
