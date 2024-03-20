@@ -4,7 +4,7 @@ import '../index.css';
 
 const AdminHome = () => {
     return (
-        <main className="h-screen bg-[#EFEDE5] w-screen" style={{
+        <main className="min-h-screen bg-[#EFEDE5] w-screen" style={{
             backgroundImage: `url('./adminbg.svg')`,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover'
