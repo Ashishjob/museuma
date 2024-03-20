@@ -101,26 +101,26 @@ const ManageEmployees = () => {
     <main className="h-screen bg-[#EFEDE5] w-screen flex justify-center">
       <div className="container mx-auto p-6">
         <Link to="/admin" className="top-4 -ml-24 text-lg text-[#313639] hover:text-[#C0BAA4]">&lt; Back</Link>
-        <h1 className="text-3xl text-center mb-6 mt-24 text-[#313639]">Employee Management</h1>
+        <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">Employee Management</h1>
 
         <ul className="divide-y divide-gray-300 mb-6">
           {employees.map((employee) => (
             <li key={employee.id} className="py-4 flex">
               <div className="flex flex-col">
-                <span className="font-semibold">{`${employee.FirstName} ${employee.LastName}`}</span>
-                <span className="text-sm">{employee.Email}</span>
+                <span className="text-2xl">{`${employee.FirstName} ${employee.LastName}`}</span>
+                <span className="text-xl">{employee.Email}</span>
               </div>
               <div className="ml-auto flex">
                 <button
                   onClick={() => editEmployee(employee)}
                   className="mr-2"
                 >
-                  <FaEdit className="hover:text-[#C0BAA4]" />
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
                 <button
                   onClick={() => deleteEmployee(employee)}
                 >
-                  <FaTrash className="hover:text-[#C0BAA4]" />
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
             </li>
@@ -129,7 +129,7 @@ const ManageEmployees = () => {
 
         <button
           onClick={toggleAddForm}
-          className="text-2xl mb-4 hover:text-[#C0BAA4]"
+          className="text-3xl mb-4 hover:text-[#C0BAA4]"
         >
           {showAddForm ? "Cancel" : "Add Employee"}
         </button>
@@ -182,8 +182,8 @@ const ManageEmployees = () => {
 
         {showEditForm && selectedEmployee && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white p-6 rounded-md">
-              <h2 className="text-xl font-semibold mb-4">Edit Employee</h2>
+            <div className="bg-white p-6 rounded-md w-1/3">
+              <h2 className="text-2xl mb-4">Edit Employee</h2>
               <form onSubmit={handleEditSubmit}>
                 <div className="mb-4">
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
@@ -220,7 +220,7 @@ const ManageEmployees = () => {
                 </div>
                 <div className="flex justify-end">
                   <button type="button" onClick={() => setShowEditForm(false)} className="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Changes</button>
+                  <button type="submit" className="px-4 py-2 bg-[#313639] hover:bg-[#C0BAA4] text-white rounded-md">Save Changes</button>
                 </div>
               </form>
             </div>
