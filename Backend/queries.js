@@ -1,9 +1,15 @@
 //basically add any possible query we may need here
+const checkEmailExists = "SELECT * FROM employees WHERE email = ?";
 const getBranchDirectors = "SELECT * FROM branch_directors";
-const addEmployee = "INSERT INTO employees (department, position) VALUES ($1, $2)";
+const getDirectorIdByDepartment = "SELECT Director_ID FROM branch_directors WHERE Branch_title = ?";
+const getEmployees = "SELECT * FROM employees";
+const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 
 module.exports = {
     getBranchDirectors,
-    addEmployee
+    getEmployees,
+    addEmployee,
+    checkEmailExists,
+    getDirectorIdByDepartment
 };
 
