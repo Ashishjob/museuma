@@ -111,3 +111,39 @@
 .carousel-image.visible {
   opacity: 1;
 }
+
+.login-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.login-popup-inner {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  max-width: 80%;
+}
+
+.admin-button {
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 20px;
+  min-width: 400px;
+  background-color: #313639;
+  color: #EFEDE5;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-button:hover {
+  background-color: #5a5a5a;
+}
