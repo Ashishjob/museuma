@@ -1,10 +1,10 @@
 function Complaints() {
   return (
-    <main className="h-screen bg-[#EFEDE5] w-screen">
+    <main className="min-h-screen bg-[#EFEDE5] w-screen">
       <h3 className="text-[#313639] text-7xl mb-2 ml-12 tracking-widest flex flex-col items-center">
         Complaints?
       </h3>
-      <p className="text-[#313639] text-3xl ml-12 tracking-wider">
+      <p className="text-[#313639] text-3xl mt-36 ml-12 tracking-wider">
         Had a problem in the Baker Museum? <br></br>Let us know!
       </p>
 
@@ -21,8 +21,8 @@ function Complaints() {
         tenetur consectetur.
       </p>
 
-      <div className="flex absolute justify-end w-full top-60">
-        <div className="bg-[#bfbaa3] w-1/3 h-80 mr-36 rounded-md shadow-2xl fixed">
+      <div className="flex justify-end w-full top-60 -mt-80">
+        <div className="bg-[#bfbaa3] w-1/3 h-80 mr-36 rounded-md shadow-2xl">
           <div className=" text-2xl ml-12 mt-5">
             <label for="name">Name: </label>
             <input

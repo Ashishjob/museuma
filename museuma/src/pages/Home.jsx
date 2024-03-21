@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
 import ThreeJSPage from "../components/threejs";
 import Languages from "../components/languages";
 import { useEffect, useState } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "../App.css";
 import "../index.css";
 import { motion } from "framer-motion";
@@ -50,7 +48,7 @@ function Home() {
     <>
       <LeftSide />
       <RightSide />
-      <main className="h-screen bg-[#EFEDE5] w-screen">
+      <main className="min-h-screen bg-[#EFEDE5] w-screen">
         <div className="w-full flex flex-row justify-between">
           <div className="flex ml-40 mt-20 w-2/3">
             <div className="flex flex-col mr-8">
@@ -74,7 +72,7 @@ function Home() {
                   ))}
                 </div>
                 <span className="mt-32 text-2xl text-[#313639]">
-                  <a href="/exhibitions">View Exhibitions</a>
+                  <a href="/exhibits">View Exhibitions</a>
                 </span>
               </div>
             </div>
