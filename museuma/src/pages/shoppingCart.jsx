@@ -38,7 +38,7 @@ function ShoppingCart() {
                                     {items.map((item) => (
                                         <li class="flex flex-col space-y-3 py-2 my-2 text-left sm:flex-row sm:space-x-5 sm:space-y-0">
                                             <div class="shrink-0">
-                                                <img className="h-24 w-24 max-w-full rounded-lg object-cover" src="/museuma1.png" alt="Product" />
+                                                <img className="h-24 w-24 max-w-full rounded-lg object-cover" src="/productplaceholder.png" alt="Product" />
                                             </div>
 
                                             <div class="relative flex flex-1 flex-col justify-between">

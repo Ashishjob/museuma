@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTrash, FaEdit, FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import Select from 'react-select';
 import '../App.css';
 import '../index.css';
 
@@ -22,6 +23,7 @@ const ManageEmployees = () => {
   const [selectedEmployeeForDeletion, setSelectedEmployeeForDeletion] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+  const [branches, setBranches] = useState([]); // New state variable for branches
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -51,8 +53,8 @@ const ManageEmployees = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       const simulatedData = [
-        { id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com" },
-        { id: 2, FirstName: "Jane", LastName: "Doe", Email: "jane@example.com" },
+        { id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com", Branch: { id: 1, name: "Branch 1" } },
+        { id: 2, FirstName: "Jane", LastName: "Doe", Email: "jane@example.com", Branch: { id: 2, name: "Branch 2" } },
       ];
       setEmployees(simulatedData);
     };
@@ -93,7 +95,19 @@ const ManageEmployees = () => {
     });
   };
 
+  useEffect(() => {
+    const fetchBranches = async () => {
+      // Replace this with actual fetch from your backend or data source
+      const simulatedBranchesData = [
+        { id: 1, name: "Branch 1" },
+        { id: 2, name: "Branch 2" },
+        // ... other branches ...
+      ];
+      setBranches(simulatedBranchesData);
+    };
 
+    fetchBranches();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -109,6 +123,7 @@ const ManageEmployees = () => {
               <div className="flex flex-col">
                 <span className="text-2xl">{`${employee.FirstName} ${employee.LastName}`}</span>
                 <span className="text-xl">{employee.Email}</span>
+                <span className="text-xl">{employee.Branch ? employee.Branch.name : 'N/A'}</span>
               </div>
               <div className="ml-auto flex">
                 <button
@@ -136,27 +151,43 @@ const ManageEmployees = () => {
 
         {showAddForm && (
           <div className="flex">
-            <div className="mb-6">
+            <div className="mb-6 flex">
               <input
                 type="text"
                 placeholder="First Name"
-                className="border rounded mr-2 p-2"
+                className="border rounded mr-2 p-2 flex-1"
                 value={newEmployee.FirstName}
                 onChange={(e) => setNewEmployee({ ...newEmployee, FirstName: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="Last Name"
-                className="border rounded mr-2 p-2"
+                className="border rounded mr-2 p-2 flex-1"
                 value={newEmployee.LastName}
                 onChange={(e) => setNewEmployee({ ...newEmployee, LastName: e.target.value })}
               />
               <input
                 type="email"
                 placeholder="Email"
-                className="border rounded mr-2 p-2"
+                className="border rounded mr-2 p-2 flex-1"
                 value={newEmployee.Email}
                 onChange={(e) => setNewEmployee({ ...newEmployee, Email: e.target.value })}
+              />
+              <Select
+                options={branches.map(branch => ({ value: branch.id, label: branch.name }))}
+                onChange={selectedOption => setNewEmployee({
+                  ...newEmployee,
+                  Branch: branches.find(branch => branch.id === selectedOption.value),
+                })}
+                className="flex-1 mr-2"
+                placeholder="Select Branch"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    height: '100%',
+                    minHeight: '38px',
+                  }),
+                }}
               />
             </div>
             <button
@@ -207,7 +238,20 @@ const ManageEmployees = () => {
                     onChange={handleEditInputChange}
                   />
                 </div>
-                <div className="mb-4">
+                <label htmlFor="Branch" className="mt-4 block text-sm font-medium text-gray-700">Branch</label>
+                <Select
+                  id="branch"
+                  name="Branch"
+                  options={branches.map(branch => ({ value: branch.id, label: branch.name }))}
+                  value={editedEmployee.Branch ? { value: editedEmployee.Branch.id, label: editedEmployee.Branch.name } : null}
+                  onChange={selectedOption => handleEditInputChange({
+                    target: {
+                      name: 'Branch',
+                      value: branches.find(branch => branch.id === selectedOption.value),
+                    },
+                  })}
+                />
+                <div className="my-4">
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                   <input
                     type="email"
