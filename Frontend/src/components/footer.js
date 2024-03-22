@@ -1,8 +1,8 @@
 function Footer() {
   return (
     <footer class="body-font bg-[#615D51] text-white">
-      <div class="flex py-8 flex items-center sm:flex-row flex-col w-full">
-        <a class="flex title-font font-medium items-center md:justify-start justify-center text-white">
+      <div class="flex py-8 items-center sm:flex-row flex-col w-full">
+        <a class="flex title-font font-medium items-center md:justify-start justify-center text-white" href="/">
           <img
             src="/logo.svg"
             alt="logo"
