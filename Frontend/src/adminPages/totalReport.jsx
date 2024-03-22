@@ -25,6 +25,7 @@ function TotalReport() {
     if (filter === 'totalSales' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
     if (filter === 'giftShopSales' && sale.category === 'Gift Shop' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
     if (filter === 'ticketSales' && sale.category === 'Ticket' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
+    return false;
   });
 
   return (
