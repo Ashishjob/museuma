@@ -63,22 +63,23 @@ function Tickets() {
 
     const exhibitions = [
         {
-            name: 'Exhibition A',
-            description: 'Discover the wonders of ancient civilizations.',
+            name: 'Modern Art: A Retrospective',
+            description: 'Explore the evolution of modern art through this comprehensive retrospective featuring works by renowned artists of the 20th century.',
         },
         {
-            name: 'Exhibition B',
-            description: 'Explore the mysteries of the deep sea.',
+            name: 'Ancient Civilizations Unveiled',
+            description: 'Marvel at artifacts, sculptures, and relics that offer glimpses into the rich cultural heritage of bygone eras.',
         },
         {
-            name: 'Exhibition C',
-            description: 'Experience the beauty of modern art.',
+            name: 'Exploring Nature\'s Canvas',
+            description: 'From majestic mountains to serene seascapes, immerse yourself in the beauty and diversity of our natural world captured by talented artists.',
         },
     ];
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="min-h-screen flex flex-col items-center" style={{ marginTop: '20px' }}>
             <h1 className="text-4xl font-bold">Tickets</h1>
+            <p className="mb-6 text-2xl text-gray-600" style={{ marginTop: '32px', marginBottom: '24px', textAlign: 'center' }}>Explore the exquisite collection of artworks at the Baker Museum. <br/> Purchase your tickets now for an unforgettable experience.</p>
             <div className="mt-4 w-full max-w-xs">
                 <h2 className="text-xl mb-2">Select Exhibition</h2>
                 <select
@@ -86,7 +87,7 @@ function Tickets() {
                     onChange={handleExhibitionChange}
                     className="border border-gray-300 rounded p-2 w-full"
                 >
-                    <option value="">Select Exhibition</option>
+                    <option value="" disabled hidden>Please select an exhibition</option>
                     {exhibitions.map((exhibition, index) => (
                         <option key={index} value={exhibition.name}>
                             {exhibition.name}
@@ -143,8 +144,10 @@ function Tickets() {
             {selectedDate && (
                 <div className="mt-6">
                     <h2 className="text-xl">Total Price: ${totalPrice}</h2>
-                    <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Buy Tickets
+                    <button className="mt-4 text-black font-bold py-2 px-4 rounded"style={{backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s',}}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}>
+                        Add to Cart
                     </button>
                 </div>
             )}
