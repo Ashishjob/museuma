@@ -10,15 +10,16 @@ const ManageEmployees = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({
-    id: "",
-    FirstName: "",
-    LastName: "",
-    Email: "",
+    department: "",
+    email: "",
+    first_name: "",
+    last_name: "",
   });
   const [newEmployee, setNewEmployee] = useState({
-    FirstName: "",
-    LastName: "",
-    Email: "",
+    department: "",
+    email: "",
+    first_name: "",
+    last_name: "",
   });
   const [selectedEmployeeForDeletion, setSelectedEmployeeForDeletion] =
     useState(null);
@@ -46,9 +47,10 @@ const ManageEmployees = () => {
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
     setNewEmployee({
-      FirstName: "",
-      LastName: "",
-      Email: "",
+      department: "",
+      email: "",
+      first_name: "",
+      last_name: "",
     });
   };
 
@@ -70,15 +72,36 @@ const ManageEmployees = () => {
     fetchEmployees();
   }, []);
 
-  const addEmployee = () => {
+  const addEmployee = async () => {
     const newEmp = {
-      id: Date.now(),
-      FirstName: newEmployee.FirstName,
-      LastName: newEmployee.LastName,
-      Email: newEmployee.Email,
+      department: newEmployee.Department,
+      email: newEmployee.Email,
+      fname: newEmployee.FirstName,
+      lname: newEmployee.LastName,
     };
-    setEmployees([...employees, newEmp]);
-    toggleAddForm();
+
+    console.log(newEmp);
+
+    try {
+      const response = await fetch("http://localhost:8081/manage-employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEmp),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add employee");
+      }
+
+      // If successful, update the state and toggle the form
+      setEmployees([...employees, newEmp]);
+      toggleAddForm();
+    } catch (error) {
+      console.error("Error adding employee:", error);
+      // Handle error as needed
+    }
   };
 
   const deleteEmployee = (employee) => {
@@ -98,9 +121,10 @@ const ManageEmployees = () => {
     setShowEditForm(true);
     setEditedEmployee({
       id: employee.id,
-      FirstName: employee.FirstName,
-      LastName: employee.LastName,
-      Email: employee.Email,
+      fname: employee.fname,
+      lname: employee.lname,
+      email: employee.email,
+      department: employee.department,
     });
   };
 
@@ -108,8 +132,8 @@ const ManageEmployees = () => {
     const fetchBranches = async () => {
       // Replace this with actual fetch from your backend or data source
       const simulatedBranchesData = [
-        { id: 1, name: "Modern Art" },
-        { id: 2, name: "Surrealism" },
+        { name: "Modern Art" },
+        { name: "Surrealism" },
         // ... other branches ...
       ];
       setBranches(simulatedBranchesData);
@@ -190,15 +214,13 @@ const ManageEmployees = () => {
               />
               <Select
                 options={branches.map((branch) => ({
-                  value: branch.id,
+                  value: branch.name,
                   label: branch.name,
                 }))}
                 onChange={(selectedOption) =>
                   setNewEmployee({
                     ...newEmployee,
-                    Branch: branches.find(
-                      (branch) => branch.id === selectedOption.value
-                    ),
+                    Department: selectedOption.value,
                   })
                 }
                 className="flex-1 mr-2"
