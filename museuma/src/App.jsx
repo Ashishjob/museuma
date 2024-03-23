@@ -9,6 +9,7 @@ import "./index.css";
 import Home from "./pages/Home";
 import Dining from "./pages/dining";
 import Complaints from "./pages/complaints";
+import Exhibits from "./pages/exhibits";
 import Artworks from "./pages/artworks";
 import Giftshop from "./pages/giftshop";
 import Tickets from "./pages/tickets";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/dining" element={<Dining />} />
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/giftshop" element={<Giftshop />} />
+        <Route path="/exhibits" element={<Exhibits />} />
         <Route path="/artworks" element={<Artworks />} />
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<Checkout />} />
