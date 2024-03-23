@@ -34,8 +34,7 @@ function Exhibits() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {exhibits.map((exhibition, index) => (
                     <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg p-6">
-                        
-                        <img src={exhibition.image} alt={`${exhibition.title}`} className="w-full h-64 object-cover mb-4"/>
+                        <img src={exhibition.image} alt={`Image for ${exhibition.title}`} className="w-full h-64 object-cover mb-4"/>
                         <div className="p-4">
                             <h2 className="text-2xl font-semibold mb-2">{exhibition.title}</h2>
                             <p className="text-gray-700 mb-4">{exhibition.description}</p>
