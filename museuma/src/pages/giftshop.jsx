@@ -5,85 +5,44 @@ function Giftshop() {
     const products = [
         {
             item_id: 1,
-            title: 'The Whispering Wind',
-            description: 'An evocative exploration of movement and sound, captured in the medium of oil on canvas.',
-            price: 100, // Example price, you can set actual prices
+            title: 'Sunset Serenade',
+            description: 'Experience the symphony of colors as the sun bids farewell to the day in this captivating watercolor masterpiece.',
+            price: 150,
             item_stock: 10,
-            image: '/productplaceholder.png',
+            image: '/giftSunset.png',
         },
         {
             item_id: 2,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
+            title: 'Moonlit Melodies',
+            description: 'Surrender to the enchanting tunes of the night with this stunning depiction of moonlit landscapes in oil on canvas.',
+            price: 180,
             item_stock: 15,
-            image: '/productplaceholder.png',
+            image: '/giftMoon.png',
         },
         {
             item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
+            title: 'Whispers of Nature',
+            description: 'Hear the secrets of the forest in this ethereal portrayal of nature\'s harmony, captured in delicate pastels.',
             price: 120,
             item_stock: 15,
-            image: '/productplaceholder.png',
+            image: '/giftWhisper.png',
         },
         {
-            item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
+            item_id: 4,
+            title: 'Ocean\'s Embrace',
+            description: 'Dive into the depths of tranquility with this mesmerizing portrayal of the ocean\'s embrace, rendered in mixed media.',
+            price: 200,
             item_stock: 15,
-            image: '/productplaceholder.png',
+            image: '/giftOcean.png',
         },
         {
-            item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
+            item_id: 5,
+            title: 'Starry Reverie',
+            description: 'Lose yourself in the celestial dance of stars with this captivating rendition of the night sky, painted with precision in acrylic.',
+            price: 160,
             item_stock: 15,
-            image: '/productplaceholder.png',
+            image: '/giftStarry.png',
         },
-        {
-            item_id: 1,
-            title: 'The Whispering Wind',
-            description: 'An evocative exploration of movement and sound, captured in the medium of oil on canvas.',
-            price: 100, // Example price, you can set actual prices
-            item_stock: 10,
-            image: '/productplaceholder.png',
-        },
-        {
-            item_id: 2,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
-            item_stock: 15,
-            image: '/productplaceholder.png',
-        },
-        {
-            item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
-            item_stock: 15,
-            image: '/productplaceholder.png',
-        },
-        {
-            item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
-            item_stock: 15,
-            image: '/productplaceholder.png',
-        },
-        {
-            item_id: 3,
-            title: 'Dance of the Fireflies',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            price: 120,
-            item_stock: 15,
-            image: '/productplaceholder.png',
-        },
-        // Add more products as needed
     ];
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -119,7 +78,7 @@ function Giftshop() {
                         <option value="price">Sort by Price</option>
                     </select>
                 </div>
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-4 gap-7">
                     {filteredProducts.map((product, index) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-2 w-full">
                             <img src={product.image} alt={product.title} className="w-full h-64 object-cover rounded" />
@@ -129,7 +88,9 @@ function Giftshop() {
                                 <p className="font-bold">${product.price}</p>
                                 <div className="flex items-center">
                                     <input type="number" min="1" max={product.item_stock} defaultValue="1" className="border border-gray-300 rounded-md px-2 py-1 mr-2 w-16" />
-                                    <button className="text-black px-4 py-2 rounded" style={{ backgroundColor: '#EFEDE5' }}>Add to Cart</button>
+                                    <button className="px-4 py-2 rounded text-black" style={{backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s',}}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}>Add to Cart</button>
                                 </div>
                             </div>
                         </div>
