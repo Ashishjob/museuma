@@ -62,9 +62,7 @@ const addEmployee = (req, res) => {
                 return;
             }
 
-
-
-            const directorId = directorResults[0];
+            const directorId = directorResults[0].Director_ID;
 
             // Add employee to the database with retrieved director_id
             pool.query(queries.addEmployee, [department, directorId, email, fname, lname], (error, results) => {
