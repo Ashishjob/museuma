@@ -57,7 +57,7 @@ const ManageEmployees = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-employees");
+        const response = await fetch("https://museuma.onrender.com/manage-employees");
         if (!response.ok) {
           throw new Error("Failed to fetch employees");
         }
@@ -83,7 +83,7 @@ const ManageEmployees = () => {
     console.log(newEmp);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-employees", {
+      const response = await fetch("https://museuma.onrender.com/manage-employees", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
