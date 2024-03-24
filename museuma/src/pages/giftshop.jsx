@@ -61,6 +61,23 @@ function Giftshop() {
             }
         });
 
+        const addToCart = (product, quantity) => {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItemIndex = cartItems.findIndex(item => item.item_id === product.item_id);
+        
+            if (existingItemIndex !== -1) {
+                // If the item already exists in the cart, update its quantity
+                cartItems[existingItemIndex].quantity += quantity;
+            } else {
+                // If the item does not exist in the cart, add it with the selected quantity
+                cartItems.push({ ...product, quantity });
+            }
+        
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+        };
+        
+        
+
     return (
         <main className=''>
             <div className="p-4">
@@ -87,10 +104,17 @@ function Giftshop() {
                             <div className="flex justify-between items-center mt-2">
                                 <p className="font-bold">${product.price}</p>
                                 <div className="flex items-center">
-                                    <input type="number" min="1" max={product.item_stock} defaultValue="1" className="border border-gray-300 rounded-md px-2 py-1 mr-2 w-16" />
-                                    <button className="px-4 py-2 rounded text-black" style={{backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s',}}
+                                    {/* <input type="number" min="1" max={product.item_stock} defaultValue="1" className="border border-gray-300 rounded-md px-2 py-1 mr-2 w-16" /> */}
+                                    <input id={`quantity-${product.item_id}`}type="number"min="1"max={product.item_stock}defaultValue="1"className="border border-gray-300 rounded-md px-2 py-1 mr-2 w-16"/>
+                                    <button
+                                        className="px-4 py-2 rounded text-black"
+                                        style={{ backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s' }}
                                         onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}>Add to Cart</button>
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}
+                                        onClick={() => addToCart(product, parseInt(document.getElementById(`quantity-${product.item_id}`).value))}
+                                    >
+                                        Add to Cart
+                                    </button>
                                 </div>
                             </div>
                         </div>
