@@ -8,6 +8,7 @@ function Tickets() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [adultTickets, setAdultTickets] = useState(0);
     const [studentTickets, setStudentTickets] = useState(0);
+    const [childTickets, setChildTickets] = useState(0);
     const [militaryTickets, setMilitaryTickets] = useState(0);
 
     const handleExhibitionChange = (e) => {
@@ -29,6 +30,9 @@ function Tickets() {
             case 'student':
                 setStudentTickets(studentTickets + 1);
                 break;
+            case 'child':
+                setChildTickets(childTickets + 1);
+                break;
             case 'military':
                 setMilitaryTickets(militaryTickets + 1);
                 break;
@@ -49,6 +53,11 @@ function Tickets() {
                     setStudentTickets(studentTickets - 1);
                 }
                 break;
+            case 'child':
+                if (childTickets > 0) {
+                    setChildTickets(childTickets - 1);
+                }
+                break;
             case 'military':
                 if (militaryTickets > 0) {
                     setMilitaryTickets(militaryTickets - 1);
@@ -59,7 +68,7 @@ function Tickets() {
         }
     };
 
-    const totalPrice = (adultTickets * 20) + (studentTickets * 15) + (militaryTickets * 10);
+    const totalPrice = (adultTickets * 20) + (studentTickets * 15) + (childTickets * 10) + (militaryTickets * 10);
 
     const exhibitions = [
         {
@@ -76,12 +85,87 @@ function Tickets() {
         },
     ];
 
+    const exhibitionIds = {
+        'Modern Art: A Retrospective': 'exhibition1',
+        'Ancient Civilizations Unveiled': 'exhibition2',
+        'Exploring Nature\'s Canvas': 'exhibition3',
+        // Add more exhibitions and their corresponding identifiers here
+    };
+
+    const addToCart = () => {
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        const exhibitionTitle = selectedExhibition;
+        const exhibitionId = exhibitionIds[selectedExhibition]; // Get the ID for the selected exhibition
+
+        // Add adult tickets to cart if quantity is greater than 0
+        if (adultTickets > 0) {
+            const existingAdultItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Adult Ticket`);
+            if (existingAdultItemIndex !== -1) {
+                cartItems[existingAdultItemIndex].quantity += adultTickets;
+            } else {
+                cartItems.push({
+                    item_id: `adult_${exhibitionId}`,
+                    title: `${exhibitionTitle} - Adult Ticket`,
+                    price: 20,
+                    quantity: adultTickets
+                });
+            }
+        }
+
+        // Add student tickets to cart if quantity is greater than 0
+        if (studentTickets > 0) {
+            const existingStudentItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Student Ticket`);
+            if (existingStudentItemIndex !== -1) {
+                cartItems[existingStudentItemIndex].quantity += studentTickets;
+            } else {
+                cartItems.push({
+                    item_id: `student_${exhibitionId}`,
+                    title: `${exhibitionTitle} - Student Ticket`,
+                    price: 15,
+                    quantity: studentTickets
+                });
+            }
+        }
+
+        // Add child tickets to cart if quantity is greater than 0
+        if (childTickets > 0) {
+            const existingChildItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Child Ticket`);
+            if (existingChildItemIndex !== -1) {
+                cartItems[existingChildItemIndex].quantity += childTickets;
+            } else {
+                cartItems.push({
+                    item_id: `child_${exhibitionId}`,
+                    title: `${exhibitionTitle} - Child Ticket`,
+                    price: 10,
+                    quantity: childTickets
+                });
+            }
+        }
+
+        // Add military tickets to cart if quantity is greater than 0
+        if (militaryTickets > 0) {
+            const existingMilitaryItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Military Ticket`);
+            if (existingMilitaryItemIndex !== -1) {
+                cartItems[existingMilitaryItemIndex].quantity += militaryTickets;
+            } else {
+                cartItems.push({
+                    item_id: `military_${exhibitionId}`,
+                    title: `${exhibitionTitle} - Military Ticket`,
+                    price: 10,
+                    quantity: militaryTickets
+                });
+            }
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    };
+
     return (
         <div className="min-h-screen flex flex-col items-center" style={{ marginTop: '20px' }}>
             <h1 className="text-4xl font-bold">Tickets</h1>
-            <p className="mb-6 text-2xl text-gray-600" style={{ marginTop: '32px', marginBottom: '24px', textAlign: 'center' }}>Explore the exquisite collection of artworks at the Baker Museum. <br/> Purchase your tickets now for an unforgettable experience.</p>
+            <p className="mb-6 text-2xl text-gray-600" style={{ marginTop: '32px', marginBottom: '24px', textAlign: 'center' }}>Explore the exquisite collection of artworks at the Baker Museum. <br /> Purchase your tickets now for an unforgettable experience.</p>
             <div className="mt-4 w-full max-w-xs">
-                <h2 className="text-xl mb-2">Select Exhibition</h2>
+                <h2 className="text-xl mb-2 flex justify-center">Select Exhibition</h2>
                 <select
                     value={selectedExhibition}
                     onChange={handleExhibitionChange}
@@ -100,21 +184,24 @@ function Tickets() {
             </div>
             {selectedExhibition && (
                 <div className="mt-4 w-full max-w-xs">
-                    <h2 className="text-xl mb-2">Select Date</h2>
-                    <DatePicker
-                        selected={selectedDate}
-                        onChange={handleDateChange}
-                        className="border border-gray-300 rounded p-2 w-full"
-                        placeholderText="Select a date"
-                        dateFormat="MMMM d, yyyy"
-                    />
+                    <h2 className="text-xl mb-2 flex justify-center">Select Date</h2>
+                    <div className="mt-4 w-full max-w-xs flex justify-center">
+                        <DatePicker
+                            selected={selectedDate}
+                            onChange={handleDateChange}
+                            className="border border-gray-300 rounded p-2 w-full"
+                            placeholderText="Select a date"
+                            dateFormat="MMMM d, yyyy"
+                            minDate={new Date()} // Minimum date is today
+                        />
+                    </div>
                 </div>
             )}
             {selectedDate && (
                 <div className="mt-4 w-full max-w-xs">
-                    <h2 className="text-xl mb-2">Select Quantity</h2>
-                    <div className="flex justify-between">
-                        <div>
+                    <h2 className="text-xl mb-2 flex justify-center">Select Quantity</h2>
+                    <div className="flex flex-col items-center"> {/* Added flexbox container */}
+                        <div className="mb-4">
                             <p>Adult ($20 each)</p>
                             <div className="flex items-center">
                                 <button onClick={() => decrementTicketCount('adult')} className="px-2 py-1 bg-gray-200 rounded-l">-</button>
@@ -122,12 +209,20 @@ function Tickets() {
                                 <button onClick={() => incrementTicketCount('adult')} className="px-2 py-1 bg-gray-200 rounded-r">+</button>
                             </div>
                         </div>
-                        <div>
+                        <div className="mb-4">
                             <p>Student ($15 each)</p>
                             <div className="flex items-center">
                                 <button onClick={() => decrementTicketCount('student')} className="px-2 py-1 bg-gray-200 rounded-l">-</button>
                                 <input type="text" value={studentTickets} readOnly className="border border-gray-300 rounded-r p-2 w-12 text-center" />
                                 <button onClick={() => incrementTicketCount('student')} className="px-2 py-1 bg-gray-200 rounded-r">+</button>
+                            </div>
+                        </div>
+                        <div className="mb-4">
+                            <p>Child ($10 each)</p>
+                            <div className="flex items-center">
+                                <button onClick={() => decrementTicketCount('child')} className="px-2 py-1 bg-gray-200 rounded-l">-</button>
+                                <input type="text" value={childTickets} readOnly className="border border-gray-300 rounded-r p-2 w-12 text-center" />
+                                <button onClick={() => incrementTicketCount('child')} className="px-2 py-1 bg-gray-200 rounded-r">+</button>
                             </div>
                         </div>
                         <div>
@@ -141,16 +236,23 @@ function Tickets() {
                     </div>
                 </div>
             )}
+
+
             {selectedDate && (
                 <div className="mt-6">
                     <h2 className="text-xl">Total Price: ${totalPrice}</h2>
-                    <button className="mt-4 text-black font-bold py-2 px-4 rounded"style={{backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s',}}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}>
+                    <button
+                        className="mt-4 mb-10 text-black font-bold py-2 px-4 rounded" // Added mb-4 for margin-bottom
+                        style={{ backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}
+                        onClick={addToCart}
+                    >
                         Add to Cart
                     </button>
                 </div>
             )}
+
         </div>
     );
 }
