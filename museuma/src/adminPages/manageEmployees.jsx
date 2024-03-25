@@ -57,7 +57,9 @@ const ManageEmployees = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch("https://museuma.onrender.com/manage-employees");
+        const response = await fetch(
+          "https://museuma.onrender.com/manage-employees"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch employees");
         }
@@ -76,27 +78,41 @@ const ManageEmployees = () => {
     const newEmp = {
       department: newEmployee.Department,
       email: newEmployee.Email,
-      fname: newEmployee.FirstName,
-      lname: newEmployee.LastName,
+      fname: newEmployee.first_name,
+      lname: newEmployee.last_name,
     };
 
     console.log(newEmp);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-employees", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEmp),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-employees",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newEmp),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to add employee");
       }
 
       // If successful, update the state and toggle the form
-      setEmployees([...employees, newEmp]);
+      // Fetch the updated list of employees
+      const updatedResponse = await fetch(
+        "https://museuma.onrender.com/manage-employees"
+      );
+      if (!updatedResponse.ok) {
+        throw new Error("Failed to fetch updated employees");
+      }
+      const updatedData = await updatedResponse.json();
+
+      // Update the state with the new list of employees
+      setEmployees(updatedData);
+      //setEmployees([...employees, newEmp]);
       toggleAddForm();
     } catch (error) {
       console.error("Error adding employee:", error);
@@ -104,13 +120,13 @@ const ManageEmployees = () => {
     }
   };
 
-  const deleteEmployee = (employee) => {
-    setSelectedEmployeeForDeletion(employee);
+  const deleteEmployee = (employeeID) => {
+    setSelectedEmployeeForDeletion(employeeID);
   };
 
   const confirmDelete = () => {
     const updatedEmployees = employees.filter(
-      (employee) => employee.id !== selectedEmployeeForDeletion.id
+      (employee) => employee.employee_id !== selectedEmployeeForDeletion
     );
     setEmployees(updatedEmployees);
     setSelectedEmployeeForDeletion(null);
@@ -121,8 +137,8 @@ const ManageEmployees = () => {
     setShowEditForm(true);
     setEditedEmployee({
       id: employee.id,
-      fname: employee.fname,
-      lname: employee.lname,
+      fname: employee.first_name,
+      lname: employee.last_name,
       email: employee.email,
       department: employee.department,
     });
@@ -167,7 +183,7 @@ const ManageEmployees = () => {
                 <button onClick={() => editEmployee(employee)} className="mr-2">
                   <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-                <button onClick={() => deleteEmployee(employee)}>
+                <button onClick={() => deleteEmployee(employee.employee_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
@@ -189,18 +205,18 @@ const ManageEmployees = () => {
                 type="text"
                 placeholder="First Name"
                 className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.FirstName}
+                value={newEmployee.first_name}
                 onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, FirstName: e.target.value })
+                  setNewEmployee({ ...newEmployee, first_name: e.target.value })
                 }
               />
               <input
                 type="text"
                 placeholder="Last Name"
                 className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.LastName}
+                value={newEmployee.last_name}
                 onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, LastName: e.target.value })
+                  setNewEmployee({ ...newEmployee, last_name: e.target.value })
                 }
               />
               <input
