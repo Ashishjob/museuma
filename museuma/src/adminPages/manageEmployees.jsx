@@ -78,8 +78,8 @@ const ManageEmployees = () => {
     const newEmp = {
       department: newEmployee.Department,
       email: newEmployee.Email,
-      fname: newEmployee.first_name,
-      lname: newEmployee.last_name,
+      first_name: newEmployee.first_name,
+      last_name: newEmployee.last_name,
     };
 
     console.log(newEmp);
