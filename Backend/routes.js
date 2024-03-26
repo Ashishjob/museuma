@@ -13,6 +13,9 @@ function router(req, res) {
     else if (url === '/manage-employees' && method === 'POST') {
         controller.addEmployee(req, res);
     } 
+    else if(url === '/manage-exhibits' && method === 'GET'){
+        controller.getExhibits(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
