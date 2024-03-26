@@ -146,6 +146,26 @@ export default function NavBar() {
                 <form>
                   <input
                     type="text"
+                    placeholder="First Name"
+                    className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                  />
+                  <input
+                    type="text"
                     placeholder="Username"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
                   />

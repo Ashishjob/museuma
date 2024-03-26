@@ -21,6 +21,7 @@ const AdminHome = () => {
                             <a href="/admin/manage-exhibits"><button onClick={() => console.log('Manage Exhibits')} className="admin-button">Manage Exhibits</button></a>
                             <a href="/admin/manage-artworks"><button onClick={() => console.log('Manage Artworks')} className="admin-button">Manage Artworks</button></a>
                             <a href="/admin/view-complaints"><button onClick={() => console.log('View Complaints')} className="admin-button">View Complaints</button></a>
+                            <a href="/admin/manage-giftshop"><button onClick={() => console.log('Manage Gift Shop')} className="admin-button">Manage Gift Shop</button></a>
                         </div>
                     </div>
                 </div>
