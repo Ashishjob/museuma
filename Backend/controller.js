@@ -28,6 +28,37 @@ const getEmployees = (req, res) => {
     });
 };
 
+const markEmployeeForDeletion = (req, res) => {
+    let body = '';
+
+    // Listen for data chunks in the request body
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+
+    // Once all data is received, parse the JSON body
+    req.on('end', () => {
+        // Parse the JSON body
+        const requestBody = JSON.parse(body);
+
+        // Log the request body
+        console.log('Request Body:', requestBody);
+
+        // Extract employee ID from the request body or URL parameters
+        const employeeId = requestBody.employee_id; 
+        pool.query(queries.markEmployeeForDeletion, [employeeId], (error, results) => {
+            if (error) {
+                console.error('Error marking employee for deletion:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Internal server error' }));
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
+        });
+    });
+};
+
 const addEmployee = (req, res) => {
     let body = '';
     
@@ -85,5 +116,6 @@ const addEmployee = (req, res) => {
 module.exports = {
     getBranchDirectors,
     getEmployees,
-    addEmployee
+    addEmployee,
+    markEmployeeForDeletion
 };
