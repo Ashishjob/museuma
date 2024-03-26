@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FaTrash, FaEdit, FaArrowLeft } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import Select from 'react-select'; // Import react-select
-import '../App.css';
-import '../index.css';
+import { FaTrash, FaEdit, FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import Select from "react-select"; // Import react-select
+import "../App.css";
+import "../index.css";
 
 const ManageExhibits = () => {
   const [exhibits, setExhibits] = useState([]);
@@ -14,19 +14,18 @@ const ManageExhibits = () => {
     Description: "",
     Collections: "",
     Location: "",
-    Director_ID: ""
+    Director_ID: "",
   });
   const [newExhibit, setNewExhibit] = useState({
     Exhibit_id: "",
     Description: "",
     Collections: "",
     Location: "",
-    Director_ID: ""
+    Director_ID: "",
   });
   const [selectedExhibitForDeletion, setSelectedExhibitForDeletion] =
     useState(null);
   const [selectedExhibit, setSelectedExhibit] = useState(null);
-
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +35,7 @@ const ManageExhibits = () => {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const updatedExhibits = exhibits.map((exhibits) =>
-    exhibits.id === editedExhibit.id
+      exhibits.id === editedExhibit.id
         ? { ...exhibits, ...editedExhibit }
         : exhibits
     );
@@ -52,7 +51,7 @@ const ManageExhibits = () => {
       Description: "",
       Collections: "",
       Location: "",
-      Director_ID: ""
+      Director_ID: "",
     });
   };
 
@@ -82,7 +81,7 @@ const ManageExhibits = () => {
       Description: newExhibit.Description,
       Collections: newExhibit.Collections,
       Location: newExhibit.Location,
-      Director_ID: newExhibit.Director_ID
+      Director_ID: newExhibit.Director_ID,
     };
 
     console.log(newEmp);

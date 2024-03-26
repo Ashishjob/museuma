@@ -13,6 +13,9 @@ function router(req, res) {
     else if (url === '/manage-employees' && method === 'POST') {
         controller.addEmployee(req, res);
     } 
+    else if (url === '/manage-employees' && method === 'PUT') {
+        controller.markEmployeeForDeletion(req, res);
+    } 
     else if(url === '/manage-exhibits' && method === 'GET'){
         controller.getExhibits(req, res);
     }
