@@ -5,6 +5,7 @@ const getDirectorIdByDepartment = "SELECT Director_ID FROM branch_directors WHER
 const getEmployees = "SELECT * FROM employees";
 const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const getExhibit = "SELECT * FROM exhibits";
+const addExhibit = "INSERT INTO exhibits (Exhibit_id, Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?, ?)";
 
 module.exports = {
     getBranchDirectors,
@@ -12,6 +13,7 @@ module.exports = {
     addEmployee,
     checkEmailExists,
     getDirectorIdByDepartment,
-    getExhibit
+    getExhibit,
+    addExhibit
 };
 
