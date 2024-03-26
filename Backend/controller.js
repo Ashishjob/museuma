@@ -97,6 +97,7 @@ const addEmployee = (req, res) => {
   });
 };
 
+
 const getExhibits = (req, res) => {
   pool.query(queries.getExhibit, (error, results) => {
     if (error) {
@@ -153,10 +154,86 @@ const addExhibits = (req, res) => {
     });
     }
 
+const markEmployeeForDeletion = (req, res) => {
+    let body = '';
+
+    // Listen for data chunks in the request body
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+
+    // Once all data is received, parse the JSON body
+    req.on('end', () => {
+        // Parse the JSON body
+        const requestBody = JSON.parse(body);
+
+        // Log the request body
+        console.log('Request Body:', requestBody);
+
+        // Extract employee ID from the request body or URL parameters
+        const employeeId = requestBody.employee_id; 
+        pool.query(queries.markEmployeeForDeletion, [employeeId], (error, results) => {
+            if (error) {
+                console.error('Error marking employee for deletion:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Internal server error' }));
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
+        });
+    });
+};
+
+const addEmployee = (req, res) => {
+    let body = '';
+    
+    req.on("data", (chunk) => {
+        body += chunk.toString();
+    });
+    
+    req.on("end", () => {
+        const parsedBody = JSON.parse(body);
+        const { Exhibit_id, Description, Collections, Location, Director_ID } = parsedBody;
+    
+        // Check if exhibit_name, exhibit_description, and exhibit_image are defined
+        if (!Exhibit_id || !Description || !Collections || !Location || !Director_ID) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(
+            JSON.stringify({
+            error: "Exhibit_id, Description, Collection, Location, and Director_ID are required.",
+            })
+        );
+        return;
+        }
+    
+        // Add exhibit to the database
+        pool.query(
+        queries.addExhibit,
+        [Exhibit_id, Description, Collections, Location, Director_ID],
+        (error, results) => {
+            if (error) {
+                console.error('Error adding exhibit:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Internal server error' }));
+                return;
+            }
+    
+            res.writeHead(201, { "Content-Type": "application/json" });
+            res.end(
+            JSON.stringify({ message: "Exhibit created successfully!" })
+            );
+        }
+        );
+    });
+    }
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
   addEmployee,
+  markEmployeeForDeletion
   getExhibits,
   addExhibits,
 };
+
