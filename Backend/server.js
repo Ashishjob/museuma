@@ -20,10 +20,17 @@ const server = http.createServer((req, res) => {
             employeeRoutes(req, res);
         } else if(parsedUrl.pathname === '/manage-employees' && req.method === 'POST'){
             employeeRoutes(req, res);
-        } else if(parsedUrl.pathname === '/manage-employees' && req.method === 'PUT'){
-            employeeRoutes(req, res);
         }
         else if(parsedUrl.pathname === '/manage-employees' && req.method === 'GET'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname === '/manage-exhibits' && req.method === 'GET'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname === '/manage-employees' && req.method === 'PUT'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname === '/manage-exhibits' && req.method === 'POST'){
             employeeRoutes(req, res);
         }
         else {
