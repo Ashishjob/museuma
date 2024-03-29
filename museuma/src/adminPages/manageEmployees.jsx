@@ -64,7 +64,11 @@ const ManageEmployees = () => {
           throw new Error("Failed to fetch employees");
         }
         const data = await response.json();
-        setEmployees(data);
+        const activeEmployees = data.filter(
+          (employee) => employee.Active === 1
+        );
+
+        setEmployees(activeEmployees);
       } catch (error) {
         console.error("Error fetching employees:", error);
         // Handle error as needed
@@ -124,12 +128,40 @@ const ManageEmployees = () => {
     setSelectedEmployeeForDeletion(employeeID);
   };
 
-  const confirmDelete = () => {
-    const updatedEmployees = employees.filter(
-      (employee) => employee.employee_id !== selectedEmployeeForDeletion
-    );
-    setEmployees(updatedEmployees);
-    setSelectedEmployeeForDeletion(null);
+  const confirmDelete = (employeeID) => {
+    setSelectedEmployeeForDeletion(employeeID);
+  };
+
+  const deleteConfirmed = async () => {
+    try {
+      // Send PUT request to mark employee for deletion
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-employees",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            employee_id: selectedEmployeeForDeletion,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to mark employee for deletion");
+      }
+
+      // Update state to remove the employee
+      const updatedEmployees = employees.filter(
+        (employee) => employee.employee_id !== selectedEmployeeForDeletion
+      );
+      setEmployees(updatedEmployees);
+      setSelectedEmployeeForDeletion(null);
+    } catch (error) {
+      console.error("Error marking employee for deletion:", error);
+      // Handle error as needed
+    }
   };
 
   const editEmployee = (employee) => {
@@ -183,7 +215,7 @@ const ManageEmployees = () => {
                 <button onClick={() => editEmployee(employee)} className="mr-2">
                   <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-                <button onClick={() => deleteEmployee(employee.employee_id)}>
+                <button onClick={() => confirmDelete(employee.employee_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
@@ -273,7 +305,7 @@ const ManageEmployees = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={confirmDelete}
+                  onClick={deleteConfirmed}
                   className="admin-button bg-red-500 hover:bg-red-700"
                 >
                   Delete
