@@ -7,6 +7,8 @@ const addEmployee = "INSERT INTO employees (department, director_id, email, firs
 const getExhibit = "SELECT * FROM exhibits";
 const addExhibit = "INSERT INTO exhibits (Exhibit_id, Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?, ?)";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
+const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
+
 
 module.exports = {
     getBranchDirectors,
@@ -16,5 +18,6 @@ module.exports = {
     checkEmailExists,
     getDirectorIdByDepartment,
     getExhibit,
-    addExhibit
+    addExhibit,
+    addComplaint
 };

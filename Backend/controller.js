@@ -185,6 +185,43 @@ const markEmployeeForDeletion = (req, res) => {
     });
 };
 
+const insertComplaints = (req, res) => {
+  let body = '';
+
+  // Listen for data chunks in the request body
+  req.on('data', chunk => {
+      body += chunk.toString();
+  });
+
+  // Once all data is received, parse the JSON body
+  req.on('end', () => {
+      // Parse the JSON body
+      const requestBody = JSON.parse(body);
+
+      // Log the request body
+      console.log('Request Body:', requestBody);
+
+      // Extract complaint details from the request body
+      const { name, branch, description } = requestBody;
+
+      // Insert complaint into the database using the query from the queries file
+      pool.query(
+          queries.addComplaint, // Use the query from the queries file
+          [name, branch, description],
+          (error, results) => {
+              if (error) {
+                  console.error('Error inserting complaint:', error);
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal server error' }));
+              } else {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
+              }
+          }
+      );
+  });
+};
+
 
 module.exports = {
   getBranchDirectors,
@@ -193,5 +230,6 @@ module.exports = {
   markEmployeeForDeletion,
   getExhibits,
   addExhibits,
-  markEmployeeForDeletion
+  markEmployeeForDeletion,
+  insertComplaints
 };
