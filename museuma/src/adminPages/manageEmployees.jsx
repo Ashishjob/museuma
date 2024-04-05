@@ -143,6 +143,7 @@ const ManageEmployees = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            action: "markForDeletion",
             employee_id: selectedEmployeeForDeletion,
           }),
         }
