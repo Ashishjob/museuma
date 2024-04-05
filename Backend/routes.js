@@ -46,6 +46,9 @@ function router(req, res) {
     else if(url === '/complaints' && method === 'POST'){
         controller.insertComplaints(req, res);
     }
+    else if (url === '/complaints' && method === 'GET') {
+        controller.getComplaints(req, res);
+    } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
