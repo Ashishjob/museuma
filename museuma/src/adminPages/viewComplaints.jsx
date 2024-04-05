@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
-import '../App.css';
-import '../index.css';
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+import "../App.css";
+import "../index.css";
 
 const ViewComplaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -13,19 +13,17 @@ const ViewComplaints = () => {
 
   useEffect(() => {
     const fetchComplaints = async () => {
-      const simulatedComplaintsData = [
-        { id: 1, branch: "Modern Art", date: "2024-03-14", message: "The lighting in the Modern Art section was too dim." },
-        { id: 2, branch: "Photography", date: "2024-02-20", message: "The Photography exhibit was excellent, but it was too crowded." },
-        { id: 3, branch: "Renaissance", date: "2024-01-15", message: "The Renaissance section was too cold." },
-        { id: 4, branch: "Ancient Art", date: "2023-03-19", message: "The Ancient Art section was excellent, but the restrooms nearby were not clean." },
-        { id: 5, branch: "Cubism", date: "2023-12-20", message: "The Cubism exhibit was too small." },
-        { id: 6, branch: "Modern Art", date: "2024-03-14", message: "The Modern Art section was too crowded." },
-        { id: 7, branch: "Photography", date: "2024-02-21", message: "The Photography exhibit lacked a variety of works." },
-        { id: 8, branch: "Renaissance", date: "2024-01-16", message: "The Renaissance paintings were not well preserved." },
-        { id: 9, branch: "Ancient Art", date: "2023-03-20", message: "The Ancient Art section lacked information about the artifacts." },
-        { id: 10, branch: "Cubism", date: "2023-12-21", message: "The Cubism exhibit lacked works from prominent artists." },
-      ];
-      setComplaints(simulatedComplaintsData);
+      try {
+        const response = await fetch("http://localhost:8081/complaints");
+        if (!response.ok) {
+          throw new Error("Failed to fetch complaints");
+        }
+        const data = await response.json();
+        setComplaints(data);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+        // Handle error appropriately, e.g., display a message to the user
+      }
     };
 
     fetchComplaints();
@@ -96,10 +94,15 @@ const ViewComplaints = () => {
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
       <div className="container mx-auto p-6">
-        <Link to="/admin" className="absolute top-32 left-10 inline-block text-2xl text-[#313639] hover:text-[#C0BAA4]">
+        <Link
+          to="/admin"
+          className="absolute top-32 left-10 inline-block text-2xl text-[#313639] hover:text-[#C0BAA4]"
+        >
           <FaArrowLeft />
         </Link>
-        <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">View Complaints</h1>
+        <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
+          View Complaints
+        </h1>
 
         <div className="flex flex-col justify-between mb-6 ">
           <div className="flex flex-row w-1/3">
@@ -114,7 +117,11 @@ const ViewComplaints = () => {
             </div>
 
             <div className="mb-4 w-full">
-              <select value={dateFilter} onChange={handleDateFilterChange} className="border-2 border-gray-300 bg-white h-10 px-5 rounded-lg text-sm focus:outline-none w-full">
+              <select
+                value={dateFilter}
+                onChange={handleDateFilterChange}
+                className="border-2 border-gray-300 bg-white h-10 px-5 rounded-lg text-sm focus:outline-none w-full"
+              >
                 <option value="all">All time</option>
                 <option value="lastWeek">Last week</option>
                 <option value="lastMonth">Last month</option>
@@ -141,16 +148,20 @@ const ViewComplaints = () => {
             </div>
           )}
         </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-            {filteredComplaints.map((complaint) => (
-              <div key={complaint.id} className="bg-white rounded-lg p-4 shadow-md">
-                <h2 className="text-2xl mb-2">{`Branch: ${complaint.branch}`}</h2>
-                <p className="text-xl mb-2">{`Date: ${complaint.date}`}</p>
-                <p>{`Message: ${complaint.message}`}</p>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+          {filteredComplaints.map((complaint) => (
+            <div
+              key={complaint.id}
+              className="bg-white rounded-lg p-4 shadow-md"
+            >
+              <h2 className="text-2xl mb-2">{`Branch: ${complaint.branch}`}</h2>
+              <p className="text-xl mb-2">{`Date: ${complaint.date_and_time}`}</p>{" "}
+              {/*We can adjust this time stamp later*/}
+              <p>{`Message: ${complaint.description}`}</p>
+            </div>
+          ))}
         </div>
+      </div>
     </main>
   );
 };

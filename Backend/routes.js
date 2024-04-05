@@ -14,7 +14,28 @@ function router(req, res) {
         controller.addEmployee(req, res);
     } 
     else if (url === '/manage-employees' && method === 'PUT') {
-        controller.markEmployeeForDeletion(req, res);
+        const contentType = req.headers['content-type'];
+        if (contentType && contentType.includes('application/json')) {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString(); // convert Buffer to string
+            });
+            req.on('end', () => {
+                const data = JSON.parse(body);
+                const { action, ...requestData } = data; // Destructure 'action' field and get the rest of the data
+                if (data.action === 'update') {
+                    controller.updateEmployeeInfo(requestData, res);
+                } else if (data.action === 'markForDeletion') {
+                    controller.markEmployeeForDeletion(req, res);
+                } else {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Invalid action' }));
+                }
+            });
+        } else {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid content type' }));
+        }
     } 
     else if(url === '/manage-exhibits' && method === 'GET'){
         controller.getExhibits(req, res);
@@ -25,6 +46,9 @@ function router(req, res) {
     else if(url === '/complaints' && method === 'POST'){
         controller.insertComplaints(req, res);
     }
+    else if (url === '/complaints' && method === 'GET') {
+        controller.getComplaints(req, res);
+    } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));

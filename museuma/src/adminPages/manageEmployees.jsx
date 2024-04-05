@@ -32,6 +32,7 @@ const ManageEmployees = () => {
     setEditedEmployee({ ...editedEmployee, [name]: value });
   };
 
+  //FIGURE OUT HOW TO CONNECT THE UDPATE EMPLOYEE FUNCTION TO BACKEND LATER
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const updatedEmployees = employees.map((employee) =>
@@ -143,6 +144,7 @@ const ManageEmployees = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            action: "markForDeletion",
             employee_id: selectedEmployeeForDeletion,
           }),
         }
