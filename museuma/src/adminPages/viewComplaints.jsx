@@ -14,7 +14,7 @@ const ViewComplaints = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const response = await fetch("http://localhost:8081/complaints");
+        const response = await fetch("https://museuma.onrender.com/complaints");
         if (!response.ok) {
           throw new Error("Failed to fetch complaints");
         }
