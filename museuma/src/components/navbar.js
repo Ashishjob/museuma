@@ -7,11 +7,13 @@ export default function NavBar() {
   const [showAdminLoginPopup, setShowAdminLoginPopup] = useState(false);
 
   const handleLoginClick = () => {
+    window.location.hash = "login";
     setShowLoginPopup(true);
     setShowSignUpPopup(false);
   };
 
   const handleSignUpClick = () => {
+    window.location.hash = "signup";
     setShowSignUpPopup(true);
     setShowLoginPopup(false);
   };
@@ -123,7 +125,10 @@ export default function NavBar() {
                   <div className="border-t border-[#DCD7C5] flex-grow"></div>
                 </div>
                 <button
-                  onClick={() => setShowAdminLoginPopup(true)}
+                  onClick={() => {
+                    setShowAdminLoginPopup(true);
+                    window.location.hash = "adminlogin";
+                }}
                   className="w-full py-2 px-4 bg-[#DCD7C5] text-black rounded hover:bg-[#C4BFAC] mt-2"
                 >
                   Admin Login
@@ -196,7 +201,9 @@ export default function NavBar() {
             <div className="login-popup z-50 flex items-center justify-center">
               <div className="login-popup-inner bg-[#EFEDE5] rounded-lg shadow-lg p-8 relative">
                 <button
-                  onClick={() => setShowAdminLoginPopup(false)}
+                  onClick={() => {
+                    setShowAdminLoginPopup(true);
+                }}
                   className="absolute top-2 left-2 bg-[#DCD7C5] text-black rounded-full w-6 h-6 flex items-center justify-center hover:bg-[#C4BFAC]"
                 >
                   X
