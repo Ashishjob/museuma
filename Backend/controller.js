@@ -305,6 +305,48 @@ const authenticateUser = (req, res) => {
   });
 }
 
+const addCustomer = (req, res) => {
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    const parsedBody = JSON.parse(body);
+    const { first_name, last_name, email, phone_number, username, password } = parsedBody;
+
+    // Check if all required fields are defined
+    if (!first_name || !last_name || !email || !phone_number || !username || !password) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "All fields (first name, last name, email, phone number, username, password) are required.",
+        })
+      );
+      return;
+    }
+
+    // Execute the database query to insert the customer
+    pool.query(
+      queries.addCustomer,
+      [first_name, last_name, email, phone_number, username, password],
+      (error, results) => {
+        if (error) {
+          console.error("Error adding customer:", error);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Internal server error from addCustomers" }));
+          return;
+        }
+
+        res.writeHead(201, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({ message: "Customer created successfully!" })
+        );
+      }
+    );
+  });
+};
 
 module.exports = {
   getBranchDirectors,
@@ -317,5 +359,6 @@ module.exports = {
   markEmployeeForDeletion,
   getComplaints,
   insertComplaints,
-  authenticateUser
+  authenticateUser,
+  addCustomer
 };

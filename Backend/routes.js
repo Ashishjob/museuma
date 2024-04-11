@@ -52,6 +52,9 @@ function router(req, res) {
     else if (url === '/login' && method === 'POST') {
         controller.authenticateUser(req, res);
     }
+    else if (url === '/signup' && method === 'POST') {
+        controller.addCustomer(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
