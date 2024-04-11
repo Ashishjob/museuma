@@ -49,7 +49,7 @@ function router(req, res) {
     else if (url === '/complaints' && method === 'GET') {
         controller.getComplaints(req, res);
     } 
-    else if (url === '/login' && method === 'POST') {
+    else if (url === '/signup' && method === 'POST') {
         controller.addCustomer(req, res);
     }
     else {

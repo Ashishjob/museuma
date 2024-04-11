@@ -5,6 +5,14 @@ export default function NavBar() {
   const [showSignUpPopup, setShowSignUpPopup] = useState(false);
   const [password, setPassword] = useState("");
   const [showAdminLoginPopup, setShowAdminLoginPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    username: "",
+    password: ""
+  });
 
   const handleLoginClick = () => {
     window.location.hash = "login";
@@ -12,14 +20,39 @@ export default function NavBar() {
     setShowSignUpPopup(false);
   };
 
-  const handleSignUpClick = () => {
+  const handleSignUpClick = async () => {
     window.location.hash = "signup";
     setShowSignUpPopup(true);
     setShowLoginPopup(false);
   };
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+  const handleSubmitForm = async (formData) => {
+    try {
+      console.log(formData);
+      const response = await fetch("https://museuma.onrender.com/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData), // Include the form data in the request body
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit sign-up form");
+      }
+      const responseData = await response.json(); // Assuming the response contains JSON data
+      console.log(responseData); // Log the response data to the console
+      // Optionally, you can perform any additional actions based on the response
+      // For example, show a success message or redirect the user
+    } catch (error) {
+      console.log(error.body);
+      console.error("Error submitting sign-up form:", error);
+      // Handle error as needed
+    }
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSubmitForm(formData); // Call the handleSubmitForm function with the form data
   };
 
   return (
@@ -148,44 +181,67 @@ export default function NavBar() {
                 <h2 className="text-2xl font-bold mb-6 text-center text-[#333]">
                   Sign up
                 </h2>
-                <form>
+                <form onSubmit={handleSubmit}>
                   <input
                     type="text"
                     placeholder="First Name"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                    value={formData.first_name}
+                    onChange={(e) =>
+                  setFormData({ ...formData, first_name: e.target.value })
+                }
                   />
                   <input
                     type="text"
                     placeholder="Last Name"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                    value={formData.last_name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, last_name: e.target.value })
+                    }
                   />
                   <input
                     type="email"
                     placeholder="Email"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                   />
                   <input
                     type="tel"
                     placeholder="Phone Number"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                    value={formData.phone_number}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone_number: e.target.value })
+                    }
                   />
                   <input
                     type="text"
                     placeholder="Username"
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
                   />
                   <input
                     type="password"
                     placeholder="Password"
                     className="w-full p-2 mb-6 border border-[#DCD7C5] rounded"
-                    onChange={handlePasswordChange}
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                   />
-                  {password.length < 6 && (
+                  {formData.password.length < 6 && (
                     <p className="text-red-500 text-xs -mt-4">
                       * Password must be at least 6 characters
                     </p>
                   )}
-                  {password.length >= 6 && (
+                  {formData.password.length >= 6 && (
                     <button
                       type="submit"
                       className="w-full py-2 px-4 bg-[#DCD7C5] text-black rounded hover:bg-[#C4BFAC]"
