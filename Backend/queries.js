@@ -10,7 +10,7 @@ const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_i
 const getComplaints = "SELECT * FROM complaints";
 const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
-const authenticateUser = "SELECT * FROM employees WHERE email = ? AND password = ?";
+const authenticateUser = "SELECT * FROM customers WHERE email = ? AND password = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 
 module.exports = {
