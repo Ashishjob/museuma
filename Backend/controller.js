@@ -1,5 +1,6 @@
 const pool = require("./db.js");
 const queries = require("./queries.js");
+const jwt = require('jsonwebtoken');
 
 const getBranchDirectors = (req, res) => {
   pool.query(queries.getBranchDirectors, (error, results) => {
@@ -284,51 +285,29 @@ const getComplaints = (req, res) => {
 };
 
 const authenticateUser = (req, res) => {
-  let body = "";
+  const { username, password } = req.body;
 
-  req.on("data", (chunk) => {
-    body += chunk.toString();
-  });
-
-  req.on("end", () => {
-    const parsedBody = JSON.parse(body);
-    const { username, password } = parsedBody;
-
-    // Check if username and password are provided
-    if (!username || !password) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          error: "Both username and password are required.",
-        })
-      );
+  pool.query(queries.authenticateUser, [username, password], (error, results) => {
+    if (error) {
+      console.error("Error authenticating user:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
       return;
     }
 
-    // Execute the database query to authenticate the user
-    pool.query(
-      queries.authenticateUser,
-      [username, password],
-      (error, results) => {
-        if (error) {
-          console.error("Error authenticating user:", error);
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Internal server error" }));
-          return;
-        }
+    if (results.length === 0) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid username or password" }));
+      return;
+    }
 
-        if (results.length === 0) {
-          res.writeHead(401, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Invalid username or password" }));
-          return;
-        }
+    const userId = results[0].customer_id;
+    const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
 
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "User authenticated successfully" }));
-      }
-    );
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "User authenticated successfully", token }));
   });
-};
+}
 
 
 const addCustomer = (req, res) => {
@@ -374,6 +353,37 @@ const addCustomer = (req, res) => {
   });
 };
 
+const getCustomerInfo = (customerId, res) => {
+  // Execute the database query to fetch customer information
+  pool.query(
+    queries.getCustomerInfo,
+    [customerId],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching customer information:", error);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+        return;
+      }
+
+      if (results.length === 0) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Customer not found" }));
+        return;
+      }
+
+      const customerInfo = results[0]; // Assuming there's only one customer with this ID
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(customerInfo));
+    }
+  );
+};
+
+
+
+
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -386,5 +396,6 @@ module.exports = {
   getComplaints,
   insertComplaints,
   authenticateUser,
-  addCustomer
+  addCustomer,
+  getCustomerInfo
 };

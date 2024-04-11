@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
 export default function NavBar() {
@@ -7,6 +7,7 @@ export default function NavBar() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showAdminLoginPopup, setShowAdminLoginPopup] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -15,6 +16,14 @@ export default function NavBar() {
     username: "",
     password: ""
   });
+
+  useEffect(() => {
+    const storedToken = Cookies.get('token');
+    if (storedToken) {
+      console.log("Stored token (test):", storedToken);
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -30,20 +39,43 @@ export default function NavBar() {
 
       if (response.ok) {
         const data = await response.json();
-        Cookies.set('token', data.token);
-        window.location.reload();
+        const token = data.token;
+        
+        // Set the token in cookies
+        Cookies.set('token', token);
+        setIsLoggedIn(true);
+  
+        // Retrieve the token from cookies
+        const storedToken = Cookies.get('token');
+  
+        // Optionally, you can use the stored token for further actions
+        console.log("Stored token:", storedToken);
+  
+        // Reload the window or redirect to another page
+        // window.location.reload();
         console.log("Login successful");
-      } 
+        setShowLoginPopup(false);
+      }
     }
     catch (error) {
       console.error('Login error:', error);
     }
   };
 
+  const handleLogout = () => {
+    Cookies.remove('token');
+    setIsLoggedIn(false);
+  };
+
   const handleLoginClick = () => {
-    window.location.hash = "login";
-    setShowLoginPopup(true);
-    setShowSignUpPopup(false);
+    if (isLoggedIn) {
+      Cookies.remove('token');
+      handleLogout();
+    } else {
+      window.location.hash = "login";
+      setShowLoginPopup(true);
+      setShowSignUpPopup(false);
+    }
   };
 
   const handleSignUpClick = async () => {
@@ -121,7 +153,7 @@ export default function NavBar() {
             onClick={handleLoginClick}
             className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto"
           >
-            Log In
+            {isLoggedIn ? "Log Out" : "Log In"}
             <svg
               fill="none"
               stroke="currentColor"

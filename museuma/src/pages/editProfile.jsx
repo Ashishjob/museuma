@@ -1,21 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {jwtDecode} from "jwt-decode";
 
 const EditProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState("Jane");
-  const [lastName, setLastName] = useState("Doe");
-  const [gender, setGender] = useState("Female");
-  const [contactNumber, setContactNumber] = useState("+11 998001001");
-  const [currentAddress, setCurrentAddress] = useState("Beech Creek, PA, Pennsylvania");
-  const [permanentAddress, setPermanentAddress] = useState("Arlington Heights, IL, Illinois");
-  const [email, setEmail] = useState("jane@example.com");
-  const [birthday, setBirthday] = useState("Feb 06, 1998");
-  const [phoneNumber, setPhoneNumber] = useState("1234567890");
+  const [userDetails, setUserDetails] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    contactNumber: "",
+    currentAddress: "",
+    permanentAddress: "",
+    email: "",
+    birthday: "",
+    phoneNumber: ""
+  });
+
+  useEffect(() => {
+    const decodeJWT = () => {
+      const token = document.cookie.split("; ").find(row => row.startsWith("jwt="));
+      if (token) {
+        const decoded = jwtDecode(token.split("=")[1]);
+        setUserDetails(decoded);
+        console.log("hi",decoded);
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8081/customer/1");
+        if (response.ok) {
+          const userData = await response.json();
+          console.log(userData);
+    
+          // Map the fetched user data to userDetails object
+          const updatedUserDetails = {
+            firstName: userData.first_name || "",
+            lastName: userData.last_name || "",
+            gender: userData.gender || "",
+            contactNumber: userData.phone_number || "",
+            currentAddress: userData.address || "",
+            permanentAddress: userData.address || "", // Assuming address is used for both current and permanent address
+            email: userData.email || "",
+            birthday: userData.date_of_birth || "",
+            phoneNumber: userData.phone_number || "" // Assuming phone number is used for both contactNumber and phoneNumber
+          };
+    
+          setUserDetails(updatedUserDetails);
+        } else {
+          console.error("Failed to fetch user data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    decodeJWT();
+    fetchUserData();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
+    // Submit the updated user details if required
   };
+
+  const { firstName, lastName, gender, contactNumber, currentAddress, permanentAddress, email, birthday, phoneNumber } = userDetails;
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -36,35 +85,35 @@ const EditProfile = () => {
                 <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-2 gap-4">
                   <div className="flex flex-col justify-center mt-3">
                     <label className="font-bold text-[#313639]">First Name:</label>
-                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="text" value={firstName} onChange={(e) => setUserDetails({...userDetails, firstName: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Last Name:</label>
-                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="text" value={lastName} onChange={(e) => setUserDetails({...userDetails, lastName: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Email:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="email" value={email} onChange={(e) => setUserDetails({...userDetails, email: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Phone Number:</label>
-                    <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="tel" value={phoneNumber} onChange={(e) => setUserDetails({...userDetails, phoneNumber: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Gender:</label>
-                    <input type="text" value={gender} onChange={(e) => setGender(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="text" value={gender} onChange={(e) => setUserDetails({...userDetails, gender: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Current Address:</label>
-                    <input type="text" value={currentAddress} onChange={(e) => setCurrentAddress(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="text" value={currentAddress} onChange={(e) => setUserDetails({...userDetails, currentAddress: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Permanent Address:</label>
-                    <input type="text" value={permanentAddress} onChange={(e) => setPermanentAddress(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="text" value={permanentAddress} onChange={(e) => setUserDetails({...userDetails, permanentAddress: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Birthday:</label>
-                    <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} className="p-2 border border-[#313639] rounded" />
+                    <input type="date" value={birthday} onChange={(e) => setUserDetails({...userDetails, birthday: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                 </form>
               ) : (
@@ -88,7 +137,7 @@ const EditProfile = () => {
                   <div className="grid grid-cols-2">
                     <div className="px-4 py-2 font-semibold">Current Address</div>
                     <div className="px-4 py-2">{currentAddress}</div>
-                  </div>
+                    </div>
                   <div className="grid grid-cols-2">
                     <div className="px-4 py-2 font-semibold">Permanent Address</div>
                     <div className="px-4 py-2">{permanentAddress}</div>

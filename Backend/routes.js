@@ -55,6 +55,11 @@ function router(req, res) {
     else if (url === '/signup' && method === 'POST') {
         controller.addCustomer(req, res);
     }
+    else if (url.startsWith('/customer/') && method === 'GET') {
+        // Extract the customer ID from the URL
+        const customerId = url.split('/')[2]; // Assuming the customer ID is the third segment of the URL
+        controller.getCustomerInfo(customerId, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
