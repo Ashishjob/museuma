@@ -39,6 +39,9 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname === '/complaints' && req.method === 'GET'){
             employeeRoutes(req, res);
         }
+        else if(parsedUrl.pathname === '/login' && req.method === 'POST'){
+            employeeRoutes(req, res);
+        }
         else if(parsedUrl.pathname === '/signup' && req.method === 'POST'){
             employeeRoutes(req, res);
         }

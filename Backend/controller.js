@@ -283,6 +283,28 @@ const getComplaints = (req, res) => {
   });
 };
 
+const authenticateUser = (req, res) => {
+  const { username, password } = req.body;
+
+  pool.query(queries.authenticateUser, [username, password], (error, results) => {
+    if (error) {
+      console.error("Error authenticating user:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+
+    if (results.length === 0) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid username or password" }));
+      return;
+    }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "User authenticated successfully" }));
+  });
+}
+
 const addCustomer = (req, res) => {
   let body = "";
 
@@ -337,5 +359,6 @@ module.exports = {
   markEmployeeForDeletion,
   getComplaints,
   insertComplaints,
+  authenticateUser,
   addCustomer
 };

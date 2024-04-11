@@ -49,6 +49,9 @@ function router(req, res) {
     else if (url === '/complaints' && method === 'GET') {
         controller.getComplaints(req, res);
     } 
+    else if (url === '/login' && method === 'POST') {
+        controller.authenticateUser(req, res);
+    }
     else if (url === '/signup' && method === 'POST') {
         controller.addCustomer(req, res);
     }

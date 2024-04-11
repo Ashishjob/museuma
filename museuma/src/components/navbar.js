@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 export default function NavBar() {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showSignUpPopup, setShowSignUpPopup] = useState(false);
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showAdminLoginPopup, setShowAdminLoginPopup] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,6 +15,30 @@ export default function NavBar() {
     username: "",
     password: ""
   });
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8081/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Cookies.set('token', data.token);
+        window.location.reload();
+        console.log("Login successful");
+      } 
+    }
+    catch (error) {
+      console.error('Login error:', error);
+    }
+  };
 
   const handleLoginClick = () => {
     window.location.hash = "login";
@@ -121,15 +147,19 @@ export default function NavBar() {
                 <h2 className="text-2xl font-bold mb-6 text-center text-[#333]">
                   Login
                 </h2>
-                <form>
+                <form onSubmit={handleLoginSubmit}>
                   <input
                     type="text"
                     placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
                   />
                   <input
                     type="password"
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full p-2 mb-6 border border-[#DCD7C5] rounded"
                   />
 
