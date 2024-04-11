@@ -45,6 +45,9 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname === '/signup' && req.method === 'POST'){
             employeeRoutes(req, res);
         }
+        else if (parsedUrl.pathname.startsWith('/customer/') && req.method === 'GET') {
+            employeeRoutes(req, res);
+        }
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Route not found' }));

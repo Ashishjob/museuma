@@ -1,5 +1,6 @@
 const pool = require("./db.js");
 const queries = require("./queries.js");
+const jwt = require('jsonwebtoken');
 
 const getBranchDirectors = (req, res) => {
   pool.query(queries.getBranchDirectors, (error, results) => {
@@ -300,8 +301,24 @@ const authenticateUser = (req, res) => {
       return;
     }
 
+<<<<<<< Updated upstream
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "User authenticated successfully" }));
+=======
+        if (results.length === 0) {
+          res.writeHead(401, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Invalid username or password" }));
+          return;
+        }
+
+        const userId = results[0].customer_id;
+        const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "User authenticated successfully", token }));
+      }
+    );
+>>>>>>> Stashed changes
   });
 }
 
@@ -348,6 +365,37 @@ const addCustomer = (req, res) => {
   });
 };
 
+const getCustomerInfo = (customerId, res) => {
+  // Execute the database query to fetch customer information
+  pool.query(
+    queries.getCustomerInfo,
+    [customerId],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching customer information:", error);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+        return;
+      }
+
+      if (results.length === 0) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Customer not found" }));
+        return;
+      }
+
+      const customerInfo = results[0]; // Assuming there's only one customer with this ID
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(customerInfo));
+    }
+  );
+};
+
+
+
+
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -360,5 +408,6 @@ module.exports = {
   getComplaints,
   insertComplaints,
   authenticateUser,
-  addCustomer
+  addCustomer,
+  getCustomerInfo
 };
