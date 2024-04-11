@@ -285,29 +285,54 @@ const getComplaints = (req, res) => {
 };
 
 const authenticateUser = (req, res) => {
-  const { username, password } = req.body;
+  let body = "";
 
-  pool.query(queries.authenticateUser, [username, password], (error, results) => {
-    if (error) {
-      console.error("Error authenticating user:", error);
-      res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Internal server error" }));
-      return;
-    }
-
-    if (results.length === 0) {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Invalid username or password" }));
-      return;
-    }
-
-    const userId = results[0].customer_id;
-    const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "User authenticated successfully", token }));
+  req.on("data", (chunk) => {
+    body += chunk.toString();
   });
-}
+
+  req.on("end", () => {
+    const parsedBody = JSON.parse(body);
+    const { username, password } = parsedBody;
+
+    // Check if username and password are provided
+    if (!username || !password) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Both username and password are required.",
+        })
+      );
+      return;
+    }
+
+    // Execute the database query to authenticate the user
+    pool.query(
+      queries.authenticateUser,
+      [username, password],
+      (error, results) => {
+        if (error) {
+          console.error("Error authenticating user:", error);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Internal server error" }));
+          return;
+        }
+
+        if (results.length === 0) {
+          res.writeHead(401, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Invalid username or password" }));
+          return;
+        }
+
+        const userId = results[0].customer_id;
+        const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "User authenticated successfully", token }));
+      }
+    );
+  });
+};
 
 
 const addCustomer = (req, res) => {
