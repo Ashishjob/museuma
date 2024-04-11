@@ -301,26 +301,14 @@ const authenticateUser = (req, res) => {
       return;
     }
 
-<<<<<<< Updated upstream
+    const userId = results[0].customer_id;
+    const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
+
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "User authenticated successfully" }));
-=======
-        if (results.length === 0) {
-          res.writeHead(401, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Invalid username or password" }));
-          return;
-        }
-
-        const userId = results[0].customer_id;
-        const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
-
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "User authenticated successfully", token }));
-      }
-    );
->>>>>>> Stashed changes
+    res.end(JSON.stringify({ message: "User authenticated successfully", token }));
   });
 }
+
 
 const addCustomer = (req, res) => {
   let body = "";
