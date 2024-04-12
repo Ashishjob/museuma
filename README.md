@@ -110,24 +110,24 @@ npm start        # Start the server.
 <a name="user-auth"></a>
 
 ## User Authentication for different user roles
-Implementation details go here...
+Explain the different roles, sample logins, and how we did it
 
 <a name="data-entry-forms"></a>
 
 ## Data entry forms to add new data, modify existing data, and 'delete' data
-Implementation details go here...
+Implement the screenshots of CRUD operations
 
 <a name="triggers"></a>
 
 ## Triggers
-Implementation details go here...
+Implement the description of each trigger, screenshots of the popup messages concerning them, and the code snippets
 
 <a name="queries"></a>
 
 ## Queries
-Implementation details go here...
+Implement the code snippets of the code behind the queries
 
 <a name="reports"></a>
 
 ## Reports
-Implementation details go here...
+Implement the screenshots of the reports
