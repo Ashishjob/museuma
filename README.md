@@ -107,7 +107,7 @@ npm start        # Start the server.
 > [!NOTE]
 > A new window will become visible on your default browser on `http://localhost:8081`; however, it will not automatically open, so make sure to open this link manually.
 
-<a name="#user-auth"></a>
+<a name="user-auth"></a>
 
 ## User Authentication for different user roles
 Implementation details go here...
