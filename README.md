@@ -42,7 +42,7 @@ This database system enables efficient tracking of museum activities, financial 
 # Project Requirements
 <h6>Each bullet will route to the specific instance in which we have implemented them</h6>
 
-1. [**User Authentication for different user roles**](#user-authentication)
+1. [**User Authentication for different user roles**](#user-auth)
 2. [**Data entry forms to add new data, modify existing data, and 'delete' data**](#data-entry-forms)
 3. [**At least 2 triggers**](#triggers)
 4. [**At least 3 queries**](#queries)
@@ -107,7 +107,7 @@ npm start        # Start the server.
 > [!NOTE]
 > A new window will become visible on your default browser on `http://localhost:8081`; however, it will not automatically open, so make sure to open this link manually.
 
-<a name="#user-authentication"></a>
+<a name="#user-auth"></a>
 
 ## User Authentication for different user roles
 Implementation details go here...
