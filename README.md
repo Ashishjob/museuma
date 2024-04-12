@@ -68,6 +68,8 @@ This database system enables efficient tracking of museum activities, financial 
 **Deployment**: 
 ![Vercel](https://img.shields.io/badge/-Vercel-000000?logo=vercel&logoColor=white) ![Render](https://img.shields.io/badge/-Render-2D2D2D?logo=render&logoColor=white) ![Azure](https://img.shields.io/badge/-Azure-0089D6?logo=microsoft-azure&logoColor=white)
 
+**Version Control**:
+![Git](https://img.shields.io/badge/-Git-F05032?logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white)
 
 # Hosting Locally
 
