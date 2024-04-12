@@ -44,7 +44,7 @@ export default function NavBar() {
         // Set the token in cookies
         Cookies.set('token', token);
         setIsLoggedIn(true);
-  
+
         // Retrieve the token from cookies
         const storedToken = Cookies.get('token');
   
@@ -140,9 +140,11 @@ export default function NavBar() {
             <a href="/dining" className="mr-5 hover:text-gray-900">
               Dining
             </a>
-            <a href="/complaints" className="mr-5 hover:text-gray-900">
-              Report a Problem
-            </a>
+            {isLoggedIn && (
+              <a href="/complaints" className="mr-5 hover:text-gray-900">
+                Report a Problem
+              </a>
+            )}
           </nav>
         </div>
         <div className="flex items-center">
