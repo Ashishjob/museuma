@@ -404,8 +404,27 @@ const getCustomerInfo = (customerId, res) => {
   );
 };
 
+const decodeToken = (req, res) => {
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const token = data.token; // Assuming the token is sent in the request body
 
-
+      // Verify the token and decode its payload
+      const decoded = jwt.verify(token, 'your_secret_key');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ decoded }));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid token' }));
+    }
+  });
+};
 
 
 
@@ -422,5 +441,6 @@ module.exports = {
   insertComplaints,
   authenticateUser,
   addCustomer,
-  getCustomerInfo
+  getCustomerInfo,
+  decodeToken
 };
