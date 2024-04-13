@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode";
 
 const EditProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -16,18 +15,37 @@ const EditProfile = () => {
   });
 
   useEffect(() => {
-    const decodeJWT = () => {
-      const token = document.cookie.split("; ").find(row => row.startsWith("jwt="));
-      if (token) {
-        const decoded = jwtDecode(token.split("=")[1]);
-        setUserDetails(decoded);
-        console.log("hi",decoded);
+
+    const decodeToken = async (token) => {
+      try {
+        const response = await fetch("http://localhost:8081/decodeToken", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+        if (response.ok) {
+          const decodedToken = await response.json();
+          const { decoded } = decodedToken;
+          const { userId } = decoded;
+
+          fetchUserData(userId);
+        } else {
+          console.error("Failed to decode token:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
       }
     };
 
-    const fetchUserData = async () => {
+    const fetchUserData = async (decodedToken1) => {
       try {
-        const response = await fetch("http://localhost:8081/customer/1");
+        console.log("decodedToken");
+        console.log(decodedToken1);
+        const call = `http://localhost:8081/customer/${decodedToken1}`;
+        console.log(call);
+        const response = await fetch(call);
         if (response.ok) {
           const userData = await response.json();
           console.log(userData);
@@ -53,9 +71,18 @@ const EditProfile = () => {
         console.error("Error fetching user data:", error);
       }
     };
+  
+    const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1];
 
-    decodeJWT();
-    fetchUserData();
+    // Call decodeToken with the retrieved token
+    if (token) {
+      decodeToken(token);
+    } else {
+      console.error("Token not found in cookie.");
+    }
   }, []);
 
   const handleSubmit = (e) => {
