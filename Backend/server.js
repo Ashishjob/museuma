@@ -45,7 +45,13 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname === '/signup' && req.method === 'POST'){
             employeeRoutes(req, res);
         }
-        else if (parsedUrl.pathname.startsWith('/customer/') && req.method === 'GET') {
+        else if(parsedUrl.pathname.startsWith('/customer/') && req.method === 'GET') {
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname === '/decodeToken' && req.method === 'POST'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname.startsWith('/editCustomerInfo/') && req.method === 'PUT'){
             employeeRoutes(req, res);
         }
         else {

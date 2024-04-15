@@ -404,9 +404,63 @@ const getCustomerInfo = (customerId, res) => {
   );
 };
 
+const decodeToken = (req, res) => {
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const token = data.token; // Assuming the token is sent in the request body
 
+      // Verify the token and decode its payload
+      const decoded = jwt.verify(token, 'your_secret_key');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ decoded }));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid token' }));
+    }
+  });
+};
 
+// const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 
+const updateCustomerInfo = (customer_id, req, res) => {
+  // Extract customer data from the request body
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth } = data;
+
+      // Update the customer information in the database
+      pool.query(
+        queries.updateCustomerInfo,
+        [first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth, customer_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating customer information:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Customer information updated successfully' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
 
 
 module.exports = {
@@ -422,5 +476,7 @@ module.exports = {
   insertComplaints,
   authenticateUser,
   addCustomer,
-  getCustomerInfo
+  getCustomerInfo,
+  decodeToken,
+  updateCustomerInfo
 };
