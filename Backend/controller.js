@@ -426,6 +426,41 @@ const decodeToken = (req, res) => {
   });
 };
 
+// const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
+
+const updateCustomerInfo = (customer_id, req, res) => {
+  // Extract customer data from the request body
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth } = data;
+
+      // Update the customer information in the database
+      pool.query(
+        queries.updateCustomerInfo,
+        [first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth, customer_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating customer information:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Customer information updated successfully' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
 
 
 module.exports = {
@@ -442,5 +477,6 @@ module.exports = {
   authenticateUser,
   addCustomer,
   getCustomerInfo,
-  decodeToken
+  decodeToken,
+  updateCustomerInfo
 };

@@ -60,6 +60,10 @@ function router(req, res) {
         const customerId = url.split('/')[2]; // Assuming the customer ID is the third segment of the URL
         controller.getCustomerInfo(customerId, res);
     }
+    else if (url.startsWith('/editCustomerInfo/') && method === 'PUT') {
+        const customerId = url.split('/')[2];
+        controller.updateCustomerInfo(customerId, req, res);
+    }
     else if (url.startsWith('/decodeToken') && method === 'POST') {
         controller.decodeToken(req, res);
     }

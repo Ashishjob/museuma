@@ -8,7 +8,7 @@ const EditProfile = () => {
     gender: "",
     contactNumber: "",
     currentAddress: "",
-    permanentAddress: "",
+    accessibilityNeeds: "",
     email: "",
     birthday: "",
     phoneNumber: ""
@@ -57,7 +57,7 @@ const EditProfile = () => {
             gender: userData.gender || "",
             contactNumber: userData.phone_number || "",
             currentAddress: userData.address || "",
-            permanentAddress: userData.address || "", // Assuming address is used for both current and permanent address
+            accessibilityNeeds: userData.accessibilityNeeds || "",
             email: userData.email || "",
             birthday: userData.date_of_birth || "",
             phoneNumber: userData.phone_number || "" // Assuming phone number is used for both contactNumber and phoneNumber
@@ -91,7 +91,77 @@ const EditProfile = () => {
     // Submit the updated user details if required
   };
 
-  const { firstName, lastName, gender, contactNumber, currentAddress, permanentAddress, email, birthday, phoneNumber } = userDetails;
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    setIsEditing(false);
+  
+    const decodeToken = async (token) => {
+      try {
+        const response = await fetch("http://localhost:8081/decodeToken", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+        if (response.ok) {
+          const decodedToken = await response.json();
+          const { decoded } = decodedToken;
+          const { userId } = decoded;
+  
+          // Fetch user details and update information here
+          try {
+            const userDetailsToSend = {
+              first_name: userDetails.firstName || null,
+              last_name: userDetails.lastName || null,
+              gender: userDetails.gender || null,
+              phone_number: userDetails.phoneNumber || null,
+              address: userDetails.currentAddress || null,
+              accessibilityNeeds: userDetails.accessibilityNeeds || null,
+              email: userDetails.email || null,
+              date_of_birth: userDetails.birthday || null
+            };
+  
+            const updateUserResponse = await fetch(`http://localhost:8081/editCustomerInfo/${userId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(userDetailsToSend),
+            });
+  
+            if (updateUserResponse.ok) {
+              alert("User details updated successfully!");
+            } else {
+              console.error("Failed to update user details:", updateUserResponse.statusText);
+            }
+          } catch (error) {
+            console.error("Error updating user details:", error);
+          }
+        } else {
+          console.error("Failed to decode token:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    };
+  
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1];
+  
+    // Call decodeToken with the retrieved token
+    if (token) {
+      decodeToken(token);
+    } else {
+      console.error("Token not found in cookie.");
+    }
+  };
+  
+  
+
+  const { firstName, lastName, gender, contactNumber, currentAddress, accessibilityNeeds, email, birthday, phoneNumber } = userDetails;
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -109,7 +179,7 @@ const EditProfile = () => {
             </div>
             <div className="text-gray-700">
               {isEditing ? (
-                <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-2 gap-4">
+                <form onSubmit={handleUpdateSubmit} className="space-y-4 grid grid-cols-2 gap-4">
                   <div className="flex flex-col justify-center mt-3">
                     <label className="font-bold text-[#313639]">First Name:</label>
                     <input type="text" value={firstName} onChange={(e) => setUserDetails({...userDetails, firstName: e.target.value})} className="p-2 border border-[#313639] rounded" />
@@ -128,15 +198,20 @@ const EditProfile = () => {
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Gender:</label>
-                    <input type="text" value={gender} onChange={(e) => setUserDetails({...userDetails, gender: e.target.value})} className="p-2 border border-[#313639] rounded" />
+                    <select value={gender} onChange={(e) => setUserDetails({...userDetails, gender: e.target.value})} className="p-2 border border-[#313639] rounded">
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Current Address:</label>
                     <input type="text" value={currentAddress} onChange={(e) => setUserDetails({...userDetails, currentAddress: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
-                    <label className="font-bold text-[#313639]">Permanent Address:</label>
-                    <input type="text" value={permanentAddress} onChange={(e) => setUserDetails({...userDetails, permanentAddress: e.target.value})} className="p-2 border border-[#313639] rounded" />
+                    <label className="font-bold text-[#313639]">Accessibility Needs:</label>
+                    <input type="text" value={accessibilityNeeds} onChange={(e) => setUserDetails({...userDetails, accessibilityNeeds: e.target.value})} className="p-2 border border-[#313639] rounded" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Birthday:</label>
@@ -166,8 +241,8 @@ const EditProfile = () => {
                     <div className="px-4 py-2">{currentAddress}</div>
                     </div>
                   <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">Permanent Address</div>
-                    <div className="px-4 py-2">{permanentAddress}</div>
+                    <div className="px-4 py-2 font-semibold">Accessibility Needs</div>
+                    <div className="px-4 py-2">{accessibilityNeeds}</div>
                   </div>
                   <div className="grid grid-cols-2">
                     <div className="px-4 py-2 font-semibold">Email</div>
@@ -183,8 +258,8 @@ const EditProfile = () => {
               )}
             </div>
             <button
-              type={isEditing ? "submit" : "button"}
-              onClick={() => setIsEditing(!isEditing)}
+              type="button"
+              onClick={isEditing ? handleUpdateSubmit : () => setIsEditing(!isEditing)}
               className="bg-[#313639] hover:bg-[#C0BAA4] hover:text-[#313639] text-white p-2 rounded mt-4 w-full"
             >
               {isEditing ? "Save Changes" : "Edit Profile"}
