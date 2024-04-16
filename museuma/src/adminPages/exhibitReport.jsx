@@ -5,26 +5,24 @@ import '../App.css';
 import '../index.css';
 
 function ExhibitReport() {
-  const [salesData, setSalesData] = useState(null);
+  const [exhibitsData, setExhibitsData] = useState(null);
   const [filter, setFilter] = useState('totalSales');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchSalesData();
+    fetchExhibitsData();
   }, []);
 
-  const fetchSalesData = async () => {
+  const fetchExhibitsData = async () => {
     const data = [
-      { id: 1, customer: 'John Doe', item: 'Ticket', amount: 100, quantity: 2, date: '2022-01-01', category: 'Ticket' },
-      { id: 2, customer: 'Jane Doe', item: 'Gift', amount: 50, quantity: 1, date: '2022-01-02', category: 'Gift Shop' },
+      { id: 1, name: 'Modern Art: A Retrospective', tickets: 60, sales: 100, complaints: 2, open_date: '2022-01-01', close_date: '2024-04-16' },
+      { id: 2, name: 'Ancient Civilizations Unveiled', tickets: 46, sales: 50, complaints: 1, open_date: '2022-01-02'},
     ];
-    setSalesData(data);
+    setExhibitsData(data);
   };
 
-  const filteredData = salesData?.filter((sale) => {
-    if (filter === 'totalSales' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
-    if (filter === 'giftShopSales' && sale.category === 'Gift Shop' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
-    if (filter === 'ticketSales' && sale.category === 'Ticket' && sale.item.toLowerCase().includes(searchTerm.toLowerCase())) return true;
+  const filteredData = exhibitsData?.filter((exhibit) => {
+    if (filter === 'totalSales' && exhibit.name.toLowerCase().includes(searchTerm.toLowerCase())) return true;
     return false;
   });
 
@@ -51,14 +49,14 @@ function ExhibitReport() {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((sale) => (
-                <tr key={sale.id} className="text-gray-700">
-                  <td className="px-4 py-2 border">{sale.customer}</td>
-                  <td className="px-4 py-2 border">{sale.item}</td>
-                  <td className="px-4 py-2 border">${sale.amount}</td>
-                  <td className="px-4 py-2 border">{sale.quantity}</td>
-                  <td className="px-4 py-2 border">{sale.date}</td>
-                  <td className="px-4 py-2 border">{sale.date}</td>
+              {filteredData.map((exhibit) => (
+                <tr key={exhibit.id} className="text-gray-700">
+                  <td className="px-4 py-2 border">{exhibit.name}</td>
+                  <td className="px-4 py-2 border">{exhibit.tickets}</td>
+                  <td className="px-4 py-2 border">${exhibit.sales}</td>
+                  <td className="px-4 py-2 border">{exhibit.complaints}</td>
+                  <td className="px-4 py-2 border">{exhibit.open_date}</td>
+                  <td className="px-4 py-2 border">{exhibit.close_date}</td>
                 </tr>
               ))}
             </tbody>
