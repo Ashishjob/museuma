@@ -5,7 +5,7 @@ import Select from "react-select";
 import "../App.css";
 import "../index.css";
 
-const ManageGiftshop = () => {
+const ManageRestaurant = () => {
     const [items, setItems] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -107,7 +107,7 @@ const ManageGiftshop = () => {
                     <FaArrowLeft />
                 </Link>
                 <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
-                    Manage Gift Shop
+                    Manage Restaurant
                 </h1>
 
                 <button
@@ -142,7 +142,7 @@ const ManageGiftshop = () => {
                         <input
                             type="text"
                             name="name"
-                            placeholder="Item name"
+                            placeholder="Food name"
                             value={newItem.name}
                             onChange={handleAddInputChange}
                             className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
@@ -150,7 +150,7 @@ const ManageGiftshop = () => {
                         <input
                             type="text"
                             name="image"
-                            placeholder="Item image URL"
+                            placeholder="Food image URL"
                             value={newItem.image}
                             onChange={handleAddInputChange}
                             className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
@@ -158,7 +158,7 @@ const ManageGiftshop = () => {
                         <input
                             type="number"
                             name="price"
-                            placeholder="Item price"
+                            placeholder="Food price"
                             value={newItem.price}
                             onChange={handleAddInputChange}
                             className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
@@ -166,7 +166,7 @@ const ManageGiftshop = () => {
                         <input
                             type="number"
                             name="quantity"
-                            placeholder="Item quantity"
+                            placeholder="Food description"
                             value={newItem.quantity}
                             onChange={handleAddInputChange}
                             className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
@@ -204,4 +204,4 @@ const ManageGiftshop = () => {
     );
 };
 
-export default ManageGiftshop;
+export default ManageRestaurant;

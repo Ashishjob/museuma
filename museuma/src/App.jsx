@@ -23,6 +23,8 @@ import ManageArtwork from "./adminPages/manageArtworks";
 import ViewComplaints from "./adminPages/viewComplaints";
 import ManageGiftshop from "./adminPages/manageGiftshop";
 import EditProfile from "./pages/editProfile";
+import ExhibitReport from "./adminPages/exhibitReport";
+import ManageRestaurant from "./adminPages/manageRestaurant";
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
         <Route path="/admin/manage-artworks" element={<ManageArtwork />} />
         <Route path="/admin/view-complaints" element={<ViewComplaints />} />
         <Route path="/admin/manage-giftshop" element={<ManageGiftshop />} />
+        <Route path="/admin/exhibit-report" element={<ExhibitReport />} />
+        <Route path="/admin/manage-restaurant" element={<ManageRestaurant/>} />
       </Routes>
     </Router>
   );

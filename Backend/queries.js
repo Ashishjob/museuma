@@ -13,6 +13,7 @@ const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?
 const authenticateUser = "SELECT * FROM customers WHERE username = ? AND password = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
+const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 
 module.exports = {
     getBranchDirectors,
@@ -28,5 +29,6 @@ module.exports = {
     addComplaint,
     authenticateUser,
     addCustomer,
-    getCustomerInfo
+    getCustomerInfo,
+    updateCustomerInfo
 };
