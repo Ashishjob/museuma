@@ -10,16 +10,16 @@ const ManageGiftshop = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedItem, setEditedItem] = useState({
-    description: "",
-    image: "",
     price: "",
+    description: "",
     quantity: "",
+    image: "",
   });
   const [newItem, setNewItem] = useState({
-    description: "",
-    image: "",
     price: "",
+    description: "",
     quantity: "",
+    image: "",
   });
   const [selectedItemForDeletion, setSelectedItemForDeletion] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -47,16 +47,10 @@ const ManageGiftshop = () => {
     setNewItem({ ...newItem, [name]: value });
   };
 
-  const handleAddSubmit = (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
-    setItems([...items, newItem]);
-    setNewItem({
-      description: "",
-      image: "",
-      price: "",
-      quantity: "",
-    });
-    setShowAddForm(false);
+    console.log("Submitting new item:", newItem); // Log the newItem before sending
+    addItem();
   };
 
   const handleEditInputChange = (e) => {
@@ -82,17 +76,53 @@ const ManageGiftshop = () => {
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
     setNewItem({
-      description: "",
-      image: "",
       price: "",
+      description: "",
       quantity: "",
+      image: "",
     });
   };
 
   // ... rest of the code ...
 
   const addItem = async () => {
-    // ... rest of the code ...
+    const newItemData = {
+      price: Number(newItem.price),
+      description: newItem.description,
+      quantity: Number(newItem.quantity),
+      image_url: newItem.image,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8081/manage-giftshop", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newItemData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Server error:", errorMessage);
+        throw new Error(`Failed to add item: ${errorMessage}`);
+      }
+
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-giftshop"
+      );
+
+      if (!updatedResponse.ok) {
+        throw new Error("Failed to fetch updated items");
+      }
+
+      const updatedData = await updatedResponse.json();
+      setItems(updatedData);
+      toggleAddForm();
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error adding item: ${error.message}`);
+    }
   };
 
   const deleteItem = (itemID) => {
@@ -112,10 +142,10 @@ const ManageGiftshop = () => {
     setShowEditForm(true);
     setEditedItem({
       id: item.id,
-      description: item.description,
-      image: item.image,
       price: item.price,
+      description: item.description,
       quantity: item.quantity,
+      image: item.image,
     });
   };
 
