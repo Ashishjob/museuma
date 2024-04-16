@@ -14,7 +14,8 @@ const authenticateUser = "SELECT * FROM customers WHERE username = ? AND passwor
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
-
+const addItem = "INSERT INTO items (price, description, quantity, image_url) VALUES(?, ?, ?, ?)";
+const getItem ="SELECT * FROM items";
 module.exports = {
     getBranchDirectors,
     getEmployees,
@@ -30,5 +31,7 @@ module.exports = {
     authenticateUser,
     addCustomer,
     getCustomerInfo,
-    updateCustomerInfo
+    updateCustomerInfo,
+    addItem,
+    getItem
 };

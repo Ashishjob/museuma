@@ -33,15 +33,19 @@ export default function NavBar() {
             <a href="/tickets" className="mr-5 hover:text-gray-900">
               Tickets
             </a>
-            <a href="/giftshop" className="mr-5 hover:text-gray-900">
-              Gift Shop
-            </a>
+            {isLoggedIn && (
+              <a href="/giftshop" className="mr-5 hover:text-gray-900">
+                Gift Shop
+              </a>
+            )}
             <a href="/dining" className="mr-5 hover:text-gray-900">
               Dining
             </a>
-            <a href="/complaints" className="mr-5 hover:text-gray-900">
-              Report a Problem
-            </a>
+            {isLoggedIn && (
+              <a href="/complaints" className="mr-5 hover:text-gray-900">
+                Report a Problem
+              </a>
+            )}
           </nav>
         </div>
         <div className="flex items-center">
