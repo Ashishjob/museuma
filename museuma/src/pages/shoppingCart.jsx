@@ -16,27 +16,27 @@ function ShoppingCart() {
         const updatedItems = items.map(item =>
             item.item_id === id ? { ...item, quantity: item.quantity + 1 } : item
         );
-    
+
         setItems(updatedItems);
         localStorage.setItem('cart', JSON.stringify(updatedItems));
     };
-    
+
     const handleDecrease = (id) => {
         const updatedItems = items.map(item =>
             item.item_id === id ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 } : item
         );
-    
+
         setItems(updatedItems);
         localStorage.setItem('cart', JSON.stringify(updatedItems));
     };
-    
+
     const handleRemove = (id) => {
         const updatedItems = items.filter(item => item.item_id !== id);
-    
+
         setItems(updatedItems);
         localStorage.setItem('cart', JSON.stringify(updatedItems));
     };
-    
+
 
     return (
         <main className="min-h-screen bg-[#EFEDE5] w-screen pb-16">
@@ -53,7 +53,7 @@ function ShoppingCart() {
                                     {items.map((item, index) => (
                                         <li key={index} className="flex flex-col space-y-3 py-2 my-2 text-left sm:flex-row sm:space-x-5 sm:space-y-0">
                                             <div className="shrink-0">
-                                                <img className="h-24 w-24 max-w-full rounded-lg object-cover" src="/productplaceholder.png" alt="Product" />
+                                                <img className="h-24 w-24 max-w-full rounded-lg object-cover" src={item.image} alt="Product" />
                                             </div>
 
                                             <div className="relative flex flex-1 flex-col justify-between">
@@ -103,7 +103,11 @@ function ShoppingCart() {
                             </div>
                             <div className="mt-6 text-center">
                                 <a href='/checkout'>
-                                    <button type="button" className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800">
+                                    <button
+                                        type="button"
+                                        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
+                                        disabled={items.length === 0}
+                                    >
                                         Checkout
                                         <svg xmlns="http://www.w3.org/2000/svg" className="group-hover:ml-8 ml-4 h-6 w-6 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
