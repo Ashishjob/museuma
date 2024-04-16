@@ -16,12 +16,20 @@ const AdminHome = () => {
                             Admin Dashboard
                         </h3>
                         <div className="flex flex-col tracking-wide">
-                            <a href="/admin/manage-employees"><button onClick={() => console.log('Manage Employees')} className="admin-button">Manage Employees</button></a>
-                            <a href="/admin/total-report"><button onClick={() => console.log('View Total Sale Reports')} className="admin-button">View Total Sale Reports</button></a>
-                            <a href="/admin/manage-exhibits"><button onClick={() => console.log('Manage Exhibits')} className="admin-button">Manage Exhibits</button></a>
-                            <a href="/admin/manage-artworks"><button onClick={() => console.log('Manage Artworks')} className="admin-button">Manage Artworks</button></a>
-                            <a href="/admin/view-complaints"><button onClick={() => console.log('View Complaints')} className="admin-button">View Complaints</button></a>
-                            <a href="/admin/manage-giftshop"><button onClick={() => console.log('Manage Gift Shop')} className="admin-button">Manage Gift Shop</button></a>
+                            <a href="/profile"><button onClick={() => console.log('View/Edit Profile')} className="admin-button">Profile</button></a>
+                            <select className="admin-button text-center " onChange={(e) => window.location.href = e.target.value}>    <option value="">View Reports...</option>
+                                <option value="/admin/total-report">View Total Sale Reports</option>
+                                <option value="/admin/exhibit-report">View Exhibit Reports</option>
+                                <option value="/admin/view-complaints">View Complaints</option>
+                            </select>
+                            <select className="admin-button text-center " onChange={(e) => window.location.href = e.target.value}>
+                                <option value="">Management Options</option>
+                                <option value="/admin/manage-employees">Manage Employees</option>
+                                <option value="/admin/manage-artworks">Manage Artworks</option>
+                                <option value="/admin/manage-exhibits">Manage Exhibits</option>
+                                <option value="/admin/manage-giftshop">Manage Gift Shop</option>
+                                <option value="/admin/manage-restaurant">Manage Restaurant</option>
+                            </select>
                         </div>
                     </div>
                 </div>
