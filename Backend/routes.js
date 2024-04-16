@@ -67,6 +67,12 @@ function router(req, res) {
     else if (url.startsWith('/decodeToken') && method === 'POST') {
         controller.decodeToken(req, res);
     }
+    else if (url.startsWith('/manage-giftshop') && method === 'POST') {
+        controller.addItem(req, res);
+    }
+    else if (url.startsWith('/manage-giftshop') && method === 'GET') {
+        controller.getItem(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
