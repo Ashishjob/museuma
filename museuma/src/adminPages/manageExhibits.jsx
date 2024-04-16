@@ -159,6 +159,13 @@ const ManageExhibits = () => {
           Exhibit Management
         </h1>
 
+        <button
+          onClick={toggleAddForm}
+          className="text-3xl mb-4 hover:text-[#C0BAA4]"
+        >
+          {showAddForm ? "Cancel" : "Add Exhibit"}
+        </button>
+
         <ul className="divide-y divide-gray-300 mb-6">
           {exhibits.map((exhibit) => (
             <li key={exhibit.Exhibit_id} className="py-4 flex">
@@ -178,13 +185,6 @@ const ManageExhibits = () => {
             </li>
           ))}
         </ul>
-
-        <button
-          onClick={toggleAddForm}
-          className="text-3xl mb-4 hover:text-[#C0BAA4]"
-        >
-          {showAddForm ? "Cancel" : "Add Exhibit"}
-        </button>
 
         {showAddForm && (
           <div className="flex">

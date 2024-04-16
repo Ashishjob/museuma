@@ -58,20 +58,59 @@ const ManageArtwork = () => {
 
         <button onClick={toggleAddForm} className="text-3xl mb-4 hover:text-[#C0BAA4]">Add Artwork</button>
         {showAddForm && (
-          <form onSubmit={addArtwork}>
-            {/* Add your form fields here */}
-          </form>
-        )}
-        {state.map((item) => (
-          <div key={item.id}>
-            {/* Add your artwork display here */}
+          <div className="flex">
+            <div className="mb-6 flex">
+              <input
+                type="text"
+                placeholder="Title"
+                className="border rounded mr-2 p-2 flex-1"
+                onChange={(e) => setNewArtwork({ ...newArtwork, title: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Artist"
+                className="border rounded mr-2 p-2 flex-1"
+                onChange={(e) => setNewArtwork({ ...newArtwork, artist: e.target.value })}
+              />
+              <input
+                type="date"
+                placeholder="Creation Date"
+                className="border rounded mr-2 p-2 flex-1"
+                onChange={(e) => setNewArtwork({ ...newArtwork, creationDate: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Medium"
+                className="border rounded mr-2 p-2 flex-1"
+                onChange={(e) => setNewArtwork({ ...newArtwork, medium: e.target.value })}
+              />
+              <input
+                type="file"
+                placeholder="Image File"
+                className="border rounded mr-2 p-2 flex-1"
+                onChange={(e) => setNewArtwork({ ...newArtwork, imageFile: e.target.files[0] })}
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
+            >
+              Add Artwork
+            </button>
           </div>
-        ))}
+        )}
+
         {showEditForm && (
           <form onSubmit={handleEditSubmit}>
-            {/* Add your form fields here */}
+            <input type="text" placeholder="Title" value={editedArtwork.title} onChange={(e) => setEditedArtwork({ ...editedArtwork, title: e.target.value })} />
+            <input type="text" placeholder="Artist" value={editedArtwork.artist} onChange={(e) => setEditedArtwork({ ...editedArtwork, artist: e.target.value })} />
+            <input type="date" placeholder="Creation Date" value={editedArtwork.creationDate} onChange={(e) => setEditedArtwork({ ...editedArtwork, creationDate: e.target.value })} />
+            <input type="text" placeholder="Medium" value={editedArtwork.medium} onChange={(e) => setEditedArtwork({ ...editedArtwork, medium: e.target.value })} />
+            <input type="file" placeholder="Image File" onChange={(e) => setEditedArtwork({ ...editedArtwork, imageFile: e.target.files[0] })} />
+            <button type="submit">Update Artwork</button>
           </form>
         )}
+
         {selectedArtworkForDeletion && (
           <div>
             <p>Are you sure you want to delete this artwork?</p>
