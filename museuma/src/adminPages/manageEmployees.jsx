@@ -204,6 +204,13 @@ const ManageEmployees = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Employee Management
         </h1>
+        
+        <button
+          onClick={toggleAddForm}
+          className="text-3xl mb-4 hover:text-[#C0BAA4]"
+        >
+          {showAddForm ? "Cancel" : "Add Employee"}
+        </button>
 
         <ul className="divide-y divide-gray-300 mb-6">
           {employees.map((employee) => (
@@ -224,13 +231,6 @@ const ManageEmployees = () => {
             </li>
           ))}
         </ul>
-
-        <button
-          onClick={toggleAddForm}
-          className="text-3xl mb-4 hover:text-[#C0BAA4]"
-        >
-          {showAddForm ? "Cancel" : "Add Employee"}
-        </button>
 
         {showAddForm && (
           <div className="flex">
