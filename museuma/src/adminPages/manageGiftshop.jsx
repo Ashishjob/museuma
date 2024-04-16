@@ -61,14 +61,19 @@ const ManageGiftshop = () => {
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedItem({ ...editedItem, [name]: value });
+    setEditedItem((prevEditedItem) => ({
+      ...prevEditedItem,
+      [name]: value,
+    }));
   };
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
+
     const updatedItems = items.map((item) =>
       item.id === editedItem.id ? { ...item, ...editedItem } : item
     );
+
     setItems(updatedItems);
     setSelectedItem(null);
     setShowEditForm(false);
@@ -146,7 +151,7 @@ const ManageGiftshop = () => {
                 <button onClick={() => editItem(item)} className="mr-2">
                   <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-                <button onClick={() => deleteItem(item.id)}>
+                <button onClick={() => deleteItem(item.item_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
@@ -158,7 +163,7 @@ const ManageGiftshop = () => {
           <form onSubmit={handleAddSubmit}>
             <input
               type="text"
-              name="name"
+              name="description"
               placeholder="Item name"
               value={newItem.description}
               onChange={handleAddInputChange}
@@ -211,6 +216,60 @@ const ManageGiftshop = () => {
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {showEditForm && selectedItem && (
+          <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white p-6 rounded-md">
+              <h2 className="text-2xl mb-4">Edit Item</h2>
+              <form onSubmit={handleEditSubmit}>
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Item name"
+                  value={editedItem.description}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="text"
+                  name="image"
+                  placeholder="Item image URL"
+                  value={editedItem.image}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Item price"
+                  value={editedItem.price}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="number"
+                  name="quantity"
+                  placeholder="Item quantity"
+                  value={editedItem.quantity}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditForm(false)}
+                    className="admin-button mr-2"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="admin-button">
+                    Update
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
