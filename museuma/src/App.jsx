@@ -25,6 +25,9 @@ import ManageGiftshop from "./adminPages/manageGiftshop";
 import EditProfile from "./pages/editProfile";
 import ExhibitReport from "./adminPages/exhibitReport";
 import ManageRestaurant from "./adminPages/manageRestaurant";
+import Login from "./components/login";
+import Signup from "./components/signup";
+import AdminLogin from "./components/adminLogin";
 
 function App() {
   return (
@@ -41,6 +44,9 @@ function App() {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<EditProfile />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/manage-employees" element={<ManageEmployees />} />
         <Route path="/admin/total-report" element={<TotalReport />} />
