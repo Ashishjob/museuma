@@ -61,18 +61,46 @@ const ManageGiftshop = () => {
     }));
   };
 
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedItems = items.map((item) => {
-      console.log("HELP");
-      return item.item_id === editedItem.id ? { ...item, ...editedItem } : item;
-    });
-    console.log(editedItem);
-    console.log(updatedItems);
 
-    setItems(updatedItems);
-    setSelectedItem(null);
-    setShowEditForm(false);
+    const updatedItemData = {
+      item_id: editedItem.id,
+      price: Number(editedItem.price),
+      description: editedItem.description,
+      quantity: Number(editedItem.quantity),
+      image: editedItem.image,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedItemData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      // Fetch updated data after successful update
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-giftshop"
+      );
+      const updatedData = await updatedResponse.json();
+      setItems(updatedData);
+
+      setSelectedItem(null);
+      setShowEditForm(false);
+
+      console.log("Item updated successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error updating item: ${error.message}`);
+    }
   };
 
   const toggleAddForm = () => {
