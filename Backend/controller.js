@@ -519,6 +519,55 @@ const getItem = (req, res) => {
   });
 };
 
+const updateItemInfo = (req, res) => {
+  let requestData = '';
+
+  req.on('data', (chunk) => {
+    requestData += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const { price, description, quantity, image_url, item_id } = JSON.parse(requestData);
+
+      console.log('Received data:', { price, description, quantity, image_url, item_id }); // Debugging line
+
+      if (typeof price === 'undefined' || typeof item_id === 'undefined') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Price and/or item_id are undefined' }));
+          return;
+      }
+
+      // Update items in the database
+      pool.query(
+          'UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id = ?',
+          [price, description, quantity, image_url, item_id],
+          (error, results) => {
+              if (error) {
+                  console.error('Error updating item information:', error);
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal server error' }));
+              } else {
+                  if (results.affectedRows > 0) {
+                      res.writeHead(200, { 'Content-Type': 'application/json' });
+                      res.end(JSON.stringify({ message: 'Item information updated successfully' }));
+                  } else {
+                      res.writeHead(404, { 'Content-Type': 'application/json' });
+                      res.end(JSON.stringify({ error: 'Item not found' }));
+                  }
+              }
+          }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -536,5 +585,6 @@ module.exports = {
   decodeToken,
   updateCustomerInfo,
   addItem,
-  getItem
+  getItem,
+  updateItemInfo
 };

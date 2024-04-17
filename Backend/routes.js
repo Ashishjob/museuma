@@ -73,6 +73,9 @@ function router(req, res) {
     else if (url.startsWith('/manage-giftshop') && method === 'GET') {
         controller.getItem(req, res);
     }
+    else if (url.startsWith('/manage-giftshop') && method === 'PUT') {
+        controller.updateItemInfo(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
