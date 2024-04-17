@@ -628,7 +628,18 @@ const deleteItem = (req, res) => {
   });
 };
 
-
+const getArtWorks = (req, res) => {
+  pool.query(queries.getArtWorks, (error, results) => {
+    if (error) {
+      console.error("Error fetching Art Works:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
 
 
 module.exports = {
@@ -650,5 +661,6 @@ module.exports = {
   addItem,
   getItem,
   updateItemInfo,
-  deleteItem
+  deleteItem,
+  getArtWorks
 };

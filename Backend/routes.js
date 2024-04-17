@@ -80,6 +80,9 @@ function router(req, res) {
     else if (url.startsWith('/manage-giftshop') && method === 'DELETE') {
         controller.deleteItem(req, res);
     }
+    else if (url === '/manage-artworks' && method === 'GET') {
+        controller.getArtWorks(req, res);
+    } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
