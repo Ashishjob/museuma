@@ -3,14 +3,20 @@ import Cookies from "js-cookie";
 
 export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
-      console.log("Stored token (test):", storedToken);
       setIsLoggedIn(true);
     }
   }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    setIsLoggedIn(false);
+    setShowDropdown(false);
+  };
 
   return (
     <header className="text-[#313639] body-font z-1 shadow">
@@ -33,41 +39,59 @@ export default function NavBar() {
             <a href="/tickets" className="mr-5 hover:text-gray-900">
               Tickets
             </a>
-            {isLoggedIn && (
-              <a href="/giftshop" className="mr-5 hover:text-gray-900">
-                Gift Shop
-              </a>
-            )}
+            <a href="/giftshop" className="mr-5 hover:text-gray-900">
+              Gift Shop
+            </a>
             <a href="/dining" className="mr-5 hover:text-gray-900">
               Dining
             </a>
-            {isLoggedIn && (
-              <a href="/complaints" className="mr-5 hover:text-gray-900">
-                Report a Problem
-              </a>
-            )}
           </nav>
         </div>
         <div className="flex items-center">
-          <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto">
+          <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">
             <a href="/cart">My Cart</a>
           </button>
-          <a href="/login">
-            <button className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto">
-              {isLoggedIn ? "Log Out" : "Log In"}
-              <svg
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="w-4 h-4 ml-1"
-                viewBox="0 0 24 24"
+          {isLoggedIn ? (
+            <div className="relative inline-block text-left">
+              <button
+                className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto"
+                onClick={() => setShowDropdown(!showDropdown)}
               >
-                <path d="M5 12h14M12 5l7 7-7 7"></path>
-              </svg>
-            </button>
-          </a>
+                More
+                {/* Dropdown arrow icon */}
+              </button>
+              {showDropdown && (
+                <div className="origin-top-right absolute right-0 mt-2 w-20 mr-12 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="py-1" role="none">
+                    <a
+                      href="/profile"
+                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Profile
+                    </a>
+                    <a
+                      href="/login"
+                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      Log Out
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <a href="/login">
+              <button
+                className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto"
+              >
+                Log In
+                {/* Login icon */}
+              </button>
+            </a>
+          )}
         </div>
       </div>
     </header>

@@ -427,7 +427,6 @@ const decodeToken = (req, res) => {
 };
 
 // const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
-
 const updateCustomerInfo = (customer_id, req, res) => {
   // Extract customer data from the request body
   let body = '';
@@ -461,6 +460,7 @@ const updateCustomerInfo = (customer_id, req, res) => {
     }
   });
 };
+
 
 
 const addItem = (req, res) => {
