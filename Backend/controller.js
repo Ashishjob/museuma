@@ -309,7 +309,7 @@ const authenticateUser = (req, res) => {
     // Execute the database query to authenticate the user
     pool.query(
       queries.authenticateUser,
-      [username, password],
+      [username, password, username, password, username, password], // Updated to match the new query placeholders
       (error, results) => {
         if (error) {
           console.error("Error authenticating user:", error);
@@ -324,8 +324,14 @@ const authenticateUser = (req, res) => {
           return;
         }
 
-        const userId = results[0].customer_id;
-        const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '7d' });
+        // Updated to include both user_id and table_name in the token
+        const user = results[0];
+        console.log(user.table_name);
+        const token = jwt.sign(
+          { user_id: user.user_id, table_name: user.table_name },
+          'your_secret_key',
+          { expiresIn: '7d' }
+        );
 
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "User authenticated successfully", token }));
@@ -333,6 +339,7 @@ const authenticateUser = (req, res) => {
     );
   });
 };
+
 
 
 const addCustomer = (req, res) => {
@@ -416,8 +423,13 @@ const decodeToken = (req, res) => {
 
       // Verify the token and decode its payload
       const decoded = jwt.verify(token, 'your_secret_key');
+
+      // Extract user_id and table_name from the decoded token
+      const { user_id, table_name } = decoded;
+
+      // Send back only the user_id and table_name
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ decoded }));
+      res.end(JSON.stringify({ user_id, table_name }));
     } catch (error) {
       console.error('Error decoding token:', error);
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -425,6 +437,7 @@ const decodeToken = (req, res) => {
     }
   });
 };
+
 
 // const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 const updateCustomerInfo = (customer_id, req, res) => {
