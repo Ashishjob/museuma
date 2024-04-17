@@ -82,6 +82,9 @@ function router(req, res) {
     }
     else if (url === '/manage-artworks' && method === 'GET') {
         controller.getArtWorks(req, res);
+    }
+    else if (url === '/manage-artworks' && method === 'PUT') {
+        controller.updateArtWork(req, res);
     } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });

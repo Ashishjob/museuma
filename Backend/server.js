@@ -69,6 +69,9 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'GET'){
             employeeRoutes(req, res);
         }
+        else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'PUT'){
+            employeeRoutes(req, res);
+        }
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Route not found' }));
