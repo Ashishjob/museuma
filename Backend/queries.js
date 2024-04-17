@@ -10,7 +10,7 @@ const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_i
 const getComplaints = "SELECT * FROM complaints";
 const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
-const authenticateUser = "SELECT * FROM customers WHERE username = ? AND password = ?";
+// const authenticateUser = "SELECT * FROM customers WHERE username = ? AND password = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
@@ -18,6 +18,18 @@ const addItem = "INSERT INTO items (price, description, quantity, image_url) VAL
 const getItem ="SELECT * FROM items";
 const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
+const authenticateUser = `
+(SELECT Director_id AS user_id, 'branch_directors' AS table_name
+FROM branch_directors
+WHERE username = ? AND password = ?)
+UNION
+(SELECT customer_id AS user_id, 'customers' AS table_name
+FROM customers
+WHERE username = ? AND password = ?)
+UNION
+(SELECT employee_id AS user_id, 'employees' AS table_name
+FROM employees
+WHERE username = ? AND password = ?)`;
 
 
 module.exports = {
