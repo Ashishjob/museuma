@@ -159,12 +159,32 @@ const ManageGiftshop = () => {
     setSelectedItemForDeletion(itemID);
   };
 
-  const confirmDelete = () => {
-    const updatedItems = items.filter(
-      (item) => item.item_id !== selectedItemForDeletion
-    );
-    setItems(updatedItems);
-    setSelectedItemForDeletion(null);
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: selectedItemForDeletion }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      const updatedItems = items.filter(
+        (item) => item.item_id !== selectedItemForDeletion
+      );
+      setItems(updatedItems);
+      setSelectedItemForDeletion(null);
+
+      console.log("Item deleted successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error deleting item: ${error.message}`);
+    }
   };
 
   const editItem = (item) => {
