@@ -63,10 +63,12 @@ const ManageGiftshop = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-
-    const updatedItems = items.map((item) =>
-      item.id === editedItem.id ? { ...item, ...editedItem } : item
-    );
+    const updatedItems = items.map((item) => {
+      console.log("HELP");
+      return item.item_id === editedItem.id ? { ...item, ...editedItem } : item;
+    });
+    console.log(editedItem);
+    console.log(updatedItems);
 
     setItems(updatedItems);
     setSelectedItem(null);
@@ -90,7 +92,7 @@ const ManageGiftshop = () => {
       price: Number(newItem.price),
       description: newItem.description,
       quantity: Number(newItem.quantity),
-      image_url: newItem.image,
+      image: newItem.image,
     };
 
     try {
@@ -141,7 +143,7 @@ const ManageGiftshop = () => {
     setSelectedItem(item);
     setShowEditForm(true);
     setEditedItem({
-      id: item.id,
+      id: item.item_id, //FIX IN EMPLOYEES, REFER TO HANDLEEDIT SUBMIT
       price: item.price,
       description: item.description,
       quantity: item.quantity,
@@ -170,8 +172,8 @@ const ManageGiftshop = () => {
         </button>
 
         <ul className="divide-y divide-gray-300 mb-6">
-          {items.map((item) => (
-            <li key={item.id} className="py-4 flex">
+          {items.map((item, index) => (
+            <li key={index} className="py-4 flex">
               <div className="flex flex-col">
                 <span className="text-2xl">Item Name: {item.description}</span>
                 <span className="text-xl">Price: ${item.price}</span>
