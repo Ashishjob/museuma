@@ -566,6 +566,54 @@ const updateItemInfo = (req, res) => {
   });
 };
 
+const deleteItem = (req, res) => {
+  let requestData = '';
+
+  req.on('data', (chunk) => {
+    requestData += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const { item_id } = JSON.parse(requestData);
+
+      console.log('Received data:', { item_id }); // Debugging line
+
+      if (typeof item_id === 'undefined') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'item_id is undefined' }));
+        return;
+      }
+
+      // Delete item from the database
+      pool.query(
+        queries.deleteItem,
+        [item_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error deleting item:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            if (results.affectedRows > 0) {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'Item deleted successfully' }));
+            } else {
+              res.writeHead(404, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Item not found' }));
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+
 
 
 module.exports = {
@@ -586,5 +634,6 @@ module.exports = {
   updateCustomerInfo,
   addItem,
   getItem,
-  updateItemInfo
+  updateItemInfo,
+  deleteItem
 };

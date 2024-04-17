@@ -17,6 +17,7 @@ const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, 
 const addItem = "INSERT INTO items (price, description, quantity, image_url) VALUES(?, ?, ?, ?)";
 const getItem ="SELECT * FROM items";
 const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
+const deleteItem = "DELETE FROM items WHERE item_id = ?";
 
 
 module.exports = {
@@ -37,5 +38,6 @@ module.exports = {
     updateCustomerInfo,
     addItem,
     getItem,
-    updateItem
+    updateItem,
+    deleteItem
 };
