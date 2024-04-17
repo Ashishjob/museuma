@@ -163,6 +163,7 @@ const markEmployeeForDeletion = (req, res) => {
         body += chunk.toString();
     });
 
+    
     // Once all data is received, parse the JSON body
     req.on('end', () => {
         // Parse the JSON body
@@ -173,6 +174,7 @@ const markEmployeeForDeletion = (req, res) => {
 
         // Extract employee ID from the request body or URL parameters
         const employeeId = requestBody.employee_id; 
+        console.log(employeeId);
         pool.query(queries.markEmployeeForDeletion, [employeeId], (error, results) => {
             if (error) {
                 console.error('Error marking employee for deletion:', error);

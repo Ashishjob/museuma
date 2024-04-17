@@ -26,6 +26,7 @@ function router(req, res) {
                 if (data.action === 'update') {
                     controller.updateEmployeeInfo(requestData, res);
                 } else if (data.action === 'markForDeletion') {
+                    console.log("we made it to routes.js")
                     controller.markEmployeeForDeletion(req, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
