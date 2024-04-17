@@ -427,7 +427,6 @@ const decodeToken = (req, res) => {
 };
 
 // const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
-
 const updateCustomerInfo = (customer_id, req, res) => {
   // Extract customer data from the request body
   let body = '';
@@ -463,62 +462,6 @@ const updateCustomerInfo = (customer_id, req, res) => {
 };
 
 
-const addItem = (req, res) => {
-  let body = "";
-
-  req.on("data", (chunk) => {
-    body += chunk.toString();
-  });
-
-  req.on("end", () => {
-    const parsedBody = JSON.parse(body);
-    const { price, description, quantity, image_url } = parsedBody;
-
-    // Check if price, description, quantity, and image_url are defined
-    if (!price || !description || !quantity || !image_url) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          error: "Price, description, quantity, and image URL are required.",
-        })
-      );
-      return;
-    }
-
-    // Insert item into the database
-    pool.query(
-      queries.addItem,
-      [price, description, quantity, image_url],
-      (error, results) => {
-        if (error) {
-          console.error("Error adding item:", error);
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Internal server error" }));
-          return;
-        }
-
-        res.writeHead(201, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({ message: "Item added successfully!" })
-        );
-      }
-    );
-  });
-};
-
-const getItem = (req, res) => {
-  pool.query(queries.getItem, (error, results) => {
-    if (error) {
-      console.error("Error fetching Items:", error);
-      res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Internal server error" }));
-      return;
-    }
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(results));
-  });
-};
-
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -534,7 +477,5 @@ module.exports = {
   addCustomer,
   getCustomerInfo,
   decodeToken,
-  updateCustomerInfo,
-  addItem,
-  getItem
+  updateCustomerInfo
 };
