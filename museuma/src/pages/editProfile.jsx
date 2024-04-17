@@ -14,76 +14,95 @@ const EditProfile = () => {
     phoneNumber: ""
   });
 
-  useEffect(() => {
-
-    const decodeToken = async (token) => {
-      try {
-        const response = await fetch("http://localhost:8081/decodeToken", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-        if (response.ok) {
-          const decodedToken = await response.json();
-          const { decoded } = decodedToken;
-          const { userId } = decoded;
-
-          fetchUserData(userId);
-        } else {
-          console.error("Failed to decode token:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error decoding token:", error);
+  const decodeToken = async (token) => {
+    try {
+      const response = await fetch("http://localhost:8081/decodeToken", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        const decodedToken = await response.json();
+        const { user_id, table_name } = decodedToken;
+        
+        // Log the values for verification
+        console.log("User ID:", user_id);
+        console.log("Table Name:", table_name);
+  
+        // Return user_id and table_name
+        return { user_id, table_name };
+      } else {
+        console.error("Failed to decode token:", response.statusText);
       }
-    };
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  
+    // If there's an error or response is not ok, return null or handle the error as needed
+    return null;
+  };
 
-    const fetchUserData = async (decodedToken1) => {
+  const fetchUserData = async (decodedToken1) => {
+    try {
+      console.log("decodedToken");
+      console.log(decodedToken1);
+      const call = `http://localhost:8081/customer/${decodedToken1}`;
+      console.log(call);
+      const response = await fetch(call);
+      if (response.ok) {
+        const userData = await response.json();
+        console.log(userData);
+  
+        // Map the fetched user data to userDetails object
+        const updatedUserDetails = {
+          firstName: userData.first_name || "",
+          lastName: userData.last_name || "",
+          gender: userData.gender || "",
+          contactNumber: userData.phone_number || "",
+          currentAddress: userData.address || "",
+          accessibilityNeeds: userData.accessibilityNeeds || "",
+          email: userData.email || "",
+          birthday: userData.date_of_birth || "",
+          phoneNumber: userData.phone_number || "" // Assuming phone number is used for both contactNumber and phoneNumber
+        };
+  
+        setUserDetails(updatedUserDetails);
+      } else {
+        console.error("Failed to fetch user data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        console.log("decodedToken");
-        console.log(decodedToken1);
-        const call = `http://localhost:8081/customer/${decodedToken1}`;
-        console.log(call);
-        const response = await fetch(call);
-        if (response.ok) {
-          const userData = await response.json();
-          console.log(userData);
-    
-          // Map the fetched user data to userDetails object
-          const updatedUserDetails = {
-            firstName: userData.first_name || "",
-            lastName: userData.last_name || "",
-            gender: userData.gender || "",
-            contactNumber: userData.phone_number || "",
-            currentAddress: userData.address || "",
-            accessibilityNeeds: userData.accessibilityNeeds || "",
-            email: userData.email || "",
-            birthday: userData.date_of_birth || "",
-            phoneNumber: userData.phone_number || "" // Assuming phone number is used for both contactNumber and phoneNumber
-          };
-    
-          setUserDetails(updatedUserDetails);
+        const token = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('token='))
+          ?.split('=')[1];
+  
+        if (token) {
+          const { user_id } = await decodeToken(token); // Decode the token and get user_id
+          if (user_id) {
+            await fetchUserData(user_id); // Fetch user data using user_id
+          } else {
+            console.error("User ID not found in decoded token.");
+          }
         } else {
-          console.error("Failed to fetch user data:", response.statusText);
+          console.error("Token not found in cookie.");
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching data:", error);
       }
     };
   
-    const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('token='))
-    ?.split('=')[1];
-
-    // Call decodeToken with the retrieved token
-    if (token) {
-      decodeToken(token);
-    } else {
-      console.error("Token not found in cookie.");
-    }
+    fetchData();
   }, []);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -95,69 +114,48 @@ const EditProfile = () => {
     e.preventDefault();
     setIsEditing(false);
   
-    const decodeToken = async (token) => {
-      try {
-        const response = await fetch("http://localhost:8081/decodeToken", {
-          method: 'POST',
+    try {
+      const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1];
+  
+      if (token) {
+        const { user_id } = await decodeToken(token); // Reuse the existing decodeToken function
+        console.log(user_id);
+  
+        // Fetch user details and update information here
+        const userDetailsToSend = {
+          first_name: userDetails.firstName || null,
+          last_name: userDetails.lastName || null,
+          gender: userDetails.gender || null,
+          phone_number: userDetails.phoneNumber || null,
+          address: userDetails.currentAddress || null,
+          accessibilityNeeds: userDetails.accessibilityNeeds || null,
+          email: userDetails.email || null,
+          date_of_birth: userDetails.birthday || null
+        };
+        const updateUserResponse = await fetch(`http://localhost:8081/editCustomerInfo/${user_id}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ token }),
+          body: JSON.stringify(userDetailsToSend),
         });
-        if (response.ok) {
-          const decodedToken = await response.json();
-          const { decoded } = decodedToken;
-          const { userId } = decoded;
   
-          // Fetch user details and update information here
-          try {
-            const userDetailsToSend = {
-              first_name: userDetails.firstName || null,
-              last_name: userDetails.lastName || null,
-              gender: userDetails.gender || null,
-              phone_number: userDetails.phoneNumber || null,
-              address: userDetails.currentAddress || null,
-              accessibilityNeeds: userDetails.accessibilityNeeds || null,
-              email: userDetails.email || null,
-              date_of_birth: userDetails.birthday || null
-            };
-  
-            const updateUserResponse = await fetch(`http://localhost:8081/editCustomerInfo/${userId}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(userDetailsToSend),
-            });
-  
-            if (updateUserResponse.ok) {
-              alert("User details updated successfully!");
-            } else {
-              console.error("Failed to update user details:", updateUserResponse.statusText);
-            }
-          } catch (error) {
-            console.error("Error updating user details:", error);
-          }
+        if (updateUserResponse.ok) {
+          alert("User details updated successfully!");
         } else {
-          console.error("Failed to decode token:", response.statusText);
+          console.error("Failed to update user details:", updateUserResponse.statusText);
         }
-      } catch (error) {
-        console.error("Error decoding token:", error);
+      } else {
+        console.error("Token not found in cookie.");
       }
-    };
-  
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('token='))
-      ?.split('=')[1];
-  
-    // Call decodeToken with the retrieved token
-    if (token) {
-      decodeToken(token);
-    } else {
-      console.error("Token not found in cookie.");
+    } catch (error) {
+      console.error("Error handling update submit:", error);
     }
   };
+  
   
   
 
