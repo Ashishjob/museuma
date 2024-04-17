@@ -60,6 +60,12 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname.startsWith('/manage-giftshop') && req.method === 'GET'){
             employeeRoutes(req, res);
         }
+        else if(parsedUrl.pathname.startsWith('/manage-giftshop') && req.method === 'PUT'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname.startsWith('/manage-giftshop') && req.method === 'DELETE'){
+            employeeRoutes(req, res);
+        }
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Route not found' }));

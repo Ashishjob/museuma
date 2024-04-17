@@ -462,6 +462,160 @@ const updateCustomerInfo = (customer_id, req, res) => {
 };
 
 
+
+const addItem = (req, res) => {
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    const parsedBody = JSON.parse(body);
+    const { price, description, quantity, image_url } = parsedBody;
+
+    // Check if price, description, quantity, and image_url are defined
+    if (!price || !description || !quantity || !image_url) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Price, description, quantity, and image URL are required.",
+        })
+      );
+      return;
+    }
+
+    // Insert item into the database
+    pool.query(
+      queries.addItem,
+      [price, description, quantity, image_url],
+      (error, results) => {
+        if (error) {
+          console.error("Error adding item:", error);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Internal server error" }));
+          return;
+        }
+
+        res.writeHead(201, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({ message: "Item added successfully!" })
+        );
+      }
+    );
+  });
+};
+
+const getItem = (req, res) => {
+  pool.query(queries.getItem, (error, results) => {
+    if (error) {
+      console.error("Error fetching Items:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
+
+const updateItemInfo = (req, res) => {
+  let requestData = '';
+
+  req.on('data', (chunk) => {
+    requestData += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const { price, description, quantity, image_url, item_id } = JSON.parse(requestData);
+
+      console.log('Received data:', { price, description, quantity, image_url, item_id }); // Debugging line
+
+      if (typeof price === 'undefined' || typeof item_id === 'undefined') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Price and/or item_id are undefined' }));
+          return;
+      }
+
+      // Update items in the database
+      pool.query(
+          'UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id = ?',
+          [price, description, quantity, image_url, item_id],
+          (error, results) => {
+              if (error) {
+                  console.error('Error updating item information:', error);
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal server error' }));
+              } else {
+                  if (results.affectedRows > 0) {
+                      res.writeHead(200, { 'Content-Type': 'application/json' });
+                      res.end(JSON.stringify({ message: 'Item information updated successfully' }));
+                  } else {
+                      res.writeHead(404, { 'Content-Type': 'application/json' });
+                      res.end(JSON.stringify({ error: 'Item not found' }));
+                  }
+              }
+          }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+const deleteItem = (req, res) => {
+  let requestData = '';
+
+  req.on('data', (chunk) => {
+    requestData += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const { item_id } = JSON.parse(requestData);
+
+      console.log('Received data:', { item_id }); // Debugging line
+
+      if (typeof item_id === 'undefined') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'item_id is undefined' }));
+        return;
+      }
+
+      // Delete item from the database
+      pool.query(
+        queries.deleteItem,
+        [item_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error deleting item:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            if (results.affectedRows > 0) {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'Item deleted successfully' }));
+            } else {
+              res.writeHead(404, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Item not found' }));
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -477,5 +631,9 @@ module.exports = {
   addCustomer,
   getCustomerInfo,
   decodeToken,
-  updateCustomerInfo
+  updateCustomerInfo,
+  addItem,
+  getItem,
+  updateItemInfo,
+  deleteItem
 };

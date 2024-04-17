@@ -16,6 +16,10 @@ const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 const addItem = "INSERT INTO items (price, description, quantity, image_url) VALUES(?, ?, ?, ?)";
 const getItem ="SELECT * FROM items";
+const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
+const deleteItem = "DELETE FROM items WHERE item_id = ?";
+
+
 module.exports = {
     getBranchDirectors,
     getEmployees,
@@ -33,5 +37,7 @@ module.exports = {
     getCustomerInfo,
     updateCustomerInfo,
     addItem,
-    getItem
+    getItem,
+    updateItem,
+    deleteItem
 };
