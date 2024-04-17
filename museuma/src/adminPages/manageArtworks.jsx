@@ -5,7 +5,7 @@ import "../App.css";
 import "../index.css";
 
 const ManageArtwork = () => {
-  const [state, setState] = useState([]);
+  const [artworks, setArtWork] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [selectedArtworkForDeletion, setSelectedArtworkForDeletion] =
@@ -13,15 +13,25 @@ const ManageArtwork = () => {
   const [newArtwork, setNewArtwork] = useState({
     title: "",
     artist: "",
+    creationDate: "",
     date: "",
     medium: "",
   });
   const [editedArtwork, setEditedArtwork] = useState({
     title: "",
     artist: "",
+    creationDate: "",
     date: "",
     medium: "",
   });
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
@@ -48,15 +58,21 @@ const ManageArtwork = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Fetch the actual data from your backend or data source
-      // For example, you can make a GET request to your backend to fetch the list of artworks
-      const response = await fetch("your-backend-url");
-      const data = await response.json();
-      setState(data);
+    const fetchArtworks = async () => {
+      try {
+        const response = await fetch("http://localhost:8081/manage-artworks"); // Endpoint URL should match your backend route
+        if (!response.ok) {
+          throw new Error("Failed to fetch artworks");
+        }
+        const data = await response.json();
+        setArtWork(data); // Assuming you have a state variable called 'state' to store the artworks
+      } catch (error) {
+        console.error("Error fetching artworks:", error);
+        // Handle error as needed
+      }
     };
 
-    fetchData();
+    fetchArtworks();
   }, []);
 
   return (
@@ -71,6 +87,27 @@ const ManageArtwork = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Manage Artworks
         </h1>
+
+        <ul className="divide-y divide-gray-300 mb-6">
+          {artworks.map((artwork, index) => (
+            <li key={index} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl">Title: {artwork.title}</span>
+                <span className="text-xl">Artist: {artwork.artist}</span>
+                <span className="text-xl">
+                  Creation Date: {formatDate(artwork.creationDate)}
+                </span>
+
+                <span className="text-xl">Medium: {artwork.medium}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => confirmDelete(artwork.id)}>
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
 
         <button
           onClick={toggleAddForm}
@@ -99,10 +136,14 @@ const ManageArtwork = () => {
               />
               <input
                 type="date"
-                placeholder="Creation Date"
+                placeholder="Time/Date" // Adjusted placeholder
                 className="border rounded mr-2 p-2 flex-1"
-                onChange={(e) =>
-                  setNewArtwork({ ...newArtwork, creationDate: e.target.value })
+                onChange={
+                  (e) =>
+                    setNewArtwork({
+                      ...newArtwork,
+                      "time/date": e.target.value,
+                    }) // Adjusted setter
                 }
               />
               <input
