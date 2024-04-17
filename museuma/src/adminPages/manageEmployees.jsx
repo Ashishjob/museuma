@@ -33,16 +33,57 @@ const ManageEmployees = () => {
   };
 
   //FIGURE OUT HOW TO CONNECT THE UDPATE EMPLOYEE FUNCTION TO BACKEND LATER
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedEmployees = employees.map((employee) =>
-      employee.id === editedEmployee.id
-        ? { ...employee, ...editedEmployee }
-        : employee
-    );
-    setEmployees(updatedEmployees);
-    setSelectedEmployee(null);
-    setShowEditForm(false);
+
+    const { department, email, first_name, last_name, employee_id } =
+      editedEmployee;
+    console.log(employee_id);
+    const updatedEmployeeData = {
+      department,
+      email,
+      first_name,
+      last_name,
+      employee_id,
+    };
+    console.log(updatedEmployeeData);
+    try {
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-employees",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "update",
+            ...updatedEmployeeData,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      // Fetch updated data after successful update
+      const updatedResponse = await fetch(
+        "https://museuma.onrender.com/manage-employees"
+      );
+      const updatedData = await updatedResponse.json();
+
+      const updatedEmployees = updatedData.filter(
+        (employee) => employee.Active === 1
+      ); // Assuming Active flag is used to filter active employees
+      setEmployees(updatedEmployees);
+
+      setSelectedEmployee(null);
+      setShowEditForm(false);
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error updating employee: ${error.message}`);
+    }
   };
 
   const toggleAddForm = () => {
@@ -68,7 +109,6 @@ const ManageEmployees = () => {
         const activeEmployees = data.filter(
           (employee) => employee.Active === 1
         );
-
         setEmployees(activeEmployees);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -81,8 +121,8 @@ const ManageEmployees = () => {
 
   const addEmployee = async () => {
     const newEmp = {
-      department: newEmployee.Department,
-      email: newEmployee.Email,
+      department: newEmployee.department,
+      email: newEmployee.email,
       first_name: newEmployee.first_name,
       last_name: newEmployee.last_name,
     };
@@ -115,8 +155,12 @@ const ManageEmployees = () => {
       }
       const updatedData = await updatedResponse.json();
 
+      const activeEmployees = updatedData.filter(
+        (employee) => employee.Active === 1
+      );
+
       // Update the state with the new list of employees
-      setEmployees(updatedData);
+      setEmployees(activeEmployees);
       //setEmployees([...employees, newEmp]);
       toggleAddForm();
     } catch (error) {
@@ -125,15 +169,12 @@ const ManageEmployees = () => {
     }
   };
 
-  const deleteEmployee = (employeeID) => {
-    setSelectedEmployeeForDeletion(employeeID);
-  };
-
   const confirmDelete = (employeeID) => {
     setSelectedEmployeeForDeletion(employeeID);
   };
 
   const deleteConfirmed = async () => {
+    console.log("button is hit");
     try {
       // Send PUT request to mark employee for deletion
       const response = await fetch(
@@ -169,10 +210,12 @@ const ManageEmployees = () => {
   const editEmployee = (employee) => {
     setSelectedEmployee(employee);
     setShowEditForm(true);
+    console.log("Heres our employee id: ");
+    console.log(employee.employee_id);
     setEditedEmployee({
-      id: employee.id,
-      fname: employee.first_name,
-      lname: employee.last_name,
+      employee_id: employee.employee_id,
+      first_name: employee.first_name,
+      last_name: employee.last_name,
       email: employee.email,
       department: employee.department,
     });
@@ -204,7 +247,7 @@ const ManageEmployees = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Employee Management
         </h1>
-        
+
         <button
           onClick={toggleAddForm}
           className="text-3xl mb-4 hover:text-[#C0BAA4]"
@@ -213,12 +256,12 @@ const ManageEmployees = () => {
         </button>
 
         <ul className="divide-y divide-gray-300 mb-6">
-          {employees.map((employee) => (
-            <li key={employee.id} className="py-4 flex">
+          {employees.map((employee, index) => (
+            <li key={index} className="py-4 flex">
               <div className="flex flex-col">
                 <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
                 <span className="text-xl">{employee.email}</span>
-                <span className="text-xl">{employee.Department}</span>
+                <span className="text-xl">{employee.department}</span>
               </div>
               <div className="ml-auto flex">
                 <button onClick={() => editEmployee(employee)} className="mr-2">
@@ -257,9 +300,9 @@ const ManageEmployees = () => {
                 type="email"
                 placeholder="Email"
                 className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.Email}
+                value={newEmployee.email}
                 onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, Email: e.target.value })
+                  setNewEmployee({ ...newEmployee, email: e.target.value })
                 }
               />
               <Select
@@ -270,7 +313,7 @@ const ManageEmployees = () => {
                 onChange={(selectedOption) =>
                   setNewEmployee({
                     ...newEmployee,
-                    Department: selectedOption.value,
+                    department: selectedOption.value,
                   })
                 }
                 className="flex-1 mr-2"
@@ -332,9 +375,9 @@ const ManageEmployees = () => {
                   <input
                     type="text"
                     id="firstName"
-                    name="FirstName"
+                    name="first_name"
                     className="mt-1 p-2 border rounded-md w-full"
-                    value={editedEmployee.FirstName}
+                    value={editedEmployee.first_name}
                     onChange={handleEditInputChange}
                   />
                 </div>
@@ -348,9 +391,9 @@ const ManageEmployees = () => {
                   <input
                     type="text"
                     id="lastName"
-                    name="LastName"
+                    name="last_name"
                     className="mt-1 p-2 border rounded-md w-full"
-                    value={editedEmployee.LastName}
+                    value={editedEmployee.last_name}
                     onChange={handleEditInputChange}
                   />
                 </div>
@@ -364,28 +407,25 @@ const ManageEmployees = () => {
                   id="branch"
                   name="Branch"
                   options={branches.map((branch) => ({
-                    value: branch.id,
+                    value: branch.name,
                     label: branch.name,
                   }))}
                   value={
-                    editedEmployee.Branch
+                    editedEmployee.department
                       ? {
-                          value: editedEmployee.Branch.id,
-                          label: editedEmployee.Branch.name,
+                          value: editedEmployee.department,
+                          label: editedEmployee.department,
                         }
                       : null
                   }
                   onChange={(selectedOption) =>
-                    handleEditInputChange({
-                      target: {
-                        name: "Branch",
-                        value: branches.find(
-                          (branch) => branch.id === selectedOption.value
-                        ),
-                      },
+                    setEditedEmployee({
+                      ...editedEmployee,
+                      department: selectedOption.value,
                     })
                   }
                 />
+
                 <div className="my-4">
                   <label
                     htmlFor="email"
@@ -396,9 +436,9 @@ const ManageEmployees = () => {
                   <input
                     type="email"
                     id="email"
-                    name="Email"
+                    name="email"
                     className="mt-1 p-2 border rounded-md w-full"
-                    value={editedEmployee.Email}
+                    value={editedEmployee.email}
                     onChange={handleEditInputChange}
                   />
                 </div>
