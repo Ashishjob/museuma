@@ -735,7 +735,7 @@ const addArtWork = (req, res) => {
       const { title, artist, creationDate, medium, image } = parsedBody;
 
       // Check if required fields are defined
-      if (!title || !artist || !creationDate || !medium || !image) {
+      if (!title || !artist || !creationDate || !medium) {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(
           JSON.stringify({

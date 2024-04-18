@@ -72,7 +72,7 @@ const ManageGiftshop = () => {
       price: Number(editedItem.price),
       description: editedItem.description,
       quantity: Number(editedItem.quantity),
-      image: editedItem.image,
+      image_url: editedItem.image,
     };
 
     try {
@@ -125,8 +125,10 @@ const ManageGiftshop = () => {
       price: Number(newItem.price),
       description: newItem.description,
       quantity: Number(newItem.quantity),
-      image: newItem.image,
+      image_url: newItem.image,
     };
+
+    console.log(newItemData);
 
     try {
       const response = await fetch("http://localhost:8081/manage-giftshop", {
@@ -340,7 +342,7 @@ const ManageGiftshop = () => {
                   type="text"
                   name="image"
                   placeholder="Item image URL"
-                  value={editedItem.image}
+                  value={editedItem.image_url}
                   onChange={handleEditInputChange}
                   className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
                 />
