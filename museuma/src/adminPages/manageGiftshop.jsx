@@ -10,12 +10,14 @@ const ManageGiftshop = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedItem, setEditedItem] = useState({
+    title: "",
     price: "",
     description: "",
     quantity: "",
     image: "",
   });
   const [newItem, setNewItem] = useState({
+    title: "",
     price: "",
     description: "",
     quantity: "",
@@ -66,6 +68,7 @@ const ManageGiftshop = () => {
 
     const updatedItemData = {
       item_id: editedItem.id,
+      title: editedItem.title,
       price: Number(editedItem.price),
       description: editedItem.description,
       quantity: Number(editedItem.quantity),
@@ -106,6 +109,7 @@ const ManageGiftshop = () => {
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
     setNewItem({
+      title: "",
       price: "",
       description: "",
       quantity: "",
@@ -117,6 +121,7 @@ const ManageGiftshop = () => {
 
   const addItem = async () => {
     const newItemData = {
+      title: newItem.title,
       price: Number(newItem.price),
       description: newItem.description,
       quantity: Number(newItem.quantity),
@@ -192,6 +197,7 @@ const ManageGiftshop = () => {
     setShowEditForm(true);
     setEditedItem({
       id: item.item_id, //FIX IN EMPLOYEES, REFER TO HANDLEEDIT SUBMIT
+      title: item.title,
       price: item.price,
       description: item.description,
       quantity: item.quantity,
@@ -223,7 +229,8 @@ const ManageGiftshop = () => {
           {items.map((item, index) => (
             <li key={index} className="py-4 flex">
               <div className="flex flex-col">
-                <span className="text-2xl">Item Name: {item.description}</span>
+                <span className="text-2xl">Item Name: {item.title}</span>
+                <span className="text-xl">Description: {item.description}</span>
                 <span className="text-xl">Price: ${item.price}</span>
                 <span className="text-xl">Quantity: {item.quantity}</span>
               </div>
@@ -243,8 +250,16 @@ const ManageGiftshop = () => {
           <form onSubmit={handleAddSubmit}>
             <input
               type="text"
-              name="description"
+              name="title"
               placeholder="Item name"
+              value={newItem.title}
+              onChange={handleAddInputChange}
+              className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+            />
+            <input
+              type="text"
+              name="description"
+              placeholder="Item description"
               value={newItem.description}
               onChange={handleAddInputChange}
               className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
@@ -307,8 +322,16 @@ const ManageGiftshop = () => {
               <form onSubmit={handleEditSubmit}>
                 <input
                   type="text"
-                  name="description"
+                  name="title"
                   placeholder="Item name"
+                  value={editedItem.title}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Item description"
                   value={editedItem.description}
                   onChange={handleEditInputChange}
                   className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"

@@ -489,14 +489,14 @@ const addItem = (req, res) => {
 
   req.on("end", () => {
     const parsedBody = JSON.parse(body);
-    const { price, description, quantity, image_url } = parsedBody;
+    const { title, price, description, quantity, image_url } = parsedBody;
 
     // Check if price, description, quantity, and image_url are defined
-    if (!price || !description || !quantity || !image_url) {
+    if (!title || !price || !description || !quantity || !image_url) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          error: "Price, description, quantity, and image URL are required.",
+          error: "Title, price, description, quantity, and image URL are required.",
         })
       );
       return;
@@ -505,7 +505,7 @@ const addItem = (req, res) => {
     // Insert item into the database
     pool.query(
       queries.addItem,
-      [price, description, quantity, image_url],
+      [title, price, description, quantity, image_url],
       (error, results) => {
         if (error) {
           console.error("Error adding item:", error);
@@ -545,9 +545,9 @@ const updateItemInfo = (req, res) => {
 
   req.on('end', () => {
     try {
-      const { price, description, quantity, image_url, item_id } = JSON.parse(requestData);
+      const { title, price, description, quantity, image_url, item_id } = JSON.parse(requestData);
 
-      console.log('Received data:', { price, description, quantity, image_url, item_id }); // Debugging line
+      console.log('Received data:', { title, price, description, quantity, image_url, item_id }); // Debugging line
 
       if (typeof price === 'undefined' || typeof item_id === 'undefined') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -557,8 +557,8 @@ const updateItemInfo = (req, res) => {
 
       // Update items in the database
       pool.query(
-          'UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id = ?',
-          [price, description, quantity, image_url, item_id],
+          queries.updateItem,
+          [title, price, description, quantity, image_url, item_id],
           (error, results) => {
               if (error) {
                   console.error('Error updating item information:', error);

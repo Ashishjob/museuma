@@ -71,7 +71,7 @@ function router(req, res) {
     else if (url.startsWith('/manage-giftshop') && method === 'POST') {
         controller.addItem(req, res);
     }
-    else if (url.startsWith('/manage-giftshop') && method === 'GET') {
+    else if ((url.startsWith('/giftshop') || url.startsWith('/manage-giftshop')) && method === 'GET') {
         controller.getItem(req, res);
     }
     else if (url.startsWith('/manage-giftshop') && method === 'PUT') {
