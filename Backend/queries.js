@@ -24,7 +24,10 @@ const getArtWorks = "SELECT * FROM art_pieces";
 const updateArtWork = "UPDATE art_pieces SET title = ?, artist = ?, image = ?, medium = ?, creationDate = ? WHERE art_id = ?";
 const markArtWorkForDeletion ="UPDATE art_pieces SET active = 0 WHERE art_id = ?";
 const addArtWork = "INSERT INTO art_pieces (title, artist, creationDate, medium, image) VALUES (?, ?, ?, ?, ?)";
-
+const addFood = "INSERT INTO restaurant (name, description, image, price) VALUES(?, ?, ?, ?)";
+const markFoodForDeletion ="UPDATE restaurant SET active = 0 WHERE restaurant_id = ?";
+const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, price = ? WHERE restaurant_id = ?";
+const getFood = "SELECT * FROM restaurant";
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -65,5 +68,9 @@ module.exports = {
     getArtWorks,
     updateArtWork,
     markArtWorkForDeletion,
-    addArtWork
+    addArtWork,
+    addFood,
+    markFoodForDeletion,
+    updateFood,
+    getFood
 };
