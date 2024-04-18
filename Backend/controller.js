@@ -771,6 +771,44 @@ const addArtWork = (req, res) => {
   });
 };
 
+const updateExhibit = (requestData, res) => {
+  try {
+    const { Description, Collections, Location, Director_ID, Exhibit_id } = requestData;
+
+    console.log('Received data:', { Description, Collections, Location, Director_ID, Exhibit_id }); // Debugging line
+
+    if (!Description || !Collections || !Location || !Director_ID || !Exhibit_id) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Description, Collections, Location, Director_ID, and/or Exhibit_id are undefined' }));
+    }
+
+    // Update exhibit in the database
+    pool.query(
+      queries.updateExhibit,
+      [Description, Collections, Location, Director_ID, Exhibit_id],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating exhibit information:', error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Internal server error' }));
+        }
+
+        if (results.affectedRows > 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ message: 'Exhibit information updated successfully' }));
+        } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Exhibit not found' }));
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error parsing request body:', error);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Invalid request body' }));
+  }
+};
+
 
 module.exports = {
   getBranchDirectors,
@@ -780,6 +818,7 @@ module.exports = {
   updateEmployeeInfo,
   getExhibits,
   addExhibits,
+  updateExhibit,
   markEmployeeForDeletion,
   getComplaints,
   insertComplaints,

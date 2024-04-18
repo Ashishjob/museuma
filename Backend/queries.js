@@ -6,6 +6,8 @@ const getEmployees = "SELECT * FROM employees";
 const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const getExhibit = "SELECT * FROM exhibits";
 const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?)";
+const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ? WHERE Exhibit_id = ?";
+const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
 const getComplaints = "SELECT * FROM complaints";
 const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
@@ -48,6 +50,8 @@ module.exports = {
     getDirectorIdByDepartment,
     getExhibit,
     addExhibit,
+    markExhibitForDeletion,
+    updateExhibit,
     getComplaints,
     addComplaint,
     authenticateUser,

@@ -111,6 +111,31 @@ function router(req, res) {
             res.end(JSON.stringify({ error: 'Invalid content type' }));
         }
     } 
+    else if (url === '/manage-exhibits' && method === 'PUT') {
+        const contentType = req.headers['content-type'];
+        if (contentType && contentType.includes('application/json')) {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString(); // convert Buffer to string
+            });
+            req.on('end', () => {
+                const data = JSON.parse(body);
+                const { action, ...requestData } = data; // Destructure 'action' field and get the rest of the data
+                if (data.action === 'update') {
+                    console.log(requestData);
+                    controller.updateExhibit(requestData, res);
+                } else if (data.action === 'markForDeletion') {
+                    controller.markExhibitForDeletion(req, res);
+                } else {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Invalid action' }));
+                }
+            });
+        } else {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid content type' }));
+        }
+    } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));
