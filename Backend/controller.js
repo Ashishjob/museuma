@@ -113,47 +113,49 @@ const getExhibits = (req, res) => {
 };
 
 const addExhibits = (req, res) => {
-    let body = "";
-    
-    req.on("data", (chunk) => {
-        body += chunk.toString();
-    });
-    
-    req.on("end", () => {
-        const parsedBody = JSON.parse(body);
-        const { Exhibit_id, Description, Collections, Location, Director_ID } = parsedBody;
-    
-        // Check if exhibit_name, exhibit_description, and exhibit_image are defined
-        if (!Exhibit_id || !Description || !Collections || !Location || !Director_ID) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(
-            JSON.stringify({
-            error: "Exhibit_id, Description, Collection, Location, and Director_ID are required.",
-            })
-        );
-        return;
-        }
-    
-        // Add exhibit to the database
-        pool.query(
-        queries.addExhibit,
-        [Exhibit_id, Description, Collections, Location, Director_ID],
-        (error, results) => {
-            if (error) {
-                console.error('Error adding exhibit:', error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Internal server error' }));
-                return;
-            }
-    
-            res.writeHead(201, { "Content-Type": "application/json" });
-            res.end(
-            JSON.stringify({ message: "Exhibit created successfully!" })
-            );
-        }
-        );
-    });
-    }
+  let body = "";
+  req.on("data", (chunk) => {
+      body += chunk.toString();
+  });
+  
+  req.on("end", () => {
+      const parsedBody = JSON.parse(body);
+      const { Description, Collections, Location, Director_ID } = parsedBody;
+  
+      console.log("Received data:", parsedBody); // Log received data
+
+      // Check if exhibit_name, exhibit_description, and exhibit_image are defined
+      if (!Description || !Collections || !Location || !Director_ID) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(
+              JSON.stringify({
+                  error: "Description, Collection, Location, and Director_ID are required.",
+              })
+          );
+          return;
+      }
+  
+      // Add exhibit to the database
+      pool.query(
+          queries.addExhibit,
+          [Description, Collections, Location, Director_ID],
+          (error, results) => {
+              if (error) {
+                  console.error('Error adding exhibit:', error);
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal server error' }));
+                  return;
+              }
+  
+              res.writeHead(201, { "Content-Type": "application/json" });
+              res.end(
+                  JSON.stringify({ message: "Exhibit created successfully!" })
+              );
+          }
+      );
+  });
+};
+
 
 const markEmployeeForDeletion = (req, res) => {
     let body = '';
