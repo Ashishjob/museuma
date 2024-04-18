@@ -809,6 +809,46 @@ const updateExhibit = (requestData, res) => {
   }
 };
 
+const markExhibitForDeletion = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const requestBody = JSON.parse(body);
+      const exhibitId = requestBody.Exhibit_id; // Make sure the key matches the one in the request body
+
+      pool.query(
+        queries.markExhibitForDeletion,
+        [exhibitId],
+        (error, results) => {
+          if (error) {
+            console.error('Error marking exhibit for deletion:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return; // End the function execution here
+          }
+
+          if (results.affectedRows > 0) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Exhibit marked for deletion' }));
+          } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Exhibit not found' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
 
 module.exports = {
   getBranchDirectors,
@@ -819,6 +859,7 @@ module.exports = {
   getExhibits,
   addExhibits,
   updateExhibit,
+  markExhibitForDeletion,
   markEmployeeForDeletion,
   getComplaints,
   insertComplaints,
