@@ -26,6 +26,12 @@ const ManageArtwork = () => {
     medium: "",
   });
 
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    //console.log("Submitting new item:", newArtwork); // Log the newItem before sending
+    addArtwork();
+  };
+
   const editArtWork = (artwork) => {
     setSelectedArtWork(artwork);
     setShowEditForm(true);
@@ -50,11 +56,49 @@ const ManageArtwork = () => {
     setShowAddForm(!showAddForm);
   };
 
-  const addArtwork = (e) => {
-    e.preventDefault();
-    // Add your logic for adding an artwork here
-    // For example, you can make a POST request to your backend to add the new artwork
-    // After the artwork is added, you can fetch the updated list of artworks
+  const addArtwork = async () => {
+    const newArtworkData = {
+      title: newArtwork.title,
+      artist: newArtwork.artist,
+      creationDate: formatDate(newArtwork.creationDate),
+      medium: newArtwork.medium,
+      image: newArtwork.image,
+    };
+
+    console.log(newArtworkData);
+
+    try {
+      const response = await fetch("http://localhost:8081/manage-artworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newArtworkData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Server error:", errorMessage);
+        throw new Error(`Failed to add artwork: ${errorMessage}`);
+      }
+
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-artworks"
+      );
+
+      if (!updatedResponse.ok) {
+        throw new Error("Failed to fetch updated artworks");
+      }
+
+      const updatedData = await updatedResponse.json();
+      setArtWork(updatedData);
+      toggleAddForm();
+
+      console.log("Artwork added successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error adding artwork: ${error.message}`);
+    }
   };
 
   const handleEditSubmit = async (e) => {
@@ -173,57 +217,72 @@ const ManageArtwork = () => {
         {showAddForm && (
           <div className="flex">
             <div className="mb-6 flex">
-              <input
-                type="text"
-                placeholder="Title"
-                className="border rounded mr-2 p-2 flex-1"
-                onChange={(e) =>
-                  setNewArtwork({ ...newArtwork, title: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Artist"
-                className="border rounded mr-2 p-2 flex-1"
-                onChange={(e) =>
-                  setNewArtwork({ ...newArtwork, artist: e.target.value })
-                }
-              />
-              <input
-                type="date"
-                placeholder="Time/Date" // Adjusted placeholder
-                className="border rounded mr-2 p-2 flex-1"
-                onChange={
-                  (e) =>
+              <form onSubmit={handleAddSubmit}>
+                <input
+                  type="text"
+                  name="title"
+                  value={newArtwork.title}
+                  placeholder="Title"
+                  className="border rounded mr-2 p-2 flex-1"
+                  onChange={(e) => {
+                    setNewArtwork({ ...newArtwork, title: e.target.value });
+                  }}
+                />
+                <input
+                  type="text"
+                  name="artist"
+                  value={newArtwork.artist}
+                  placeholder="Artist"
+                  className="border rounded mr-2 p-2 flex-1"
+                  onChange={(e) =>
+                    setNewArtwork({ ...newArtwork, artist: e.target.value })
+                  }
+                />
+                <input
+                  type="date"
+                  name="creationDate"
+                  value={newArtwork.creationDate}
+                  placeholder="Creation Date" // Adjusted placeholder
+                  className="border rounded mr-2 p-2 flex-1"
+                  onChange={
+                    (e) =>
+                      setNewArtwork({
+                        ...newArtwork,
+                        creationDate: e.target.value,
+                      }) // Adjusted setter
+                  }
+                />
+                <input
+                  type="text"
+                  name="medium"
+                  value={newArtwork.medium}
+                  placeholder="Medium"
+                  className="border rounded mr-2 p-2 flex-1"
+                  onChange={(e) =>
+                    setNewArtwork({ ...newArtwork, medium: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  name="image"
+                  value={newArtwork.image}
+                  placeholder="Image File"
+                  className="border rounded mr-2 p-2 flex-1"
+                  onChange={(e) =>
                     setNewArtwork({
                       ...newArtwork,
-                      "time/date": e.target.value,
-                    }) // Adjusted setter
-                }
-              />
-              <input
-                type="text"
-                placeholder="Medium"
-                className="border rounded mr-2 p-2 flex-1"
-                onChange={(e) =>
-                  setNewArtwork({ ...newArtwork, medium: e.target.value })
-                }
-              />
-              <input
-                type="file"
-                placeholder="Image File"
-                className="border rounded mr-2 p-2 flex-1"
-                onChange={(e) =>
-                  setNewArtwork({ ...newArtwork, imageFile: e.target.files[0] })
-                }
-              />
+                      image: e.target.value,
+                    })
+                  }
+                />
+                <button
+                  type="submit"
+                  className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
+                >
+                  Add Artwork
+                </button>
+              </form>
             </div>
-            <button
-              type="submit"
-              className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
-            >
-              Add Artwork
-            </button>
           </div>
         )}
 
@@ -270,7 +329,7 @@ const ManageArtwork = () => {
               onChange={(e) =>
                 setEditedArtwork({
                   ...editedArtwork,
-                  imageFile: e.target.files[0],
+                  image: e.target.files[0],
                 })
               }
             />
