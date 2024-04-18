@@ -57,18 +57,50 @@ const ManageArtwork = () => {
     // After the artwork is added, you can fetch the updated list of artworks
   };
 
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedArtWork = artworks.map((artwork) => {
-      console.log("HELP");
-      return artwork.art_id === editedArtwork.id
-        ? { ...artwork, ...editedArtwork }
-        : artwork;
-    });
 
-    setArtWork(updatedArtWork);
-    setSelectedArtWork(null);
-    setShowEditForm(false);
+    const updatedArtworkData = {
+      art_id: editedArtwork.id,
+      title: editedArtwork.title,
+      artist: editedArtwork.artist,
+      image: editedArtwork.image,
+      medium: editedArtwork.medium,
+      creationDate: editedArtwork.creationDate,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "update",
+          ...updatedArtworkData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      // Fetch updated data after successful update (if needed)
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-artworks"
+      );
+      const updatedData = await updatedResponse.json();
+      setArtWork(updatedData);
+
+      setSelectedArtWork(null);
+      setShowEditForm(false);
+
+      console.log("Artwork updated successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error updating artwork: ${error.message}`);
+    }
   };
 
   const confirmDelete = () => {
@@ -121,6 +153,9 @@ const ManageArtwork = () => {
                 <span className="text-xl">Medium: {artwork.medium}</span>
               </div>
               <div className="ml-auto flex">
+                <button onClick={() => editArtWork(artwork)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
                 <button onClick={() => confirmDelete(artwork.id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
