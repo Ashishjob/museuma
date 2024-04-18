@@ -33,6 +33,9 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname === '/manage-exhibits' && req.method === 'POST'){
             employeeRoutes(req, res);
         }
+        else if(parsedUrl.pathname === '/manage-exhibits' && req.method === 'PUT'){
+            employeeRoutes(req, res);
+        }
         else if(parsedUrl.pathname === '/complaints' && req.method === 'POST'){
             employeeRoutes(req, res);
         }
@@ -67,6 +70,12 @@ const server = http.createServer((req, res) => {
             employeeRoutes(req, res);
         }
         else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'GET'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'PUT'){
+            employeeRoutes(req, res);
+        }
+        else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'POST'){
             employeeRoutes(req, res);
         }
         else {

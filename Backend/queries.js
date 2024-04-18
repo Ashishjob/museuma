@@ -5,7 +5,9 @@ const getDirectorIdByDepartment = "SELECT Director_ID FROM branch_directors WHER
 const getEmployees = "SELECT * FROM employees";
 const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const getExhibit = "SELECT * FROM exhibits";
-const addExhibit = "INSERT INTO exhibits (Exhibit_id, Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?, ?)";
+const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?)";
+const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ? WHERE Exhibit_id = ?";
+const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
 const getComplaints = "SELECT * FROM complaints";
 const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
@@ -19,6 +21,11 @@ const getItem ="SELECT * FROM items";
 const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
+const updateArtWork = "UPDATE art_pieces SET title = ?, artist = ?, image = ?, medium = ?, creationDate = ? WHERE art_id = ?";
+const markArtWorkForDeletion ="UPDATE art_pieces SET active = 0 WHERE art_id = ?";
+const addArtWork = "INSERT INTO art_pieces (title, artist, creationDate, medium, image) VALUES (?, ?, ?, ?, ?)";
+
+
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
 FROM branch_directors
@@ -43,6 +50,8 @@ module.exports = {
     getDirectorIdByDepartment,
     getExhibit,
     addExhibit,
+    markExhibitForDeletion,
+    updateExhibit,
     getComplaints,
     addComplaint,
     authenticateUser,
@@ -53,5 +62,8 @@ module.exports = {
     getItem,
     updateItem,
     deleteItem,
-    getArtWorks
+    getArtWorks,
+    updateArtWork,
+    markArtWorkForDeletion,
+    addArtWork
 };

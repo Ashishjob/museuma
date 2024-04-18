@@ -8,22 +8,35 @@ const ManageArtwork = () => {
   const [artworks, setArtWork] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [selectedArtWork, setSelectedArtWork] = useState(null);
+
   const [selectedArtworkForDeletion, setSelectedArtworkForDeletion] =
     useState(null);
   const [newArtwork, setNewArtwork] = useState({
     title: "",
     artist: "",
     creationDate: "",
-    date: "",
     medium: "",
   });
+
   const [editedArtwork, setEditedArtwork] = useState({
     title: "",
     artist: "",
     creationDate: "",
-    date: "",
     medium: "",
   });
+
+  const editArtWork = (artwork) => {
+    setSelectedArtWork(artwork);
+    setShowEditForm(true);
+    setEditedArtwork({
+      id: artwork.art_id,
+      title: artwork.title,
+      artist: artwork.artist,
+      creationDate: artwork.creationDate,
+      medium: artwork.medium,
+    });
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -46,9 +59,16 @@ const ManageArtwork = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    // Add your logic for handling the edit form submission here
-    // For example, you can make a PUT request to your backend to update the artwork
-    // After the artwork is updated, you can fetch the updated list of artworks
+    const updatedArtWork = artworks.map((artwork) => {
+      console.log("HELP");
+      return artwork.art_id === editedArtwork.id
+        ? { ...artwork, ...editedArtwork }
+        : artwork;
+    });
+
+    setArtWork(updatedArtWork);
+    setSelectedArtWork(null);
+    setShowEditForm(false);
   };
 
   const confirmDelete = () => {
@@ -172,7 +192,7 @@ const ManageArtwork = () => {
           </div>
         )}
 
-        {showEditForm && (
+        {showEditForm && selectedArtWork && (
           <form onSubmit={handleEditSubmit}>
             <input
               type="text"

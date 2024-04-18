@@ -113,47 +113,49 @@ const getExhibits = (req, res) => {
 };
 
 const addExhibits = (req, res) => {
-    let body = "";
-    
-    req.on("data", (chunk) => {
-        body += chunk.toString();
-    });
-    
-    req.on("end", () => {
-        const parsedBody = JSON.parse(body);
-        const { Exhibit_id, Description, Collections, Location, Director_ID } = parsedBody;
-    
-        // Check if exhibit_name, exhibit_description, and exhibit_image are defined
-        if (!Exhibit_id || !Description || !Collections || !Location || !Director_ID) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(
-            JSON.stringify({
-            error: "Exhibit_id, Description, Collection, Location, and Director_ID are required.",
-            })
-        );
-        return;
-        }
-    
-        // Add exhibit to the database
-        pool.query(
-        queries.addExhibit,
-        [Exhibit_id, Description, Collections, Location, Director_ID],
-        (error, results) => {
-            if (error) {
-                console.error('Error adding exhibit:', error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Internal server error' }));
-                return;
-            }
-    
-            res.writeHead(201, { "Content-Type": "application/json" });
-            res.end(
-            JSON.stringify({ message: "Exhibit created successfully!" })
-            );
-        }
-        );
-    });
-    }
+  let body = "";
+  req.on("data", (chunk) => {
+      body += chunk.toString();
+  });
+  
+  req.on("end", () => {
+      const parsedBody = JSON.parse(body);
+      const { Description, Collections, Location, Director_ID } = parsedBody;
+  
+      console.log("Received data:", parsedBody); // Log received data
+
+      // Check if exhibit_name, exhibit_description, and exhibit_image are defined
+      if (!Description || !Collections || !Location || !Director_ID) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(
+              JSON.stringify({
+                  error: "Description, Collection, Location, and Director_ID are required.",
+              })
+          );
+          return;
+      }
+  
+      // Add exhibit to the database
+      pool.query(
+          queries.addExhibit,
+          [Description, Collections, Location, Director_ID],
+          (error, results) => {
+              if (error) {
+                  console.error('Error adding exhibit:', error);
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal server error' }));
+                  return;
+              }
+  
+              res.writeHead(201, { "Content-Type": "application/json" });
+              res.end(
+                  JSON.stringify({ message: "Exhibit created successfully!" })
+              );
+          }
+      );
+  });
+};
+
 
 const markEmployeeForDeletion = (req, res) => {
     let body = '';
@@ -641,6 +643,212 @@ const getArtWorks = (req, res) => {
   });
 };
 
+const updateArtWork = (requestData, res) => {
+  try {
+    const { title, artist, image, medium, creationDate, art_id } = requestData;
+
+    console.log('Received data:', { title, artist, image, medium, creationDate, art_id }); // Debugging line
+
+    if (!title || !art_id) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Title and/or art_id are undefined' }));
+    }
+
+    // Update artwork in the database
+    pool.query(
+      queries.updateArtWork,
+      [title, artist, image, medium, creationDate, art_id],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating artwork information:', error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Internal server error' }));
+        }
+
+        if (results.affectedRows > 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ message: 'Artwork information updated successfully' }));
+        } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Artwork not found' }));
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error parsing request body:', error);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Invalid request body' }));
+  }
+};
+
+
+const markArtWorkForDeletion = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const requestBody = JSON.parse(body);
+      const artId = requestBody.art_id;
+
+      pool.query(
+        queries.markArtWorkForDeletion,
+        [artId],
+        (error, results) => {
+          if (error) {
+            console.error('Error marking artwork for deletion:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return; // End the function execution here
+          }
+
+          if (results.affectedRows > 0) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Artwork marked for deletion' }));
+          } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Artwork not found' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+const addArtWork = (req, res) => {
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    try {
+      const parsedBody = JSON.parse(body);
+      const { title, artist, creationDate, medium, image } = parsedBody;
+
+      // Check if required fields are defined
+      if (!title || !artist || !creationDate || !medium || !image) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            error: "Title, artist, creation date, medium, and image are required.",
+          })
+        );
+        return;
+      }
+
+      // Add artwork to the database
+      pool.query(
+        queries.addArtWork,
+        [title, artist, creationDate, medium, image],
+        (error, results) => {
+          if (error) {
+            console.error("Error adding artwork:", error);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Internal server error" }));
+            return;
+          }
+
+          res.writeHead(201, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({ message: "Artwork added successfully!" })
+          );
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+const updateExhibit = (requestData, res) => {
+  try {
+    const { Description, Collections, Location, Director_ID, Exhibit_id } = requestData;
+
+    console.log('Received data:', { Description, Collections, Location, Director_ID, Exhibit_id }); // Debugging line
+
+    if (!Description || !Collections || !Location || !Director_ID || !Exhibit_id) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Description, Collections, Location, Director_ID, and/or Exhibit_id are undefined' }));
+    }
+
+    // Update exhibit in the database
+    pool.query(
+      queries.updateExhibit,
+      [Description, Collections, Location, Director_ID, Exhibit_id],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating exhibit information:', error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Internal server error' }));
+        }
+
+        if (results.affectedRows > 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ message: 'Exhibit information updated successfully' }));
+        } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Exhibit not found' }));
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error parsing request body:', error);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Invalid request body' }));
+  }
+};
+
+const markExhibitForDeletion = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const requestBody = JSON.parse(body);
+      const exhibitId = requestBody.Exhibit_id; // Make sure the key matches the one in the request body
+
+      pool.query(
+        queries.markExhibitForDeletion,
+        [exhibitId],
+        (error, results) => {
+          if (error) {
+            console.error('Error marking exhibit for deletion:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return; // End the function execution here
+          }
+
+          if (results.affectedRows > 0) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Exhibit marked for deletion' }));
+          } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Exhibit not found' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
 
 module.exports = {
   getBranchDirectors,
@@ -650,6 +858,8 @@ module.exports = {
   updateEmployeeInfo,
   getExhibits,
   addExhibits,
+  updateExhibit,
+  markExhibitForDeletion,
   markEmployeeForDeletion,
   getComplaints,
   insertComplaints,
@@ -662,5 +872,8 @@ module.exports = {
   getItem,
   updateItemInfo,
   deleteItem,
-  getArtWorks
+  getArtWorks,
+  updateArtWork,
+  markArtWorkForDeletion,
+  addArtWork
 };
