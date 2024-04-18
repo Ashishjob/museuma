@@ -641,43 +641,124 @@ const getArtWorks = (req, res) => {
   });
 };
 
-const updateArtWork = (req, res) => {
-  let requestData = '';
+const updateArtWork = (requestData, res) => {
+  try {
+    const { title, artist, image, medium, creationDate, art_id } = requestData;
 
-  req.on('data', (chunk) => {
-    requestData += chunk.toString();
+    console.log('Received data:', { title, artist, image, medium, creationDate, art_id }); // Debugging line
+
+    if (!title || !art_id) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Title and/or art_id are undefined' }));
+    }
+
+    // Update artwork in the database
+    pool.query(
+      queries.updateArtWork,
+      [title, artist, image, medium, creationDate, art_id],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating artwork information:', error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Internal server error' }));
+        }
+
+        if (results.affectedRows > 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ message: 'Artwork information updated successfully' }));
+        } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Artwork not found' }));
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error parsing request body:', error);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Invalid request body' }));
+  }
+};
+
+
+const markArtWorkForDeletion = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
   });
 
   req.on('end', () => {
     try {
-      const { title, artist, image, medium, creationDate, art_id } = JSON.parse(requestData);
+      const requestBody = JSON.parse(body);
+      const artId = requestBody.art_id;
 
-      console.log('Received data:', { title, artist, image, medium, creationDate, art_id }); // Debugging line
+      pool.query(
+        queries.markArtWorkForDeletion,
+        [artId],
+        (error, results) => {
+          if (error) {
+            console.error('Error marking artwork for deletion:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return; // End the function execution here
+          }
 
-      if (typeof title === 'undefined' || typeof art_id === 'undefined') {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Title and/or art_id are undefined' }));
+          if (results.affectedRows > 0) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Artwork marked for deletion' }));
+          } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Artwork not found' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+const addArtWork = (req, res) => {
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    try {
+      const parsedBody = JSON.parse(body);
+      const { title, artist, creationDate, medium, image } = parsedBody;
+
+      // Check if required fields are defined
+      if (!title || !artist || !creationDate || !medium || !image) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            error: "Title, artist, creation date, medium, and image are required.",
+          })
+        );
         return;
       }
 
-      // Update artwork in the database
+      // Add artwork to the database
       pool.query(
-        queries.updateArtWork,
-        [title, artist, image, medium, creationDate, art_id],
+        queries.addArtWork,
+        [title, artist, creationDate, medium, image],
         (error, results) => {
           if (error) {
-            console.error('Error updating artwork information:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal server error' }));
-          } else {
-            if (results.affectedRows > 0) {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'Artwork information updated successfully' }));
-            } else {
-              res.writeHead(404, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: 'Artwork not found' }));
-            }
+            console.error("Error adding artwork:", error);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Internal server error" }));
+            return;
           }
+
+          res.writeHead(201, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({ message: "Artwork added successfully!" })
+          );
         }
       );
     } catch (error) {
@@ -710,5 +791,7 @@ module.exports = {
   updateItemInfo,
   deleteItem,
   getArtWorks,
-  updateArtWork
+  updateArtWork,
+  markArtWorkForDeletion,
+  addArtWork
 };

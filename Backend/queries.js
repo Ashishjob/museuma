@@ -20,6 +20,9 @@ const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, i
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
 const updateArtWork = "UPDATE art_pieces SET title = ?, artist = ?, image = ?, medium = ?, creationDate = ? WHERE art_id = ?";
+const markArtWorkForDeletion ="UPDATE art_pieces SET active = 0 WHERE art_id = ?";
+const addArtWork = "INSERT INTO art_pieces (title, artist, creationDate, medium, image) VALUES (?, ?, ?, ?, ?)";
+
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -56,5 +59,7 @@ module.exports = {
     updateItem,
     deleteItem,
     getArtWorks,
-    updateArtWork
+    updateArtWork,
+    markArtWorkForDeletion,
+    addArtWork
 };
