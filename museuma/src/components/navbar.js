@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { HiArchiveBox } from "react-icons/hi2";
+
 import Cookies from "js-cookie";
 
 export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
@@ -16,6 +19,18 @@ export default function NavBar() {
     Cookies.remove("token");
     setIsLoggedIn(false);
     setShowDropdown(false);
+  };
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+
+  const Popup = () => {
+    return (
+      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4">
+        <p>No new notifications</p>
+      </div>
+    );
   };
 
   return (
@@ -46,6 +61,11 @@ export default function NavBar() {
               Dining
             </a>
           </nav>
+          <div className="relative">
+          <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+          
+          {isPopupOpen && <Popup />}
+        </div>
         </div>
         <div className="flex items-center">
           <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">

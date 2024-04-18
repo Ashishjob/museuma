@@ -1,55 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 function Giftshop() {
-  // This will be replaced with actual data later
-  const products = [
-    {
-      item_id: 1,
-      title: "Sunset Serenade",
-      description:
-        "Experience the symphony of colors as the sun bids farewell to the day in this captivating watercolor masterpiece.",
-      price: 150,
-      item_stock: 10,
-      image: "/giftSunset.png",
-    },
-    {
-      item_id: 2,
-      title: "Moonlit Melodies",
-      description:
-        "Surrender to the enchanting tunes of the night with this stunning depiction of moonlit landscapes in oil on canvas.",
-      price: 180,
-      item_stock: 15,
-      image: "/giftMoon.png",
-    },
-    {
-      item_id: 3,
-      title: "Whispers of Nature",
-      description:
-        "Hear the secrets of the forest in this ethereal portrayal of nature's harmony, captured in delicate pastels.",
-      price: 120,
-      item_stock: 15,
-      image: "/giftWhisper.png",
-    },
-    {
-      item_id: 4,
-      title: "Ocean's Embrace",
-      description:
-        "Dive into the depths of tranquility with this mesmerizing portrayal of the ocean's embrace, rendered in mixed media.",
-      price: 200,
-      item_stock: 15,
-      image: "/giftOcean.png",
-    },
-    {
-      item_id: 5,
-      title: "Starry Reverie",
-      description:
-        "Lose yourself in the celestial dance of stars with this captivating rendition of the night sky, painted with precision in acrylic.",
-      price: 160,
-      item_stock: 15,
-      image: "/giftStarry.png",
-    },
-  ];
-
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState("asc");
   const [sort, setSort] = useState("title");
@@ -134,11 +85,11 @@ function Giftshop() {
               className="border border-gray-200 rounded-lg p-2 w-full"
             >
               <img
-                src={product.image}
+                src={product.image_url}
                 alt={product.title}
                 className="w-full h-64 object-cover rounded"
               />
-              <h2 className="text-xl mt-2">{product.description}</h2>
+              <h2 className="text-xl mt-2">{product.title}</h2>
               <p className="text-gray-500">{product.description}</p>
               <div className="flex justify-between items-center mt-2">
                 <p className="font-bold">${product.price}</p>
