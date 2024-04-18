@@ -71,7 +71,7 @@ function router(req, res) {
     else if (url.startsWith('/manage-giftshop') && method === 'POST') {
         controller.addItem(req, res);
     }
-    else if (url.startsWith('/manage-giftshop') && method === 'GET') {
+    else if ((url.startsWith('/giftshop') || url.startsWith('/manage-giftshop')) && method === 'GET') {
         controller.getItem(req, res);
     }
     else if (url.startsWith('/manage-giftshop') && method === 'PUT') {
@@ -110,6 +110,12 @@ function router(req, res) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Invalid content type' }));
         }
+    }
+    else if (url.startsWith('/manage-restaurant') && method === 'GET') {
+        controller.getFood(req, res);
+    }
+    else if (url.startsWith('/manage-restaurant') && method === 'POST') {
+        controller.addFood(req, res);
     } 
     else if (url === '/manage-exhibits' && method === 'PUT') {
         const contentType = req.headers['content-type'];
@@ -126,6 +132,31 @@ function router(req, res) {
                     controller.updateExhibit(requestData, res);
                 } else if (data.action === 'markForDeletion') {
                     controller.markExhibitForDeletion(req, res);
+                } else {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Invalid action' }));
+                }
+            });
+        } else {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid content type' }));
+        }
+    } 
+    else if (url === '/manage-restaurant' && method === 'PUT') {
+        const contentType = req.headers['content-type'];
+        if (contentType && contentType.includes('application/json')) {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString(); // convert Buffer to string
+            });
+            req.on('end', () => {
+                const data = JSON.parse(body);
+                const { action, ...requestData } = data; // Destructure 'action' field and get the rest of the data
+                if (data.action === 'update') {
+                    console.log(requestData);
+                    controller.updateFood(requestData, res);
+                } else if (data.action === 'markForDeletion') {
+                    controller.markFoodForDeletion(req, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));

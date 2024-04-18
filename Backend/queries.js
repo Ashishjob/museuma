@@ -16,15 +16,18 @@ const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
-const addItem = "INSERT INTO items (price, description, quantity, image_url) VALUES(?, ?, ?, ?)";
+const addItem = "INSERT INTO items (title, price, description, quantity, image_url) VALUES(?, ?, ?, ?, ?)";
 const getItem ="SELECT * FROM items";
-const updateItem = "UPDATE items SET price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
+const updateItem = "UPDATE items SET title = ?, price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
 const updateArtWork = "UPDATE art_pieces SET title = ?, artist = ?, image = ?, medium = ?, creationDate = ? WHERE art_id = ?";
 const markArtWorkForDeletion ="UPDATE art_pieces SET active = 0 WHERE art_id = ?";
 const addArtWork = "INSERT INTO art_pieces (title, artist, creationDate, medium, image) VALUES (?, ?, ?, ?, ?)";
-
+const addFood = "INSERT INTO restaurant (name, description, image, price) VALUES(?, ?, ?, ?)";
+const markFoodForDeletion ="UPDATE restaurant SET active = 0 WHERE restaurant_id = ?";
+const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, price = ? WHERE restaurant_id = ?";
+const getFood = "SELECT * FROM restaurant";
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -65,5 +68,9 @@ module.exports = {
     getArtWorks,
     updateArtWork,
     markArtWorkForDeletion,
-    addArtWork
+    addArtWork,
+    addFood,
+    markFoodForDeletion,
+    updateFood,
+    getFood
 };
