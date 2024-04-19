@@ -51,16 +51,29 @@ export default function NavBar() {
   
 
   const Popup = () => {
+    // Filter out messages where resolved is false
+    const resolvedMessages = queue.filter(item => item.resolved === 0);
+
+    // Check if resolvedMessages is empty
+  if (resolvedMessages.length === 0) {
+    return (
+      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64">
+        <p>No notifications</p>
+      </div>
+    );
+  }
+
     return (
       <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64"> {/* Added w-64 for width */}
         <ul className="text-lg"> {/* Added text-sm for smaller text */}
-          {queue.map((item, index) => (
+          {resolvedMessages.map((item, index) => (
             <li key={index}>{item.message}</li> // Adjust this based on your message structure
           ))}
         </ul>
       </div>
     );
   };
+  
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
