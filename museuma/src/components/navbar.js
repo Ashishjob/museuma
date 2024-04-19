@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { HiArchiveBox } from "react-icons/hi2";
-
 import Cookies from "js-cookie";
 
 export default function NavBar() {
@@ -12,7 +11,6 @@ export default function NavBar() {
   const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [hasUnresolvedMessages, setHasUnresolvedMessages] = useState(false);
   const [queue, setQueue] = useState([]);
-
   const [cartQuantity, setCartQuantity] = useState(0);
 
   useEffect(() => {
@@ -293,14 +291,17 @@ const useCart = () => {
             <a href="/artworks" className="mr-5 hover:text-gray-900">
               Artworks
             </a>
-            <a href="/tickets" className="mr-5 hover:text-gray-900">
+            <a href={isLoggedIn ? "/tickets" : "/login"} className="mr-5 hover:text-gray-900">
               Tickets
             </a>
-            <a href="/giftshop" className="mr-5 hover:text-gray-900">
+            <a href={isLoggedIn ? "/giftshop" : "/login"} className="mr-5 hover:text-gray-900">
               Gift Shop
             </a>
-            <a href="/dining" className="mr-5 hover:text-gray-900">
+            <a href={isLoggedIn ? "/dining" : "/login"} className="mr-5 hover:text-gray-900">
               Dining
+            </a>
+            <a href={isLoggedIn ? "/complaints" : "/login"} className="mr-5 hover:text-gray-900">
+              Report a Problem
             </a>
           </nav>
           <div className="relative">
