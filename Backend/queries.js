@@ -12,7 +12,6 @@ const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_i
 const getComplaints = "SELECT * FROM complaints";
 const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
-// const authenticateUser = "SELECT * FROM customers WHERE username = ? AND password = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
@@ -28,6 +27,7 @@ const addFood = "INSERT INTO restaurant (name, description, image, price) VALUES
 const markFoodForDeletion ="UPDATE restaurant SET active = 0 WHERE restaurant_id = ?";
 const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, price = ? WHERE restaurant_id = ?";
 const getFood = "SELECT * FROM restaurant";
+const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
 const getFirstName = `
 SELECT 
     CASE 
@@ -39,7 +39,6 @@ SELECT
             (SELECT first_name FROM customers WHERE customer_id = ?)
         ELSE NULL 
     END AS first_name`;
-
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -53,7 +52,6 @@ UNION
 (SELECT employee_id AS user_id, 'employees' AS table_name
 FROM employees
 WHERE username = ? AND password = ?)`;
-
 
 module.exports = {
     getBranchDirectors,
@@ -85,5 +83,6 @@ module.exports = {
     markFoodForDeletion,
     updateFood,
     getFood,
-    getFirstName
+    getFirstName,
+    getEmployeeDepartment
 };
