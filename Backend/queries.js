@@ -28,6 +28,7 @@ const addFood = "INSERT INTO restaurant (name, description, image, price) VALUES
 const markFoodForDeletion ="UPDATE restaurant SET active = 0 WHERE restaurant_id = ?";
 const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, price = ? WHERE restaurant_id = ?";
 const getFood = "SELECT * FROM restaurant";
+const getMessages = "SELECT * FROM message_queue";
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -72,5 +73,6 @@ module.exports = {
     addFood,
     markFoodForDeletion,
     updateFood,
-    getFood
+    getFood,
+    getMessages
 };

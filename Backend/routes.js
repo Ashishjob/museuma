@@ -1,4 +1,6 @@
 const controller = require('./controller');
+const { URL } = require('url'); // Import the URL class
+
 
 function router(req, res) {
     const url = req.url;
@@ -111,6 +113,19 @@ function router(req, res) {
             res.end(JSON.stringify({ error: 'Invalid content type' }));
         }
     }
+    else if (new URL(req.url, `http://${req.headers.host}`).pathname.startsWith('/admin') && method === 'GET') {
+        const hash = new URL(req.url, `http://${req.headers.host}`).hash; // Get the hash from the URL
+        
+        // Check if the hash is '#notifications'
+        if (hash === '#notifications') {
+            // Handle the notifications route
+            // For example, call a function or send a response
+        } else {
+            // Handle other admin routes
+            controller.getMessages(req, res);
+        }
+    }
+    
     else if (url.startsWith('/manage-restaurant') && method === 'GET') {
         controller.getFood(req, res);
     }

@@ -7,13 +7,31 @@ export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [queue, setQueue] = useState([]);
+
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
     }
+
+    // Check if the hash fragment is "notifications"
+    if (window.location.hash === "#notifications") {
+      setIsPopupOpen(true);
+      fetchMessages(); // Fetch messages when the popup is open
+    }
   }, []);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/admin#notifications'); // Replace with your actual API endpoint
+      const data = await response.json();
+      setQueue(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -23,15 +41,39 @@ export default function NavBar() {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
+    
+    if (!isPopupOpen) {
+      window.location.hash = "notifications";
+    } else {
+      window.location.hash = "";
+    }
   };
+  
 
   const Popup = () => {
     return (
-      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4">
-        <p>No new notifications</p>
+      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64"> {/* Added w-64 for width */}
+        <ul className="text-lg"> {/* Added text-sm for smaller text */}
+          {queue.map((item, index) => (
+            <li key={index}>{item.message}</li> // Adjust this based on your message structure
+          ))}
+        </ul>
       </div>
     );
   };
+
+  useEffect(() => {
+    const storedToken = Cookies.get("token");
+    if (storedToken) {
+      setIsLoggedIn(true);
+    }
+  
+    // Check if the hash fragment is "notifications"
+    if (window.location.hash === "#notifications") {
+      setIsPopupOpen(true);
+    }
+  }, []);
+  
 
   return (
     <header className="text-[#313639] body-font z-1 shadow">
