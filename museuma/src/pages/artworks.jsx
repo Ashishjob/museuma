@@ -1,49 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Artworks() {
-    // This will be replaced with actual data later
-    const artworks = [
-        {
-            title: 'The Whispering Wind',
-            artist: 'Joseph Michael Baker',
-            description: 'An evocative exploration of movement and sound, captured in the medium of oil on canvas.',
-            medium: 'Oil on canvas',
-            date: '01/13/2004',
-            image: '/museuma1.png',
-        },
-        {
-            title: 'Dance of the Fireflies',
-            artist: 'Jane Doe',
-            description: 'A vibrant depiction of nature’s nightly ballet, immortalized in acrylic on canvas.',
-            medium: 'Acrylic on canvas',
-            date: '02/14/2005',
-            image: '/museuma2.png',
-        },
-        {
-            title: 'Echoes of the Ocean',
-            artist: 'John Smith',
-            description: 'A serene watercolor tribute to the rhythmic ebb and flow of the sea.',
-            medium: 'Watercolor on paper',
-            date: '03/15/2006',
-            image: '/museuma3.png',
-        },
-        {
-            title: 'Shadows and Whispers',
-            artist: 'Emily Johnson',
-            description: 'A haunting exploration of light and darkness, rendered in stark charcoal on paper.',
-            medium: 'Charcoal on paper',
-            date: '04/16/2007',
-            image: '/museuma4.png',
-        },
-        {
-            title: 'Blossom in the Storm',
-            artist: 'Robert Brown',
-            description: 'A pastel on paper piece that captures the resilience and beauty of nature amidst chaos.',
-            medium: 'Pastel on paper',
-            date: '05/17/2008',
-            image: '/museuma5.png',
-        },
-    ];
+    const [artworks, setArtWork] = useState([]);
+    
+    useEffect(() => {
+        const fetchArtworks = async () => {
+          try {
+            const response = await fetch("http://localhost:8081/manage-artworks"); // Endpoint URL should match your backend route
+            if (!response.ok) {
+              throw new Error("Failed to fetch artworks");
+            }
+            const data = await response.json();
+            const activeArtWork = data.filter((artwork) => artwork.active === 1);
+            setArtWork(activeArtWork);
+          } catch (error) {
+            console.error("Error fetching artworks:", error);
+            // Handle error as needed
+          }
+        };
+    
+        fetchArtworks();
+      }, []);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [order, setOrder] = useState('asc');
@@ -66,31 +43,33 @@ function Artworks() {
 
     return (
         <main className=''>
-            <div className="p-4">
-                <h1 className="text-4xl mb-4 bg-[#EFEDE5] rounded-xl pl-2">Artworks</h1>
-                <div className="mb-4 flex w-full">
-                    <input
-                        type="text"
-                        placeholder="Search artworks"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                        className="border border-gray-200 rounded p-2 mr-2 flex-grow"
-                    />
-                    <select value={sort} onChange={e => setSort(e.target.value)} className="border border-gray-200 rounded p-2 w-1/6">
-                        <option value="title">Sort by Title</option>
-                        <option value="date">Sort by Date</option>
-                    </select>
-                </div>
+  <div className="p-4">
+    <h1 className="text-4xl mb-4 bg-[#EFEDE5] rounded-xl pl-2">Artworks</h1>
+    <div className="mb-4 flex w-full">
+      <input
+        type="text"
+        placeholder="Search artworks"
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        className="border border-gray-200 rounded p-2 mr-2 flex-grow"
+      />
+      <select value={sort} onChange={e => setSort(e.target.value)} className="border border-gray-200 rounded p-2 w-1/6">
+        <option value="title_asc">Sort by Title ▲</option>
+        <option value="title_desc">Sort by Title ▼</option>
+        <option value="date_asc">Sort by Date ▲</option>
+        <option value="date_desc">Sort by Date ▼</option>
+      </select>
+    </div>
                 <div className="grid grid-cols-3 gap-4">
                     {filteredArtworks.map((artwork, index) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-2">
-                            <img src={artwork.image} alt={artwork.title} className="w-full h-64 object-cover rounded" />
+                            <img src={artwork.image} alt={artwork.title} className="mx-auto w-fit h-64 rounded" />
                             <div className='flex flex-row justify-between'>
                                 <h2 className="text-xl mt-2">{artwork.title}</h2>
                                 <h3 className="text-base text-gray-500 mt-2">{artwork.medium}</h3>
                             </div>
                             <p className="">Artist: {artwork.artist}</p>
-                            <p className="text-base">{artwork.date}</p>
+                            <p className="text-base">{new Date(artwork.creationDate).toLocaleDateString()}</p>
                             <p className='text-gray-500'>{artwork.description}</p>
                         </div>
                     ))}

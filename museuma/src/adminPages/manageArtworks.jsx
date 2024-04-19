@@ -354,7 +354,7 @@ const ManageArtwork = () => {
               }
             />
             <input
-              type="file"
+              type="text"
               placeholder="Image File"
               onChange={(e) =>
                 setEditedArtwork({
