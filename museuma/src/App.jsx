@@ -26,6 +26,7 @@ import ManageRestaurant from "./adminPages/manageRestaurant";
 import Login from "./components/login";
 import Signup from "./components/signup";
 import AdminLogin from "./components/adminLogin";
+import ThanksForOrder from "./pages/thanksForOrder";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -72,7 +73,19 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  document.addEventListener('mousemove', (e) => {
+    const trail = document.createElement('div');
+    trail.classList.add('cursor-trail');
+    trail.style.left = `${e.pageX}px`;
+    trail.style.top = `${e.pageY}px`;
+    document.body.appendChild(trail);
+    setTimeout(() => {
+      document.body.removeChild(trail);
+    }, 500);
+  });
+
   return (
+    
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -87,6 +100,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/thanks-for-order" element={<ThanksForOrder />} />
         <Route
           path="/profile"
           element={

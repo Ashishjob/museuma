@@ -81,7 +81,7 @@ function Checkout() {
     const handleCardNumberChange = (e) => {
         let value = e.target.value.replace(/\s/g, '');
         value = value.match(/.{1,4}/g)?.join(' ') || '';
-        setCardNumber(value.slice(0, 14));
+        setCardNumber(value.slice(0, 19));
     };
 
     const handleExpirationDateChange = (e) => {
@@ -117,7 +117,10 @@ function Checkout() {
                                         <p className="text-sm font-medium text-gray-900">Total</p>
                                         <p className="text-2xl text-gray-900">${total.toFixed(2)}</p>
                                     </div>
-                                    <button onClick={handlePlaceOrder} disabled={!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType || items.length === 0} className={`w-full rounded-md px-6 py-3 font-medium text-white ${(!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType) ? 'bg-gray-900' : 'bg-gray-700'}`}>Place Order</button>                                </form>
+                                    <a href='/thanks-for-order'>
+                                        <button onClick={handlePlaceOrder} disabled={!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType || items.length === 0} className={`w-full rounded-md px-6 py-3 font-medium text-white ${(!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType) ? 'bg-gray-900' : 'bg-gray-700'}`}>Place Order</button> </a>
+                                </form>
+
                             </div>
                             <div className="border border-gray-200 rounded-lg p-4 w-fit">
                                 <h2 className="text-xl font-medium mb-2">Order Summary</h2>
