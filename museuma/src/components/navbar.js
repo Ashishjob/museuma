@@ -42,12 +42,18 @@ export default function NavBar() {
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
     
-    if (!isPopupOpen) {
-      window.location.hash = "notifications";
-    } else {
-      window.location.hash = "";
-    }
+    const fetchData = async () => {
+      if (!isPopupOpen) {
+        window.location.hash = "notifications";
+        await fetchMessages(); // Fetch messages when the popup is opened
+      } else {
+        window.location.hash = "";
+      }
+    };
+  
+    fetchData();
   };
+  
   
 
   const Popup = () => {
