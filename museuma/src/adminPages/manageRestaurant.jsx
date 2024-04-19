@@ -55,14 +55,49 @@ const ManageRestaurant = () => {
     setEditedItem({ ...editedItem, [name]: value });
   };
 
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedItems = items.map((item) =>
-      item.id === editedItem.id ? { ...item, ...editedItem } : item
-    );
-    setItems(updatedItems);
-    setSelectedItem(null);
-    setShowEditForm(false);
+
+    const updatedFoodData = {
+      restaurant_id: editedItem.id,
+      name: editedItem.name,
+      description: editedItem.description,
+      image: editedItem.image,
+      price: Number(editedItem.price),
+    };
+    console.log(updatedFoodData);
+    try {
+      const response = await fetch(`http://localhost:8081/manage-restaurant`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "update",
+          ...updatedFoodData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      // Fetch updated data after successful update
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-restaurant"
+      );
+      const updatedData = await updatedResponse.json();
+      setItems(updatedData);
+
+      setSelectedItem(null);
+      setShowEditForm(false);
+
+      console.log("Food updated successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error updating item: ${error.message}`);
+    }
   };
 
   const toggleAddForm = () => {
@@ -135,7 +170,7 @@ const ManageRestaurant = () => {
     setSelectedItem(item);
     setShowEditForm(true);
     setEditedItem({
-      id: item.id,
+      id: item.restaurant_id,
       name: item.name,
       description: item.description,
       image: item.image,
@@ -167,15 +202,15 @@ const ManageRestaurant = () => {
           {items.map((item, index) => (
             <li key={index} className="py-4 flex">
               <div className="flex flex-col">
-                <span className="text-2xl">{item.name}</span>
-                <span className="text-xl">{item.description}</span>
-                <span className="text-xl">{item.price}</span>
+                <span className="text-2xl">Name: {item.name}</span>
+                <span className="text-xl">Description: {item.description}</span>
+                <span className="text-xl">Price: ${item.price}</span>
               </div>
               <div className="ml-auto flex">
                 <button onClick={() => editItem(item)} className="mr-2">
                   <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-                <button onClick={() => deleteItem(item.id)}>
+                <button onClick={() => deleteItem(item.restaurant_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
@@ -240,6 +275,60 @@ const ManageRestaurant = () => {
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+        {showEditForm && selectedItem && (
+          <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white p-6 rounded-md">
+              <h2 className="text-2xl mb-4">Edit Item</h2>
+              <form onSubmit={handleEditSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Food name"
+                  value={editedItem.name}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Food description"
+                  value={editedItem.description}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Food Price"
+                  value={editedItem.price}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+                <input
+                  type="text"
+                  name="image"
+                  placeholder="Food image URL"
+                  value={editedItem.image}
+                  onChange={handleEditInputChange}
+                  className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
+                />
+
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditForm(false)}
+                    className="admin-button mr-2"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="admin-button">
+                    Update
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
