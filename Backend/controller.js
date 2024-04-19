@@ -157,37 +157,28 @@ const addExhibits = (req, res) => {
 };
 
 
-const markEmployeeForDeletion = (req, res) => {
-    let body = '';
+const markEmployeeForDeletion = (requestData, res) => {
+  const { employee_id } = requestData;
 
-    // Listen for data chunks in the request body
-    req.on('data', chunk => {
-        body += chunk.toString();
-    });
+  if (!employee_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Employee ID is missing' }));
+    return;
+  }
 
-    
-    // Once all data is received, parse the JSON body
-    req.on('end', () => {
-        // Parse the JSON body
-        const requestBody = JSON.parse(body);
+  console.log('Employee ID:', employee_id);
 
-        // Log the request body
-        console.log('Request Body:', requestBody);
+  pool.query(queries.markEmployeeForDeletion, [employee_id], (error, results) => {
+    if (error) {
+      console.error('Error marking employee for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
 
-        // Extract employee ID from the request body or URL parameters
-        const employeeId = requestBody.employee_id; 
-        console.log(employeeId);
-        pool.query(queries.markEmployeeForDeletion, [employeeId], (error, results) => {
-            if (error) {
-                console.error('Error marking employee for deletion:', error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Internal server error' }));
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
-        });
-    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
+  });
 };
 
 const insertComplaints = (req, res) => {
@@ -682,45 +673,35 @@ const updateArtWork = (requestData, res) => {
 };
 
 
-const markArtWorkForDeletion = (req, res) => {
-  let body = '';
+const markArtWorkForDeletion = (requestData, res) => {
+  const { art_id } = requestData;
+  
+  if (!art_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'art_id is missing' }));
+    return;
+  }
 
-  req.on('data', chunk => {
-    body += chunk.toString();
-  });
+  console.log('Artwork ID:', art_id);
 
-  req.on('end', () => {
-    try {
-      const requestBody = JSON.parse(body);
-      const artId = requestBody.art_id;
+  pool.query(queries.markArtWorkForDeletion, [art_id], (error, results) => {
+    if (error) {
+      console.error('Error marking artwork for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
 
-      pool.query(
-        queries.markArtWorkForDeletion,
-        [artId],
-        (error, results) => {
-          if (error) {
-            console.error('Error marking artwork for deletion:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal server error' }));
-            return; // End the function execution here
-          }
-
-          if (results.affectedRows > 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Artwork marked for deletion' }));
-          } else {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Artwork not found' }));
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error parsing request body:', error);
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Artwork marked for deletion' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Artwork not found' }));
     }
   });
 };
+
 
 const addArtWork = (req, res) => {
   let body = "";
@@ -809,45 +790,35 @@ const updateExhibit = (requestData, res) => {
   }
 };
 
-const markExhibitForDeletion = (req, res) => {
-  let body = '';
+const markExhibitForDeletion = (requestData, res) => {
+  const { Exhibit_id } = requestData; // Make sure the key matches the one in the request data
 
-  req.on('data', chunk => {
-    body += chunk.toString();
-  });
+  if (!Exhibit_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Exhibit ID is missing' }));
+    return;
+  }
 
-  req.on('end', () => {
-    try {
-      const requestBody = JSON.parse(body);
-      const exhibitId = requestBody.Exhibit_id; // Make sure the key matches the one in the request body
+  console.log('Exhibit ID:', Exhibit_id);
 
-      pool.query(
-        queries.markExhibitForDeletion,
-        [exhibitId],
-        (error, results) => {
-          if (error) {
-            console.error('Error marking exhibit for deletion:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal server error' }));
-            return; // End the function execution here
-          }
+  pool.query(queries.markExhibitForDeletion, [Exhibit_id], (error, results) => {
+    if (error) {
+      console.error('Error marking exhibit for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
 
-          if (results.affectedRows > 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Exhibit marked for deletion' }));
-          } else {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Exhibit not found' }));
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error parsing request body:', error);
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Exhibit marked for deletion' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Exhibit not found' }));
     }
   });
 };
+
 
 const getFood = (req, res) => {
   pool.query(queries.getFood, (error, results) => {
@@ -942,45 +913,35 @@ const updateFood = (requestData, res) => {
   }
 };
 
-const markFoodForDeletion = (req, res) => {
-  let body = '';
+const markFoodForDeletion = (requestData, res) => {
+  const { restaurant_id } = requestData; // Make sure the key matches the one in the request data
 
-  req.on('data', chunk => {
-    body += chunk.toString();
-  });
+  if (!restaurant_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Restaurant ID is missing' }));
+    return;
+  }
 
-  req.on('end', () => {
-    try {
-      const requestBody = JSON.parse(body);
-      const restaurantId = requestBody.restaurant_id; // Make sure the key matches the one in the request body
+  console.log('Restaurant ID:', restaurant_id);
 
-      pool.query(
-        queries.markFoodForDeletion,
-        [restaurantId],
-        (error, results) => {
-          if (error) {
-            console.error('Error marking food for deletion:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal server error' }));
-            return; // End the function execution here
-          }
+  pool.query(queries.markFoodForDeletion, [restaurant_id], (error, results) => {
+    if (error) {
+      console.error('Error marking food for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
 
-          if (results.affectedRows > 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Food marked for deletion' }));
-          } else {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Food not found' }));
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error parsing request body:', error);
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Food marked for deletion' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Food not found' }));
     }
   });
 };
+
 
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {

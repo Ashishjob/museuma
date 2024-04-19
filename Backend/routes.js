@@ -29,7 +29,7 @@ function router(req, res) {
                     controller.updateEmployeeInfo(requestData, res);
                 } else if (data.action === 'markForDeletion') {
                     console.log("we made it to routes.js")
-                    controller.markEmployeeForDeletion(req, res);
+                    controller.markEmployeeForDeletion(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
@@ -102,7 +102,8 @@ function router(req, res) {
                     console.log(requestData);
                     controller.updateArtWork(requestData, res);
                 } else if (data.action === 'markForDeletion') {
-                    controller.markArtWorkForDeletion(req, res);
+                    console.log("Here is our request data: ", requestData);
+                    controller.markArtWorkForDeletion(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
@@ -146,7 +147,7 @@ function router(req, res) {
                     console.log(requestData);
                     controller.updateExhibit(requestData, res);
                 } else if (data.action === 'markForDeletion') {
-                    controller.markExhibitForDeletion(req, res);
+                    controller.markExhibitForDeletion(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
@@ -171,7 +172,7 @@ function router(req, res) {
                     console.log(requestData);
                     controller.updateFood(requestData, res);
                 } else if (data.action === 'markForDeletion') {
-                    controller.markFoodForDeletion(req, res);
+                    controller.markFoodForDeletion(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
