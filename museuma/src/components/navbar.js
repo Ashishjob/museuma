@@ -7,21 +7,46 @@ export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [hasUnresolvedMessages, setHasUnresolvedMessages] = useState(false);
   const [queue, setQueue] = useState([]);
-
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
     }
-
+  
+    // Fetch messages and check for unresolved messages
+    const fetchAndCheckMessages = async () => {
+      try {
+        const response = await fetch('http://localhost:8081/admin#notifications');
+        const data = await response.json();
+        setQueue(data);
+  
+        const unresolvedMessages = data.some(item => item.resolved === 0);
+        setHasUnresolvedMessages(unresolvedMessages);
+        console.log(unresolvedMessages);
+  
+        // Check if there are unresolved messages to decide if popup should be open
+        if (unresolvedMessages) {
+          setIsPopupOpen(true);
+        } else {
+          setIsPopupOpen(false);
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+  
     // Check if the hash fragment is "notifications"
     if (window.location.hash === "#notifications") {
-      setIsPopupOpen(true);
-      fetchMessages(); // Fetch messages when the popup is open
+      fetchAndCheckMessages(); // Fetch messages when the popup is open
+    } else {
+      fetchAndCheckMessages(); // Fetch messages when the component mounts
     }
   }, []);
+  
+  
 
   const fetchMessages = async () => {
     try {
@@ -124,6 +149,9 @@ export default function NavBar() {
           </nav>
           <div className="relative">
           <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+          {hasUnresolvedMessages && ( // Conditionally render the red dot
+              <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
+            )}
           
           {isPopupOpen && <Popup />}
         </div>
