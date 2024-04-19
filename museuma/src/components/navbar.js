@@ -10,6 +10,8 @@ export default function NavBar() {
   const [userFirstName, setUserFirstName] = useState("");
   const [userRole, setUserRole] = useState("");
   const [employeeDepartment, setEmployeeDepartment] = useState("");
+  const [hasUnresolvedMessages, setHasUnresolvedMessages] = useState(false);
+  const [queue, setQueue] = useState([]);
 
   const decodeToken = async (token) => {
     try {
@@ -116,7 +118,48 @@ export default function NavBar() {
         }
       });
     }
+  
+    // Fetch messages and check for unresolved messages
+    const fetchAndCheckMessages = async () => {
+      try {
+        const response = await fetch('http://localhost:8081/admin#notifications');
+        const data = await response.json();
+        setQueue(data);
+  
+        const unresolvedMessages = data.some(item => item.resolved === 0);
+        setHasUnresolvedMessages(unresolvedMessages);
+        console.log(unresolvedMessages);
+  
+        // Check if there are unresolved messages to decide if popup should be open
+        if (unresolvedMessages) {
+          setIsPopupOpen(true);
+        } else {
+          setIsPopupOpen(false);
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+  
+    // Check if the hash fragment is "notifications"
+    if (window.location.hash === "#notifications") {
+      fetchAndCheckMessages(); // Fetch messages when the popup is open
+    } else {
+      fetchAndCheckMessages(); // Fetch messages when the component mounts
+    }
   }, []);
+  
+  
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/admin#notifications'); // Replace with your actual API endpoint
+      const data = await response.json();
+      setQueue(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
 
 
 
@@ -128,15 +171,58 @@ export default function NavBar() {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
+    
+    const fetchData = async () => {
+      if (!isPopupOpen) {
+        window.location.hash = "notifications";
+        await fetchMessages(); // Fetch messages when the popup is opened
+      } else {
+        window.location.hash = "";
+      }
+    };
+  
+    fetchData();
   };
+  
+  
 
   const Popup = () => {
+    // Filter out messages where resolved is false
+    const resolvedMessages = queue.filter(item => item.resolved === 0);
+
+    // Check if resolvedMessages is empty
+  if (resolvedMessages.length === 0) {
     return (
-      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4">
-        <p>No new notifications</p>
+      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64">
+        <p>No notifications</p>
+      </div>
+    );
+  }
+
+    return (
+      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64"> {/* Added w-64 for width */}
+        <ul className="text-lg"> {/* Added text-sm for smaller text */}
+          {resolvedMessages.map((item, index) => (
+            <li key={index}>{item.message}</li> // Adjust this based on your message structure
+          ))}
+        </ul>
       </div>
     );
   };
+  
+
+  useEffect(() => {
+    const storedToken = Cookies.get("token");
+    if (storedToken) {
+      setIsLoggedIn(true);
+    }
+  
+    // Check if the hash fragment is "notifications"
+    if (window.location.hash === "#notifications") {
+      setIsPopupOpen(true);
+    }
+  }, []);
+  
 
   return (
     <header className="text-[#313639] body-font z-1 shadow">
@@ -167,10 +253,14 @@ export default function NavBar() {
             </a>
           </nav>
           <div className="relative">
-            <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
 
-            {isPopupOpen && <Popup />}
-          </div>
+          <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+          {hasUnresolvedMessages && ( // Conditionally render the red dot
+              <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
+            )}
+          
+          {isPopupOpen && <Popup />}
+        </div>
         </div>
         <div className="flex items-center">
           <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">

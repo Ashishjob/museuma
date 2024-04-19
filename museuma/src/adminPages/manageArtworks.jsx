@@ -147,10 +147,39 @@ const ManageArtwork = () => {
     }
   };
 
-  const confirmDelete = () => {
-    // Add your logic for confirming the deletion of an artwork here
-    // For example, you can make a DELETE request to your backend to delete the artwork
-    // After the artwork is deleted, you can fetch the updated list of artworks
+  const deleteSet = (art_id) => {
+    setSelectedArtworkForDeletion(art_id);
+  };
+  const confirmDelete = async () => {
+    console.log("Here is our art_id: ", selectedArtworkForDeletion);
+    try {
+      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "markForDeletion",
+          art_id: selectedArtworkForDeletion,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      const updatedArtworks = artworks.filter(
+        (artwork) => artwork.art_id !== selectedArtworkForDeletion
+      );
+      setArtWork(updatedArtworks);
+      setSelectedArtworkForDeletion(null);
+
+      console.log("Item deleted successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error deleting item: ${error.message}`);
+    }
   };
 
   useEffect(() => {
@@ -161,7 +190,8 @@ const ManageArtwork = () => {
           throw new Error("Failed to fetch artworks");
         }
         const data = await response.json();
-        setArtWork(data); // Assuming you have a state variable called 'state' to store the artworks
+        const activeArtWork = data.filter((artwork) => artwork.active === 1);
+        setArtWork(activeArtWork);
       } catch (error) {
         console.error("Error fetching artworks:", error);
         // Handle error as needed
@@ -200,7 +230,7 @@ const ManageArtwork = () => {
                 <button onClick={() => editArtWork(artwork)} className="mr-2">
                   <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-                <button onClick={() => confirmDelete(artwork.id)}>
+                <button onClick={() => deleteSet(artwork.art_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
               </div>
@@ -338,12 +368,26 @@ const ManageArtwork = () => {
         )}
 
         {selectedArtworkForDeletion && (
-          <div>
-            <p>Are you sure you want to delete this artwork?</p>
-            <button onClick={confirmDelete}>Yes</button>
-            <button onClick={() => setSelectedArtworkForDeletion(null)}>
-              No
-            </button>
+          <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white p-6 rounded-md">
+              <p className="mb-4">
+                Are you sure you want to delete this art piece?
+              </p>
+              <div className="flex justify-between">
+                <button
+                  onClick={() => setSelectedArtworkForDeletion(null)}
+                  className="admin-button mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="admin-button bg-red-500 hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
