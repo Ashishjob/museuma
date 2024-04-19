@@ -197,23 +197,49 @@ const insertComplaints = (req, res) => {
       // Extract complaint details from the request body
       const { name, branch, description } = requestBody;
 
-      // Insert complaint into the database using the query from the queries file
+      // Query to fetch exhibit_id based on branch
+      const getExhibitIdQuery = 'SELECT Exhibit_id FROM exhibits WHERE Description = ?';
+
       pool.query(
-          queries.addComplaint, // Use the query from the queries file
-          [name, branch, description],
+          getExhibitIdQuery,
+          [branch],
           (error, results) => {
               if (error) {
-                  console.error('Error inserting complaint:', error);
+                  console.error('Error fetching exhibit_id:', error);
                   res.writeHead(500, { 'Content-Type': 'application/json' });
                   res.end(JSON.stringify({ error: 'Internal server error' }));
-              } else {
-                  res.writeHead(200, { 'Content-Type': 'application/json' });
-                  res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
+                  return;
               }
+
+              if (results.length === 0) {
+                  console.error('Exhibit not found for branch:', branch);
+                  res.writeHead(400, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Exhibit not found' }));
+                  return;
+              }
+
+              const exhibit_id = results[0].Exhibit_id;
+
+              // Insert complaint into the database using the query from the queries file
+              pool.query(
+                  queries.addComplaint,
+                  [name, branch, exhibit_id, description],
+                  (error, results) => {
+                      if (error) {
+                          console.error('Error inserting complaint:', error);
+                          res.writeHead(500, { 'Content-Type': 'application/json' });
+                          res.end(JSON.stringify({ error: 'Internal server error' }));
+                      } else {
+                          res.writeHead(200, { 'Content-Type': 'application/json' });
+                          res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
+                      }
+                  }
+              );
           }
       );
   });
 };
+
 
 const updateEmployeeInfo = (requestData, res) => {
   try {
@@ -1029,6 +1055,21 @@ const getEmployeeDepartment = (req, res) => {
   });
 }
 
+const exhibitReport = (req, res) => {
+
+  pool.query(queries.exhibitReport, (error, results) => {
+    if (error) {
+      console.error("Error fetching data report:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
+
+
 
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {
@@ -1075,5 +1116,6 @@ module.exports = {
   markFoodForDeletion,
   getFirstName,
   getEmployeeDepartment,
-  getMessages
+  getMessages,
+  exhibitReport
 };
