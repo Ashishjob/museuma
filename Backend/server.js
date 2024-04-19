@@ -112,6 +112,9 @@ const server = http.createServer((req, res) => {
                 employeeRoutes(req, res);
             }
         }
+        else if(parsedUrl.pathname.startsWith('/exhibit-report') && req.method === 'GET'){
+            employeeRoutes(req, res);
+        }
         
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });

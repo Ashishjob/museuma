@@ -4,6 +4,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import '../App.css';
 import '../index.css';
 
+
 function ExhibitReport() {
   const [exhibitsData, setExhibitsData] = useState(null);
   const [filter, setFilter] = useState('');
@@ -11,9 +12,11 @@ function ExhibitReport() {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
 
+
   useEffect(() => {
     fetchExhibitsData();
   }, []);
+
 
   const fetchExhibitsData = async () => {
     const data = [
@@ -22,6 +25,7 @@ function ExhibitReport() {
     ];
     setExhibitsData(data);
   };
+
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -32,11 +36,13 @@ function ExhibitReport() {
     }
   };
 
+
   const filteredData = exhibitsData?.filter((exhibit) => {
     if (filter === 'all' && exhibit.name.toLowerCase().includes(searchTerm.toLowerCase())) return true;
     if (filter === 'activeOnly' && exhibit.active === 1 && exhibit.name.toLowerCase().includes(searchTerm.toLowerCase())) return true;
     return false;
   });
+
 
   const sortedData = filteredData?.sort((a, b) => {
     if (sortColumn) {
@@ -51,6 +57,7 @@ function ExhibitReport() {
       return 0;
     }
   });
+
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -94,5 +101,6 @@ function ExhibitReport() {
     </main>
   );
 }
+
 
 export default ExhibitReport;

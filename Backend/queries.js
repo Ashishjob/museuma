@@ -10,7 +10,7 @@ const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Loc
 const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
 const getComplaints = "SELECT * FROM complaints";
-const addComplaint = 'INSERT INTO complaints (name, branch, description) VALUES (?, ?, ?)';
+const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, description) VALUES (?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
@@ -56,6 +56,22 @@ UNION
 FROM employees
 WHERE username = ? AND password = ?)`;
 
+const exhibitReport = `SELECT 
+e.Description AS Exhibit_Name,
+COUNT(t.Ticket_id) AS Tickets_Bought,
+SUM(t.Price) AS Amount_Made,
+COUNT(c.complaint_id) AS Complaints_Received
+FROM 
+exhibits e
+LEFT JOIN 
+tickets t ON e.Exhibit_id = t.exhibit_id
+LEFT JOIN 
+complaints c ON e.Exhibit_id = c.exhibit_id
+GROUP BY 
+e.Exhibit_id, e.Description;
+
+`;
+
 module.exports = {
     getBranchDirectors,
     getEmployees,
@@ -89,5 +105,6 @@ module.exports = {
     getFood,
     getFirstName,
     getEmployeeDepartment,
-    getMessages
+    getMessages,
+    exhibitReport
 };
