@@ -7,13 +7,82 @@ export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [userFirstName, setUserFirstName] = useState("");
+
+
+  const decodeToken = async (token) => {
+    try {
+      const response = await fetch("http://localhost:8081/decodeToken", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        const decodedToken = await response.json();
+        const { user_id, table_name } = decodedToken;
+        
+        // Log the values for verification
+        console.log("User ID:", user_id);
+        console.log("Table Name:", table_name);
+  
+        // Return user_id and table_name
+        return { user_id, table_name };
+      } else {
+        console.error("Failed to decode token:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  
+    // If there's an error or response is not ok, return null or handle the error as needed
+    return null;
+  };
+
+  const getFirstName = async (user_id, table_name) => {
+    try {
+      const response = await fetch("http://localhost:8081/getFirstName", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, table_name }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.error("Failed to fetch first name:", response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching first name:", error);
+      return null;
+    }
+  };  
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
+      decodeToken(storedToken).then((data) => {
+        if (data) {
+          const { user_id, table_name } = data;
+          console.log("User ID:", user_id);
+          console.log("Table Name:", table_name);
+          // Call getFirstName with user_id and table_name
+          getFirstName(user_id, table_name).then((firstNameData) => {
+            if (firstNameData && firstNameData.first_name) {
+              setUserFirstName(firstNameData.first_name);
+              console.log("updated", firstNameData.first_name);
+            }
+          });
+        }
+      });
     }
   }, []);
+  
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -77,7 +146,7 @@ export default function NavBar() {
                 className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                More
+                {userFirstName || "More"}
                 {/* Dropdown arrow icon */}
               </button>
               {showDropdown && (

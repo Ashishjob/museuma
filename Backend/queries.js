@@ -28,6 +28,18 @@ const addFood = "INSERT INTO restaurant (name, description, image, price) VALUES
 const markFoodForDeletion ="UPDATE restaurant SET active = 0 WHERE restaurant_id = ?";
 const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, price = ? WHERE restaurant_id = ?";
 const getFood = "SELECT * FROM restaurant";
+const getFirstName = `
+SELECT 
+    CASE 
+        WHEN ? = 'branch_directors' THEN 
+            (SELECT first_name FROM branch_directors WHERE Director_id = ?)
+        WHEN ? = 'employees' THEN 
+            (SELECT first_name FROM employees WHERE employee_id = ?)
+        WHEN ? = 'customers' THEN 
+            (SELECT first_name FROM customers WHERE customer_id = ?)
+        ELSE NULL 
+    END AS first_name`;
+
 
 const authenticateUser = `
 (SELECT Director_id AS user_id, 'branch_directors' AS table_name
@@ -72,5 +84,6 @@ module.exports = {
     addFood,
     markFoodForDeletion,
     updateFood,
-    getFood
+    getFood,
+    getFirstName
 };

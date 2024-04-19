@@ -166,6 +166,9 @@ function router(req, res) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Invalid content type' }));
         }
+    }
+    else if (url === '/getFirstName' && method === 'POST') {
+        controller.getFirstName(req, res);
     } 
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
