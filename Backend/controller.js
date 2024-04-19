@@ -942,6 +942,93 @@ const markFoodForDeletion = (requestData, res) => {
   });
 };
 
+const getFirstName = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { table_name, user_id } = data;
+
+      // Get the first name based on the table name and user ID
+      pool.query(
+        queries.getFirstName,
+        [table_name, user_id, table_name, user_id, table_name, user_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error fetching first name:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          if (results.length === 0) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'User not found' }));
+            return;
+          }
+
+          const { first_name } = results[0];
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ first_name }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+// const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?"; 
+
+const getEmployeeDepartment = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { employee_id } = data;
+
+      // Get the department based on the employee ID
+      pool.query(
+        queries.getEmployeeDepartment,
+        [employee_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error fetching department:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          if (results.length === 0) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Employee not found' }));
+            return;
+          }
+
+          const { department } = results[0];
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ department }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+
 
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {
@@ -986,5 +1073,7 @@ module.exports = {
   addFood,
   updateFood,
   markFoodForDeletion,
+  getFirstName,
+  getEmployeeDepartment,
   getMessages
 };

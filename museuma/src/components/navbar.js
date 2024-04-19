@@ -7,13 +7,116 @@ export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [userFirstName, setUserFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [hasUnresolvedMessages, setHasUnresolvedMessages] = useState(false);
   const [queue, setQueue] = useState([]);
+
+  const decodeToken = async (token) => {
+    try {
+      const response = await fetch("http://localhost:8081/decodeToken", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        const decodedToken = await response.json();
+        const { user_id, table_name } = decodedToken;
+
+        // Log the values for verification
+        console.log("User ID:", user_id);
+        console.log("Table Name:", table_name);
+
+        // Return user_id and table_name
+        return { user_id, table_name };
+      } else {
+        console.error("Failed to decode token:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+
+    // If there's an error or response is not ok, return null or handle the error as needed
+    return null;
+  };
+
+  const getFirstName = async (user_id, table_name) => {
+    try {
+      const response = await fetch("http://localhost:8081/getFirstName", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, table_name }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.error("Failed to fetch first name:", response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching first name:", error);
+      return null;
+    }
+  };
+
+  const getEmployeeDepartment = async (employee_id) => {
+    try {
+      const response = await fetch("http://localhost:8081/employee-department", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ employee_id }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.error("Failed to fetch employee department:", response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching employee department:", error);
+      return null;
+    }
+  }
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
+      decodeToken(storedToken).then((data) => {
+        if (data) {
+          const { user_id, table_name } = data;
+          console.log("User ID:", user_id);
+          console.log("Table Name:", table_name);
+          // Set userRole state
+          setUserRole(table_name);
+          console.log("User Role:", table_name); // Log updated userRole
+          // Call getFirstName with user_id and table_name
+          getFirstName(user_id, table_name).then((firstNameData) => {
+            if (firstNameData && firstNameData.first_name) {
+              setUserFirstName(firstNameData.first_name);
+              console.log("updated", firstNameData.first_name);
+            }
+          });
+
+          if (table_name === "employees") {
+            getEmployeeDepartment(user_id).then((departmentData) => {
+              if (departmentData && departmentData.department) {
+                setEmployeeDepartment(departmentData.department);
+                console.log("Employee Department:", departmentData.department);
+              }
+            });
+          }
+        }
+      });
     }
   
     // Fetch messages and check for unresolved messages
@@ -57,6 +160,8 @@ export default function NavBar() {
       console.error("Error fetching messages:", error);
     }
   };
+
+
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -148,6 +253,7 @@ export default function NavBar() {
             </a>
           </nav>
           <div className="relative">
+
           <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
           {hasUnresolvedMessages && ( // Conditionally render the red dot
               <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
@@ -166,7 +272,7 @@ export default function NavBar() {
                 className="inline-flex justify-center items-center mr-12 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base ml-auto"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                More
+                {userFirstName || "More"}
                 {/* Dropdown arrow icon */}
               </button>
               {showDropdown && (
@@ -179,6 +285,48 @@ export default function NavBar() {
                     >
                       Profile
                     </a>
+                    {/* Conditionally render based on userRole */}
+                    {userRole === "branch_directors" && (
+                      <a
+                        href="/admin"
+                        className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                        role="menuitem"
+                      >
+                        Admin
+                      </a>
+                    )}
+                    {userRole === "employees" && (
+                      <div>
+                        {employeeDepartment === "Gift Shop" && (
+                          <a
+                            href="/admin/manage-giftshop"
+                            className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                            role="menuitem"
+                          >
+                            Manage Gift Shop
+                          </a>
+                        )}
+                        {employeeDepartment === "Restaurant" && (
+                          <a
+                            href="/admin/manage-restaurant"
+                            className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                            role="menuitem"
+                          >
+                            Manage Restaurant
+                          </a>
+                        )}
+                        {employeeDepartment !== "Gift Shop" && employeeDepartment !== "Restaurant" && (
+                          <a
+                            href="/admin/manage-artworks"
+                            className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+                            role="menuitem"
+                          >
+                            Manage Artworks
+                          </a>
+                        )}
+                      </div>
+                    )}
+
                     <a
                       href="/login"
                       className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
@@ -201,6 +349,7 @@ export default function NavBar() {
               </button>
             </a>
           )}
+
         </div>
       </div>
     </header>

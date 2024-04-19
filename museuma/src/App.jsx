@@ -142,7 +142,7 @@ function App() {
           element={
             <PrivateRoute
               element={<ManageArtwork />}
-              allowedRoles={["branch_directors"]}
+              allowedRoles={["branch_directors", "employees"]}
               userRole={userRole}
             />
           }
@@ -162,7 +162,7 @@ function App() {
           element={
             <PrivateRoute
               element={<ManageGiftshop />}
-              allowedRoles={["branch_directors"]}
+              allowedRoles={["branch_directors", "employees"]}
               userRole={userRole}
             />
           }
@@ -182,7 +182,7 @@ function App() {
           element={
             <PrivateRoute
               element={<ManageRestaurant />}
-              allowedRoles={["branch_directors"]}
+              allowedRoles={["branch_directors", "employees"]}
               userRole={userRole}
             />
           }
