@@ -92,7 +92,7 @@ function Giftshop() {
               <img
                 src={product.image_url}
                 alt={product.title}
-                className="w-full h-64 object-cover rounded"
+                className="mx-auto w-fit h-64 rounded"
               />
               <h2 className="text-xl mt-2">{product.title}</h2>
               <p className="text-gray-500">{product.description}</p>
