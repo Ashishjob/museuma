@@ -16,6 +16,7 @@ const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 const addItem = "INSERT INTO items (price, description, quantity, image_url) VALUES(?, ?, ?, ?)";
 const getItem ="SELECT * FROM items";
+const getTotalSales = "SELECT c.first_name, i.title, i.Price, p.purchase_date FROM purchases AS p JOIN items AS i ON p.product_id = i.Item_id JOIN customers AS c ON p.customer_id = c.customer_id UNION ALL SELECT c.first_name, 'Ticket', t.Price, t.Date FROM tickets AS t JOIN customers AS c ON t.customer_id = c.customer_id";
 module.exports = {
     getBranchDirectors,
     getEmployees,
@@ -33,5 +34,6 @@ module.exports = {
     getCustomerInfo,
     updateCustomerInfo,
     addItem,
-    getItem
+    getItem,
+    getTotalSales
 };
