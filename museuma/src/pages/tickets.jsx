@@ -16,7 +16,7 @@ function Tickets() {
         const selectedExhibit = exhibits.find(exhibit => exhibit.Description === selectedExhibition);
         setSelectedExhibition(selectedExhibition);
         setSelectedExhibitionDescription(selectedExhibit ? selectedExhibit.Description : '');
-      };
+    };
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -176,23 +176,23 @@ function Tickets() {
 
     const [exhibits, setExhibits] = useState([]);
 
-useEffect(() => {
-  const fetchExhibits = async () => {
-    try {
-      const response = await fetch("https://museuma.onrender.com/manage-exhibits");
-      if (!response.ok) {
-        throw new Error("Failed to fetch exhibits");
-      }
-      const data = await response.json();
-      setExhibits(data);
-    } catch (error) {
-      console.error("Error fetching exhibits:", error);
-      // Handle error as needed
-    }
-  };
+    useEffect(() => {
+        const fetchExhibits = async () => {
+            try {
+                const response = await fetch("https://museuma.onrender.com/manage-exhibits");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch exhibits");
+                }
+                const data = await response.json();
+                setExhibits(data);
+            } catch (error) {
+                console.error("Error fetching exhibits:", error);
+                // Handle error as needed
+            }
+        };
 
-  fetchExhibits();
-}, []);
+        fetchExhibits();
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col items-center" style={{ marginTop: '20px' }}>
@@ -201,20 +201,20 @@ useEffect(() => {
             <div className="mt-4 w-full max-w-xs">
                 <h2 className="text-xl mb-2 flex justify-center">Select Exhibition</h2>
                 <select
-  value={selectedExhibition}
-  onChange={handleExhibitionChange}
-  className="border border-gray-300 rounded p-2 w-full"
->
-  <option value="" disabled hidden>Please select an exhibition</option>
-  {exhibits && exhibits.map((exhibit) => (
-    <option key={exhibit.Exhibit_id} value={exhibit.Description}>
-      {exhibit.Description}
-    </option>
-  ))}
-</select>
-{selectedExhibitionDescription && (
-  <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
-)}
+                    value={selectedExhibition}
+                    onChange={handleExhibitionChange}
+                    className="border border-gray-300 rounded p-2 w-full"
+                >
+                    <option value="" disabled hidden>Please select an exhibition</option>
+                    {exhibits && exhibits.map((exhibit) => (
+                        <option key={exhibit.Exhibit_id} value={exhibit.Description}>
+                            {exhibit.Description}
+                        </option>
+                    ))}
+                </select>
+                {selectedExhibitionDescription && (
+                    <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
+                )}
             </div>
             {selectedExhibition && (
                 <div className="mt-4 w-full max-w-xs">
