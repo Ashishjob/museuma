@@ -287,22 +287,25 @@ const useCart = () => {
             <span className="ml-3 text-xl">Baker Museum</span>
           </a>
           <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
-            <a href="/exhibits" className="mr-5 hover:text-gray-900">
-              Exhibits
-            </a>
-            <a href="/artworks" className="mr-5 hover:text-gray-900">
-              Artworks
-            </a>
-            <a href="/tickets" className="mr-5 hover:text-gray-900">
-              Tickets
-            </a>
-            <a href="/giftshop" className="mr-5 hover:text-gray-900">
-              Gift Shop
-            </a>
-            <a href="/dining" className="mr-5 hover:text-gray-900">
-              Dining
-            </a>
-          </nav>
+        <a href="/exhibits" className="mr-5 hover:text-gray-900">
+          Exhibits
+        </a>
+        <a href="/artworks" className="mr-5 hover:text-gray-900">
+          Artworks
+        </a>
+        <a href={isLoggedIn ? "/tickets" : "/login"} className="mr-5 hover:text-gray-900">
+          Tickets
+        </a>
+        <a href={isLoggedIn ? "/giftshop" : "/login"} className="mr-5 hover:text-gray-900">
+          Gift Shop
+        </a>
+        <a href={isLoggedIn ? "/dining" : "/login"} className="mr-5 hover:text-gray-900">
+          Dining
+        </a>
+        <a href={isLoggedIn ? "/complaints" : "/login"} className="mr-5 hover:text-gray-900">
+          Report a Problem
+        </a>
+      </nav>
           <div className="relative">
 
           <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
