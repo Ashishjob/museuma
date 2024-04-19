@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { HiArchiveBox } from "react-icons/hi2";
 
 import Cookies from "js-cookie";
@@ -12,6 +12,57 @@ export default function NavBar() {
   const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [hasUnresolvedMessages, setHasUnresolvedMessages] = useState(false);
   const [queue, setQueue] = useState([]);
+
+  const [cartQuantity, setCartQuantity] = useState(0);
+
+  useEffect(() => {
+    const updateCartQuantity = () => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const quantity = cart.reduce((total, item) => total + item.quantity, 0);
+        setCartQuantity(quantity);
+    };
+
+    // Update the cart quantity when the component mounts
+    updateCartQuantity();
+
+    // Update the cart quantity whenever the localStorage changes
+    window.addEventListener('storage', updateCartQuantity);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+        window.removeEventListener('storage', updateCartQuantity);
+    };
+}, []);
+
+// Create a context for the cart
+const CartContext = createContext();
+
+// Create a provider component for the cart context
+const CartProvider = ({ children }) => {
+    const [cartQuantity, setCartQuantity] = useState(0);
+
+    useEffect(() => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const quantity = cart.reduce((total, item) => total + item.quantity, 0);
+        setCartQuantity(quantity);
+    }, []);
+
+    const value = {
+        cartQuantity,
+        setCartQuantity,
+    };
+
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+};
+
+// Create a hook to use the cart context
+const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
 
   const decodeToken = async (token) => {
     try {
@@ -263,9 +314,14 @@ export default function NavBar() {
         </div>
         </div>
         <div className="flex items-center">
-          <button className="inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">
-            <a href="/cart">My Cart</a>
-          </button>
+        <button className="relative inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">
+          <a href="/cart">My Cart</a>
+          {cartQuantity > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                  {cartQuantity}
+              </span>
+          )}
+      </button>
           {isLoggedIn ? (
             <div className="relative inline-block text-left">
               <button

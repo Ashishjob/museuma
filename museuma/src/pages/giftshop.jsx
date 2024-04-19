@@ -38,7 +38,11 @@ function Giftshop() {
       }
     });
 
+  const [showPopup, setShowPopup] = useState(false);
+
   const addToCart = (product, quantity) => {
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItemIndex = cartItems.findIndex(
       (item) => item.item_id === product.item_id
@@ -55,8 +59,9 @@ function Giftshop() {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   };
 
+
   return (
-    <main className="">
+    <main className="min-h-screen w-screen">
       <div className="p-4">
         <h1 className="text-4xl mb-4 bg-[#EFEDE5] rounded-xl pl-2">
           Gift Shop
@@ -127,6 +132,22 @@ function Giftshop() {
                   >
                     Add to Cart
                   </button>
+                  {showPopup && (
+                    <div style={{
+                      position: 'fixed',
+                      bottom: '20px',
+                      right: '20px',
+                      padding: '20px',
+                      backgroundColor: '#BBB5A4',
+                      borderRadius: '10px',
+                      opacity: showPopup ? 1 : 0,
+                      transition: 'opacity 0.5s',
+                      display: 'flex',
+                    }}>
+                      <span role="img" aria-label="checkmark">✔️</span>
+                      <p className="ml-4">Added to cart!</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
