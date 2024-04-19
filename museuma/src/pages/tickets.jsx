@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -11,12 +11,12 @@ function Tickets() {
     const [childTickets, setChildTickets] = useState(0);
     const [militaryTickets, setMilitaryTickets] = useState(0);
 
-    const handleExhibitionChange = (e) => {
-        const selectedExhibitionName = e.target.value;
-        setSelectedExhibition(selectedExhibitionName);
-        const selectedExhibitionData = exhibitions.find(exhibition => exhibition.name === selectedExhibitionName);
-        setSelectedExhibitionDescription(selectedExhibitionData.description);
-    };
+    const handleExhibitionChange = (event) => {
+        const selectedExhibition = event.target.value;
+        const selectedExhibit = exhibits.find(exhibit => exhibit.Description === selectedExhibition);
+        setSelectedExhibition(selectedExhibition);
+        setSelectedExhibitionDescription(selectedExhibit ? selectedExhibit.Description : '');
+      };
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -92,7 +92,11 @@ function Tickets() {
         // Add more exhibitions and their corresponding identifiers here
     };
 
-    const addToCart = () => {
+    const [showPopup, setShowPopup] = useState(false);
+
+    const addToCart = (product, quantity) => {
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 2000);
         const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         const exhibitionTitle = selectedExhibition;
         const exhibitionId = exhibitionIds[selectedExhibition]; // Get the ID for the selected exhibition
@@ -107,7 +111,8 @@ function Tickets() {
                     item_id: `adult_${exhibitionId}`,
                     title: `${exhibitionTitle} - Adult Ticket`,
                     price: 20,
-                    quantity: adultTickets
+                    quantity: adultTickets,
+                    image: '/ticket.jpeg'
                 });
             }
         }
@@ -115,14 +120,17 @@ function Tickets() {
         // Add student tickets to cart if quantity is greater than 0
         if (studentTickets > 0) {
             const existingStudentItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Student Ticket`);
+            product.image = '/ticket.jpeg';
             if (existingStudentItemIndex !== -1) {
                 cartItems[existingStudentItemIndex].quantity += studentTickets;
             } else {
+                product.image = '/ticket.jpeg';
                 cartItems.push({
                     item_id: `student_${exhibitionId}`,
                     title: `${exhibitionTitle} - Student Ticket`,
                     price: 15,
-                    quantity: studentTickets
+                    quantity: studentTickets,
+                    image: '/ticket.jpeg'
                 });
             }
         }
@@ -130,14 +138,17 @@ function Tickets() {
         // Add child tickets to cart if quantity is greater than 0
         if (childTickets > 0) {
             const existingChildItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Child Ticket`);
+            product.image = '/ticket.jpeg';
             if (existingChildItemIndex !== -1) {
                 cartItems[existingChildItemIndex].quantity += childTickets;
             } else {
+                product.image = '/ticket.jpeg';
                 cartItems.push({
                     item_id: `child_${exhibitionId}`,
                     title: `${exhibitionTitle} - Child Ticket`,
                     price: 10,
-                    quantity: childTickets
+                    quantity: childTickets,
+                    image: '/ticket.jpeg'
                 });
             }
         }
@@ -145,20 +156,43 @@ function Tickets() {
         // Add military tickets to cart if quantity is greater than 0
         if (militaryTickets > 0) {
             const existingMilitaryItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Military Ticket`);
+            product.image = '/ticket.jpeg';
             if (existingMilitaryItemIndex !== -1) {
                 cartItems[existingMilitaryItemIndex].quantity += militaryTickets;
             } else {
+                product.image = '/ticket.jpeg';
                 cartItems.push({
                     item_id: `military_${exhibitionId}`,
                     title: `${exhibitionTitle} - Military Ticket`,
                     price: 10,
-                    quantity: militaryTickets
+                    quantity: militaryTickets,
+                    image: '/ticket.jpeg'
                 });
             }
         }
 
         localStorage.setItem('cart', JSON.stringify(cartItems));
     };
+
+    const [exhibits, setExhibits] = useState([]);
+
+useEffect(() => {
+  const fetchExhibits = async () => {
+    try {
+      const response = await fetch("https://museuma.onrender.com/manage-exhibits");
+      if (!response.ok) {
+        throw new Error("Failed to fetch exhibits");
+      }
+      const data = await response.json();
+      setExhibits(data);
+    } catch (error) {
+      console.error("Error fetching exhibits:", error);
+      // Handle error as needed
+    }
+  };
+
+  fetchExhibits();
+}, []);
 
     return (
         <div className="min-h-screen flex flex-col items-center" style={{ marginTop: '20px' }}>
@@ -167,20 +201,20 @@ function Tickets() {
             <div className="mt-4 w-full max-w-xs">
                 <h2 className="text-xl mb-2 flex justify-center">Select Exhibition</h2>
                 <select
-                    value={selectedExhibition}
-                    onChange={handleExhibitionChange}
-                    className="border border-gray-300 rounded p-2 w-full"
-                >
-                    <option value="" disabled hidden>Please select an exhibition</option>
-                    {exhibitions.map((exhibition, index) => (
-                        <option key={index} value={exhibition.name}>
-                            {exhibition.name}
-                        </option>
-                    ))}
-                </select>
-                {selectedExhibitionDescription && (
-                    <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
-                )}
+  value={selectedExhibition}
+  onChange={handleExhibitionChange}
+  className="border border-gray-300 rounded p-2 w-full"
+>
+  <option value="" disabled hidden>Please select an exhibition</option>
+  {exhibits && exhibits.map((exhibit) => (
+    <option key={exhibit.Exhibit_id} value={exhibit.Description}>
+      {exhibit.Description}
+    </option>
+  ))}
+</select>
+{selectedExhibitionDescription && (
+  <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
+)}
             </div>
             {selectedExhibition && (
                 <div className="mt-4 w-full max-w-xs">
@@ -250,6 +284,22 @@ function Tickets() {
                     >
                         Add to Cart
                     </button>
+                    {showPopup && (
+                        <div style={{
+                            position: 'fixed',
+                            bottom: '20px',
+                            right: '20px',
+                            padding: '20px',
+                            backgroundColor: '#BBB5A4',
+                            borderRadius: '10px',
+                            opacity: showPopup ? 1 : 0,
+                            transition: 'opacity 0.5s',
+                            display: 'flex',
+                        }}>
+                            <span role="img" aria-label="checkmark">✔️</span>
+                            <p className="ml-4">Added to cart!</p>
+                        </div>
+                    )}
                 </div>
             )}
 

@@ -10,14 +10,12 @@ const ManageExhibits = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedExhibit, setEditedExhibit] = useState({
-    Exhibit_id: "",
     Description: "",
     Collections: "",
     Location: "",
     Director_ID: "",
   });
   const [newExhibit, setNewExhibit] = useState({
-    Exhibit_id: "",
     Description: "",
     Collections: "",
     Location: "",
@@ -35,7 +33,7 @@ const ManageExhibits = () => {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const updatedExhibits = exhibits.map((exhibits) =>
-      exhibits.id === editedExhibit.id
+      exhibits.Exhibit_id === editedExhibit.id
         ? { ...exhibits, ...editedExhibit }
         : exhibits
     );
@@ -47,7 +45,6 @@ const ManageExhibits = () => {
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
     setNewExhibit({
-      Exhibit_id: "",
       Description: "",
       Collections: "",
       Location: "",
@@ -77,32 +74,35 @@ const ManageExhibits = () => {
 
   const addExhibit = async () => {
     const newEmp = {
-      Exhibit_id: newExhibit.Exhibit_id,
       Description: newExhibit.Description,
-      Collections: newExhibit.Collections,
+      Collections: "test collection",
       Location: newExhibit.Location,
-      Director_ID: newExhibit.Director_ID,
+      Director_ID: Number(newExhibit.Director_ID),
     };
 
-    console.log(newEmp);
+    console.log("Sending data:", newEmp);
 
     try {
-      const response = await fetch(
-        "https://museuma.onrender.com/manage-exhibits",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newEmp),
-        }
-      );
+      const response = await fetch("http://localhost:8081/manage-exhibits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEmp),
+      });
+
+      console.log("Response status:", response.status);
 
       if (!response.ok) {
-        throw new Error("Failed to add exhibit");
+        const errorMessage = await response.text(); // Get error message from response
+        throw new Error(
+          `Server responded with ${response.status}: ${errorMessage}`
+        );
       }
 
-      // If successful, update the state and toggle the form
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+
       // Fetch the updated list of exhibits
       const updatedResponse = await fetch(
         "https://museuma.onrender.com/manage-exhibits"
@@ -111,13 +111,11 @@ const ManageExhibits = () => {
         throw new Error("Failed to fetch updated exhibits");
       }
       const updatedData = await updatedResponse.json();
-
-      // Update the state with the new list of exhibits
       setExhibits(updatedData);
-      //setExhibits([...exhibits, newEmp]);
+
       toggleAddForm();
     } catch (error) {
-      console.error("Error adding exhibit:", error);
+      console.error("Error adding exhibit:", error.message);
       // Handle error as needed
     }
   };
@@ -191,15 +189,6 @@ const ManageExhibits = () => {
             <div className="mb-6 flex">
               <input
                 type="text"
-                placeholder="Exhibit ID"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.Exhibit_id}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, Exhibit_id: e.target.value })
-                }
-              />
-              <input
-                type="text"
                 placeholder="Description"
                 className="border rounded mr-2 p-2 flex-1"
                 value={newExhibit.Description}
@@ -264,22 +253,6 @@ const ManageExhibits = () => {
             <div className="bg-white p-6 rounded-md w-1/3">
               <h2 className="text-2xl mb-4">Edit Exhibit</h2>
               <form onSubmit={handleEditSubmit}>
-                <div className="mb-4">
-                  <label
-                    htmlFor="Exhibit_id"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Exhibit ID
-                  </label>
-                  <input
-                    type="text"
-                    id="Exhibit_id"
-                    name="Exhibit_id"
-                    className="mt-1 p-2 border rounded-md w-full"
-                    value={editedExhibit.Exhibit_id}
-                    onChange={handleEditInputChange}
-                  />
-                </div>
                 <div className="mb-4">
                   <label
                     htmlFor="Description"
