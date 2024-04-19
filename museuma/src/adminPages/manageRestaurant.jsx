@@ -44,16 +44,10 @@ const ManageRestaurant = () => {
     setNewItem({ ...newItem, [name]: value });
   };
 
-  const handleAddSubmit = (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
-    setItems([...items, newItem]);
-    setNewItem({
-      name: "",
-      description: "",
-      image: "",
-      price: "",
-    });
-    setShowAddForm(false);
+    console.log("Submitting new item:", newItem); // Log the newItem before sending
+    addItem();
   };
 
   const handleEditInputChange = (e) => {
@@ -84,7 +78,45 @@ const ManageRestaurant = () => {
   // ... rest of the code ...
 
   const addItem = async () => {
-    // ... rest of the code ...
+    const newFoodData = {
+      name: newItem.name,
+      image: newItem.image,
+      description: newItem.description,
+      price: Number(newItem.price),
+    };
+
+    console.log(newFoodData);
+
+    try {
+      const response = await fetch("http://localhost:8081/manage-restaurant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newFoodData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Server error:", errorMessage);
+        throw new Error(`Failed to add item: ${errorMessage}`);
+      }
+
+      const updatedResponse = await fetch(
+        "http://localhost:8081/manage-restaurant"
+      );
+
+      if (!updatedResponse.ok) {
+        throw new Error("Failed to fetch updated food items");
+      }
+
+      const updatedData = await updatedResponse.json();
+      setItems(updatedData);
+      toggleAddForm();
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error adding item: ${error.message}`);
+    }
   };
 
   const deleteItem = (itemID) => {
