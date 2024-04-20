@@ -294,37 +294,6 @@ const ManageEmployees = () => {
         >
           {showAddForm ? "Cancel" : "Add Employee"}
         </button>
-        <button className="text-2xl mb-4" onClick={() => setFilter(filter === 'active' ? 'inactive' : 'active')}>
-        Show {filter === 'active' ? 'Inactive' : 'Active'} Employees
-      </button>
-      </div>
-       
-      <ul className="divide-y divide-gray-300 mb-6">
-        {employees.map((employee, index) => (
-          <li key={index} className="py-4 flex">
-            <div className="flex flex-col">
-              <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
-              <span className="text-xl">{employee.email}</span>
-              <span className="text-xl">{employee.department}</span>
-            </div>
-            <div className="ml-auto flex">
-              <button onClick={() => editEmployee(employee)} className="mr-2">
-                <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-              </button>
-              {employee.Active === 0 ? (
-                <button onClick={() => rehireEmployee(employee)}>
-                <FaUserPlus className="hover:text-[#C0BAA4] text-2xl" />
-              </button>
-              ) : (
-                <button onClick={() => confirmDelete(employee.employee_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-
         {showAddForm && (
           <div className="flex">
             <div className="mb-6 flex">
@@ -386,6 +355,38 @@ const ManageEmployees = () => {
             </button>
           </div>
         )}
+        <button className="text-2xl mb-4" onClick={() => setFilter(filter === 'active' ? 'inactive' : 'active')}>
+        Show {filter === 'active' ? 'Inactive' : 'Active'} Employees
+      </button>
+      </div>
+       
+      <ul className="divide-y divide-gray-300 mb-6">
+        {employees.map((employee, index) => (
+          <li key={index} className="py-4 flex">
+            <div className="flex flex-col">
+              <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
+              <span className="text-xl">{employee.email}</span>
+              <span className="text-xl">{employee.department}</span>
+            </div>
+            <div className="ml-auto flex">
+              <button onClick={() => editEmployee(employee)} className="mr-2">
+                <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+              </button>
+              {employee.Active === 0 ? (
+                <button onClick={() => rehireEmployee(employee)}>
+                <FaUserPlus className="hover:text-[#C0BAA4] text-2xl" />
+              </button>
+              ) : (
+                <button onClick={() => confirmDelete(employee.employee_id)}>
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+        
 
         {selectedEmployeeForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">

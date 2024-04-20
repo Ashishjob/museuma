@@ -256,40 +256,7 @@ const ManageExhibits = () => {
           >
             {showAddForm ? "Cancel" : "Add Exhibit"}
           </button>
-
-          {showActive ? (
-            <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
-          ) : (
-            <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
-          )}
-        </div>
-        <ul className="divide-y divide-gray-300 mb-6">
-          {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
-            <li key={exhibit.Exhibit_id} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl underline">{exhibit.Description}</span>
-                <span className="text-xl w-1/2 my-2">{exhibit.explanation}</span>
-                <span className="text-lg">Located in: {exhibit.Location}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editExhibit(exhibit)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                {exhibit.active ? (
-                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
-                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                  </button>
-                ) : (
-                  <button onClick={() => Reactivation({ Exhibit_id: exhibit.Exhibit_id })}>
-                    <FaRecycle className="hover:text-[#C0BAA4] text-2xl" />
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        {showAddForm && (
+          {showAddForm && (
           <div className="flex">
             <div className="mb-6 flex">
               <input
@@ -346,6 +313,40 @@ const ManageExhibits = () => {
             </button>
           </div>
         )}
+
+          {showActive ? (
+            <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
+          ) : (
+            <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
+          )}
+        </div>
+        <ul className="divide-y divide-gray-300 mb-6">
+          {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
+            <li key={exhibit.Exhibit_id} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl underline">{exhibit.Description}</span>
+                <span className="text-xl w-1/2 my-2">{exhibit.explanation}</span>
+                <span className="text-lg">Located in: {exhibit.Location}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editExhibit(exhibit)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                {exhibit.active ? (
+                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
+                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                ) : (
+                  <button onClick={() => Reactivation({ Exhibit_id: exhibit.Exhibit_id })}>
+                    <FaRecycle className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        
 
         {selectedExhibitForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">

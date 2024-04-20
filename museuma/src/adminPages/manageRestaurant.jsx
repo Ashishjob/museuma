@@ -197,27 +197,6 @@ const ManageRestaurant = () => {
         >
           {showAddForm ? "Cancel" : "Add Item"}
         </button>
-
-        <ul className="divide-y divide-gray-300 mb-6">
-          {items.map((item, index) => (
-            <li key={index} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl">Name: {item.name}</span>
-                <span className="text-xl">Description: {item.description}</span>
-                <span className="text-xl">Price: ${item.price}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editItem(item)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                <button onClick={() => deleteItem(item.restaurant_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
         {showAddForm && (
           <form onSubmit={handleAddSubmit}>
             <input
@@ -260,6 +239,28 @@ const ManageRestaurant = () => {
             </button>
           </form>
         )}
+
+        <ul className="divide-y divide-gray-300 mb-6">
+          {items.map((item, index) => (
+            <li key={index} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl">Name: {item.name}</span>
+                <span className="text-xl">Description: {item.description}</span>
+                <span className="text-xl">Price: ${item.price}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editItem(item)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                <button onClick={() => deleteItem(item.restaurant_id)}>
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        
         {selectedItemForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-md">
