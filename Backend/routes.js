@@ -192,6 +192,9 @@ function router(req, res) {
     else if (url.startsWith('/exhibit-report') && method === 'GET') {
         controller.exhibitReport(req, res);
     }
+    else if (url.startsWith('/order-confirmed') && method === 'POST') {
+        controller.addOrder(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));

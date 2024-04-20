@@ -1112,6 +1112,42 @@ const getMessages = (req, res) => {
   });
 };
 
+const addOrder = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { customer_id, item_id, quantity, total_price, order_date } = data;
+
+      // Insert order into the database
+      pool.query(
+        queries.addOrder,
+        [customer_id, item_id, quantity, total_price, order_date],
+        (error, results) => {
+          if (error) {
+            console.error('Error adding order:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          res.writeHead(201, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ message: 'Order added successfully' }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -1145,5 +1181,6 @@ module.exports = {
   getFirstName,
   getEmployeeDepartment,
   getMessages,
-  exhibitReport
+  exhibitReport,
+  addOrder
 };
