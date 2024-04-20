@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaTrash, FaEdit, FaArrowLeft, FaRecycle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Select from "react-select"; // Import react-select
 import "../App.css";
 import "../index.css";
 
@@ -165,39 +164,7 @@ const ManageExhibits = () => {
     }
   };
 
-  const Reactivate = async () => {
-    console.log("button is hit");
-    try {
-      // Send PUT request to mark exhibit for deletion
-      const response = await fetch("http://localhost:8081/manage-exhibits", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "markForReactivation",
-          Exhibit_id: selectedExhibitForDeletion,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to mark exhibit for deletion");
-      }
-
-      // Confirm deletion and update state
-      const updatedExhibits = exhibits.filter(
-        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
-      );
-      setExhibits(updatedExhibits);
-      setSelectedExhibitForDeletion(null);
-
-    } catch (error) {
-      console.error("Error marking exhibit for deletion:", error);
-      // Handle error as needed
-    }
-  };
-
-  const Reactivate = async () => {
+  const Reactivation = async () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark exhibit for deletion
@@ -287,7 +254,7 @@ const ManageExhibits = () => {
           <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
         </button>
       ) : (
-        <button onClick={() => Reactivate(exhibit.Exhibit_id)}>
+        <button onClick={() => Reactivation(exhibit.Exhibit_id)}>
           <FaRecycle className="hover:text-[#C0BAA4] text-2xl" /> {/* Replace with your reactivation icon */}
         </button>
       )}
