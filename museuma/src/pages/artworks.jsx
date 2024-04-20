@@ -6,7 +6,7 @@ function Artworks() {
     useEffect(() => {
         const fetchArtworks = async () => {
           try {
-            const response = await fetch("http://localhost:8081/manage-artworks"); // Endpoint URL should match your backend route
+            const response = await fetch("https://museuma.onrender.com/manage-artworks"); // Endpoint URL should match your backend route
             if (!response.ok) {
               throw new Error("Failed to fetch artworks");
             }

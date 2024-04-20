@@ -8,7 +8,7 @@ function Dining() {
     // Fetch food items from backend
     const fetchFoodItems = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-restaurant");
+        const response = await fetch("https://museuma.onrender.com/manage-restaurant");
         const data = await response.json();
         setItems(data); // Assuming the response is an array of items
       } catch (error) {

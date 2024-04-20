@@ -68,7 +68,7 @@ const ManageArtwork = () => {
     console.log(newArtworkData);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-artworks", {
+      const response = await fetch("https://museuma.onrender.com/manage-artworks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const ManageArtwork = () => {
       }
 
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-artworks"
+        "https://museuma.onrender.com/manage-artworks"
       );
 
       if (!updatedResponse.ok) {
@@ -114,7 +114,7 @@ const ManageArtwork = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +132,7 @@ const ManageArtwork = () => {
 
       // Fetch updated data after successful update (if needed)
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-artworks"
+        "https://museuma.onrender.com/manage-artworks"
       );
       const updatedData = await updatedResponse.json();
       setArtWork(updatedData);
@@ -153,7 +153,7 @@ const ManageArtwork = () => {
   const confirmDelete = async () => {
     console.log("Here is our art_id: ", selectedArtworkForDeletion);
     try {
-      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const ManageArtwork = () => {
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-artworks"); // Endpoint URL should match your backend route
+        const response = await fetch("https://museuma.onrender.com/manage-artworks"); // Endpoint URL should match your backend route
         if (!response.ok) {
           throw new Error("Failed to fetch artworks");
         }

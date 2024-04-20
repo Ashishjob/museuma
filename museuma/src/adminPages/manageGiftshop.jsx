@@ -29,7 +29,7 @@ const ManageGiftshop = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-giftshop");
+        const response = await fetch("https://museuma.onrender.com/manage-giftshop");
         if (!response.ok) {
           throw new Error("Failed to fetch items");
         }
@@ -76,7 +76,7 @@ const ManageGiftshop = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const ManageGiftshop = () => {
 
       // Fetch updated data after successful update
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-giftshop"
+        "https://museuma.onrender.com/manage-giftshop"
       );
       const updatedData = await updatedResponse.json();
       setItems(updatedData);
@@ -131,7 +131,7 @@ const ManageGiftshop = () => {
     console.log(newItemData);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-giftshop", {
+      const response = await fetch("https://museuma.onrender.com/manage-giftshop", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +146,7 @@ const ManageGiftshop = () => {
       }
 
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-giftshop"
+        "https://museuma.onrender.com/manage-giftshop"
       );
 
       if (!updatedResponse.ok) {
@@ -168,7 +168,7 @@ const ManageGiftshop = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

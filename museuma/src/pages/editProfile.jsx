@@ -16,7 +16,7 @@ const EditProfile = () => {
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const EditProfile = () => {
     try {
       console.log("decodedToken");
       console.log(decodedToken1);
-      const call = `http://localhost:8081/customer/${decodedToken1}`;
+      const call = `https://museuma.onrender.com/customer/${decodedToken1}`;
       console.log(call);
       const response = await fetch(call);
       if (response.ok) {
@@ -135,7 +135,7 @@ const EditProfile = () => {
           email: userDetails.email || null,
           date_of_birth: userDetails.birthday || null
         };
-        const updateUserResponse = await fetch(`http://localhost:8081/editCustomerInfo/${user_id}`, {
+        const updateUserResponse = await fetch(`https://museuma.onrender.com/editCustomerInfo/${user_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

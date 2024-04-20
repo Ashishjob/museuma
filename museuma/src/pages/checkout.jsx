@@ -14,7 +14,7 @@ function Checkout() {
 
     const updateItemQuantity = async (item_id, quantity) => {
         try {
-            const response = await fetch('http://localhost:8081/update-item-quantity', {
+            const response = await fetch('https://museuma.onrender.com/update-item-quantity', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ function Checkout() {
 
     const decodeToken = async (token) => {
         try {
-            const response = await fetch("http://localhost:8081/decodeToken", {
+            const response = await fetch("https://museuma.onrender.com/decodeToken", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ function Checkout() {
 
     const addOrder = async (orderData) => {
         try {
-            const response = await fetch('http://localhost:8081/order-confirmed', {
+            const response = await fetch('https://museuma.onrender.com/order-confirmed', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

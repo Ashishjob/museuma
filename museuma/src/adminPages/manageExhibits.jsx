@@ -75,7 +75,7 @@ const ManageExhibits = () => {
     console.log("Sending data:", newEmp);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-exhibits", {
+      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ const ManageExhibits = () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark exhibit for deletion
-      const response = await fetch("http://localhost:8081/manage-exhibits", {
+      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +151,7 @@ const ManageExhibits = () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark exhibit for reactivation
-      const response = await fetch("http://localhost:8081/manage-exhibits", {
+      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -191,7 +191,7 @@ const ManageExhibits = () => {
     const updatedExhibitData = { Exhibit_id, Description, Collections, Location, Director_ID, image_url, explanation };
 
     try {
-      const response = await fetch("http://localhost:8081/manage-exhibits", {
+      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -208,7 +208,7 @@ const ManageExhibits = () => {
       }
 
       // Fetch updated data after successful update
-      const updatedResponse = await fetch("http://localhost:8081/manage-exhibits");
+      const updatedResponse = await fetch("https://museuma.onrender.com/manage-exhibits");
       const updatedData = await updatedResponse.json();
 
       const updatedExhibits = updatedData.filter((exhibit) => exhibit.active === 1); // Assuming 'active' flag is used to filter active exhibits

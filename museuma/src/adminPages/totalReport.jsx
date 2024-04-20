@@ -33,7 +33,7 @@ const sortedData = React.useMemo(() => {
 
   const fetchSalesData = async () => {
     try {
-      const response = await fetch("http://localhost:8081/total-report");
+      const response = await fetch("https://museuma.onrender.com/total-report");
       if (!response.ok) {
         throw new Error("Failed to fetch sales data");
       }
