@@ -186,59 +186,85 @@ const insertComplaints = (req, res) => {
 
   // Listen for data chunks in the request body
   req.on('data', chunk => {
-      body += chunk.toString();
+    body += chunk.toString();
   });
 
   // Once all data is received, parse the JSON body
   req.on('end', () => {
-      // Parse the JSON body
-      const requestBody = JSON.parse(body);
+    // Parse the JSON body
+    const requestBody = JSON.parse(body);
 
-      // Extract complaint details from the request body
-      const { name, branch, customer_id, description } = requestBody;
+    // Extract complaint details from the request body
+    const { branch, customer_id, description } = requestBody;
+    console.log("Here is our branch from controller: ", branch);
+    // Query to fetch exhibit_id based on branch
+    const getExhibitIdQuery = 'SELECT Exhibit_id FROM exhibits WHERE Description = ?';
 
-      // Query to fetch exhibit_id based on branch
-      const getExhibitIdQuery = 'SELECT Exhibit_id FROM exhibits WHERE Description = ?';
+    // Query to fetch first_name and last_name based on customer_id
+    const getNameQuery = 'SELECT first_name, last_name FROM customers WHERE customer_id = ?';
+    console.log("I work after getNAmeQuery");
+    pool.query(getNameQuery, [customer_id], (error, results) => {
+      if (error) {
+        console.error('Error fetching name:', error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Internal server error' }));
+        return;
+      }
 
+      if (results.length === 0) {
+        console.error('Name not found for customer_id:', customer_id);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Name not found' }));
+        return;
+      }
+
+      const { first_name, last_name } = results[0];
+      const name = `${first_name} ${last_name}`;
+      console.log("Here is the name we found: ", name);
       pool.query(
-          getExhibitIdQuery,
-          [branch],
-          (error, results) => {
-              if (error) {
-                  console.error('Error fetching exhibit_id:', error);
-                  res.writeHead(500, { 'Content-Type': 'application/json' });
-                  res.end(JSON.stringify({ error: 'Internal server error' }));
-                  return;
-              }
-
-              if (results.length === 0) {
-                  console.error('Exhibit not found for branch:', branch);
-                  res.writeHead(400, { 'Content-Type': 'application/json' });
-                  res.end(JSON.stringify({ error: 'Exhibit not found' }));
-                  return;
-              }
-
-              const exhibit_id = results[0].Exhibit_id;
-
-              // Insert complaint into the database using the query from the queries file
-              pool.query(
-                  queries.addComplaint,
-                  [name, branch, exhibit_id, customer_id, description],
-                  (error, results) => {
-                      if (error) {
-                          console.error('Error inserting complaint:', error);
-                          res.writeHead(500, { 'Content-Type': 'application/json' });
-                          res.end(JSON.stringify({ error: 'Internal server error' }));
-                      } else {
-                          res.writeHead(200, { 'Content-Type': 'application/json' });
-                          res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
-                      }
-                  }
-              );
+        getExhibitIdQuery,
+        [branch],
+        (error, results) => {
+          if (error) {
+            console.error('Error fetching exhibit_id:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
           }
+
+          if (results.length === 0) {
+            console.error('Exhibit not found for branch:', branch);
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Exhibit not found' }));
+            return;
+          }
+
+          const exhibit_id = results[0].Exhibit_id;
+          console.log("We also work after getting the exhibit id: ", exhibit_id);
+          // Insert complaint into the database
+          pool.query(
+            queries.addComplaint,
+            [name, branch, exhibit_id, customer_id, description],
+            (error, results) => {
+              if (error) {
+                console.error('Error inserting complaint:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Internal server error' }));
+                console.log("I end up in the error message");
+              } else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
+                console.log("I do not end up in the error message");
+              }
+            }
+          );
+        }
       );
+    });
   });
 };
+
+
 
 
 const updateEmployeeInfo = (requestData, res) => {

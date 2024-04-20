@@ -2,7 +2,6 @@ import { backIn } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-
 function Complaints() {
   const [name, setName] = useState("");
   const [branch, setBranch] = useState("");
@@ -10,6 +9,7 @@ function Complaints() {
   const [exhibits, setExhibits] = useState([]);
   const [customerId, setCustomerId] = useState(null); // State for customer_id
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState("");
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
@@ -58,25 +58,33 @@ function Complaints() {
   const handleSubmit = async () => {
     try {
       const customer_id = customerId;
-      console.log(JSON.stringify({ name, branch, description }));
+      console.log(JSON.stringify({ branch, description }));
+      setSelectedBranch(branch);
       const response = await fetch("http://localhost:8081/complaints", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, branch, customer_id, description }),
+        body: JSON.stringify({
+          branch,
+          customer_id,
+          description,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit complaint");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      console.log("Heres our response", response);
 
       setName("");
       setBranch("");
       setDescription("");
-
+      console.log("we lived?");
       alert("Complaint submitted successfully!");
     } catch (error) {
+      console.log("Heres our error:", error);
+
       console.error("Error submitting complaint:", error);
       alert("Failed to submit complaint. Please try again later.");
     }
@@ -103,52 +111,62 @@ function Complaints() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white w-screen" style={{backgroundImage: `url(https://external-preview.redd.it/what-ever-came-of-the-complaints-against-pam-myers-of-the-v0-3tTuQwJsd5iwaG8Oca1eqBSGCTwa0YhgmVpxyUHa8AY.jpg?auto=webp&s=f8ee50b9873b918ae89b22c867ebfe42ccfae59a`}}>
-
-
+    <main
+      className="min-h-screen bg-white w-screen"
+      style={{
+        backgroundImage: `url(https://external-preview.redd.it/what-ever-came-of-the-complaints-against-pam-myers-of-the-v0-3tTuQwJsd5iwaG8Oca1eqBSGCTwa0YhgmVpxyUHa8AY.jpg?auto=webp&s=f8ee50b9873b918ae89b22c867ebfe42ccfae59a`,
+      }}
+    >
       <h3 className="text-[#313639] text-4xl flex flex-col pl-2 m-4 py-2 w-full bg-[#bfbaa3] rounded-xl">
         Complaints
       </h3>
       <div className="flex flex-row w-full justify-center mt-24">
-      <div className="bg-white w-1/2 h-fit mr-36 rounded-md shadow-2xl px-12 py-12 items-center justify-center">
-        <p className="text-[#313639] text-2xl">
-          Had a problem in the Baker Museum? Let us know:
-        </p>
-        <div className=" text-xl mt-5">
-          <select className="w-full rounded-xl pl-2 border-[#bfbaa3] border-2">
-            <option value="" disabled selected>Branch</option>
-            {exhibits && exhibits.map((exhibit) => (
-              <option key={exhibit.Exhibit_id} value={exhibit.Description}>
-                {exhibit.Description}
+        <div className="bg-white w-1/2 h-fit mr-36 rounded-md shadow-2xl px-12 py-12 items-center justify-center">
+          <p className="text-[#313639] text-2xl">
+            Had a problem in the Baker Museum? Let us know:
+          </p>
+          <div className=" text-xl mt-5">
+            <select
+              className="w-full rounded-xl pl-2 border-[#bfbaa3] border-2"
+              value={branch}
+              onChange={(e) => setBranch(e.target.value)}
+            >
+              <option value="" disabled selected>
+                Branch
               </option>
-            ))}
-          </select>
+              {exhibits &&
+                exhibits.map((exhibit) => (
+                  <option key={exhibit.Exhibit_id} value={exhibit.Description}>
+                    {exhibit.Description}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <label className="block text-xl mt-5" for="description">
+            Description:{" "}
+          </label>
+          <textarea
+            type="text"
+            id="description"
+            name="Description"
+            maxLength="200"
+            rows={5}
+            cols={50}
+            className="flex mt-1 rounded-xl w-full border-[#bfbaa3] border-2"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+          <a href="/complaint-confirmed">
+            <button
+              className="p-2 mt-5 text-xl rounded-3xl border border-[#313639] w-full hover:bg-gray-700 hover:text-white"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Submit Complaint
+            </button>
+          </a>
         </div>
-        <label className="block text-xl mt-5" for="description">
-          Description:{" "}
-        </label>
-        <textarea
-          type="text"
-          id="description"
-          name="Description"
-          maxLength="200"
-          rows={5}
-          cols={50}
-          className="flex mt-1 rounded-xl w-full border-[#bfbaa3] border-2"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <a href="/complaint-confirmed">
-        <button
-          className="p-2 mt-5 text-xl rounded-3xl border border-[#313639] w-full hover:bg-gray-700 hover:text-white"
-          type="submit"
-          onClick={handleSubmit}
-        >
-          Submit Complaint
-        </button>
-        </a>
-      </div>
       </div>
     </main>
   );
