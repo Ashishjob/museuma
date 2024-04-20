@@ -118,10 +118,11 @@ function Complaints() {
           <select className="w-full rounded-xl pl-2 border-[#bfbaa3] border-2">
             <option value="" disabled selected>Branch</option>
             {exhibits && exhibits.map((exhibit) => (
+              exhibit.active === 1 && (
               <option key={exhibit.Exhibit_id} value={exhibit.Description}>
                 {exhibit.Description}
               </option>
-            ))}
+              )))}
           </select>
         </div>
         <label className="block text-xl mt-5" for="description">
