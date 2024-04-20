@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
+    const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [formData, setFormData] = useState({
@@ -46,6 +48,8 @@ function Signup() {
             console.log(responseData); // Log the response data to the console
             // Optionally, you can perform any additional actions based on the response
             // For example, show a success message or redirect the user
+            navigate('/login');
+
         } catch (error) {
             console.log(error.body);
             console.error("Error submitting sign-up form:", error);

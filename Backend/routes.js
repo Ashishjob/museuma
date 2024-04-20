@@ -66,9 +66,27 @@ function router(req, res) {
         const customerId = url.split('/')[2]; // Assuming the customer ID is the third segment of the URL
         controller.getCustomerInfo(customerId, res);
     }
+    else if (url.startsWith('/adminInfo/') && method === 'GET') {
+        // Extract the customer ID from the URL
+        const customerId = url.split('/')[2]; // Assuming the customer ID is the third segment of the URL
+        controller.getAdminInfo(customerId, res);
+    }
+    else if (url.startsWith('/employeeInfo/') && method === 'GET') {
+        // Extract the customer ID from the URL
+        const customerId = url.split('/')[2]; // Assuming the customer ID is the third segment of the URL
+        controller.getEmployeeInfo(customerId, res);
+    }
     else if (url.startsWith('/editCustomerInfo/') && method === 'PUT') {
         const customerId = url.split('/')[2];
         controller.updateCustomerInfo(customerId, req, res);
+    }
+    else if (url.startsWith('/editAdminInfo/') && method === 'PUT') {
+        const customerId = url.split('/')[2];
+        controller.updateAdminInfo(customerId, req, res);
+    }
+    else if (url.startsWith('/editEmployeeInfo/') && method === 'PUT') {
+        const customerId = url.split('/')[2];
+        controller.updateEmployeeInfoAll(customerId, req, res);
     }
     else if (url.startsWith('/decodeToken') && method === 'POST') {
         controller.decodeToken(req, res);
