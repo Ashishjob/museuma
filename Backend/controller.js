@@ -120,7 +120,7 @@ const addExhibits = (req, res) => {
   
   req.on("end", () => {
       const parsedBody = JSON.parse(body);
-      const { Description, Collections, Location, Director_ID } = parsedBody;
+      const { Description, Collections, Location, Director_ID, image_url, explanation } = parsedBody;
   
       console.log("Received data:", parsedBody); // Log received data
 
@@ -138,7 +138,7 @@ const addExhibits = (req, res) => {
       // Add exhibit to the database
       pool.query(
           queries.addExhibit,
-          [Description, Collections, Location, Director_ID],
+          [Description, Collections, Location, Director_ID, image_url, explanation],
           (error, results) => {
               if (error) {
                   console.error('Error adding exhibit:', error);
@@ -181,6 +181,30 @@ const markEmployeeForDeletion = (requestData, res) => {
   });
 };
 
+const markEmployeeForRehire = (requestData, res) => {
+  const { employee_id } = requestData;
+
+  if (!employee_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Employee ID is missing' }));
+    return;
+  }
+
+  console.log('Employee ID:', employee_id);
+
+  pool.query(queries.markEmployeeForRehire, [employee_id], (error, results) => {
+    if (error) {
+      console.error('Error marking employee for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
+  });
+};
+
 const insertComplaints = (req, res) => {
   let body = '';
 
@@ -196,13 +220,11 @@ const insertComplaints = (req, res) => {
 
     // Extract complaint details from the request body
     const { branch, customer_id, description } = requestBody;
-    console.log("Here is our branch from controller: ", branch);
     // Query to fetch exhibit_id based on branch
     const getExhibitIdQuery = 'SELECT Exhibit_id FROM exhibits WHERE Description = ?';
 
     // Query to fetch first_name and last_name based on customer_id
     const getNameQuery = 'SELECT first_name, last_name FROM customers WHERE customer_id = ?';
-    console.log("I work after getNAmeQuery");
     pool.query(getNameQuery, [customer_id], (error, results) => {
       if (error) {
         console.error('Error fetching name:', error);
@@ -220,7 +242,6 @@ const insertComplaints = (req, res) => {
 
       const { first_name, last_name } = results[0];
       const name = `${first_name} ${last_name}`;
-      console.log("Here is the name we found: ", name);
       pool.query(
         getExhibitIdQuery,
         [branch],
@@ -240,7 +261,6 @@ const insertComplaints = (req, res) => {
           }
 
           const exhibit_id = results[0].Exhibit_id;
-          console.log("We also work after getting the exhibit id: ", exhibit_id);
           // Insert complaint into the database
           pool.query(
             queries.addComplaint,
@@ -250,11 +270,9 @@ const insertComplaints = (req, res) => {
                 console.error('Error inserting complaint:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Internal server error' }));
-                console.log("I end up in the error message");
               } else {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'Complaint inserted successfully' }));
-                console.log("I do not end up in the error message");
               }
             }
           );
@@ -808,7 +826,7 @@ const addArtWork = (req, res) => {
 
 const updateExhibit = (requestData, res) => {
   try {
-    const { Description, Collections, Location, Director_ID, Exhibit_id } = requestData;
+    const { Description, Collections, Location, Director_ID, Exhibit_id, image_url, explanation } = requestData;
 
     console.log('Received data:', { Description, Collections, Location, Director_ID, Exhibit_id }); // Debugging line
 
@@ -820,7 +838,7 @@ const updateExhibit = (requestData, res) => {
     // Update exhibit in the database
     pool.query(
       queries.updateExhibit,
-      [Description, Collections, Location, Director_ID, Exhibit_id],
+      [Description, Collections, Location, Director_ID, image_url, explanation, Exhibit_id], // Changed the order of parameters
       (error, results) => {
         if (error) {
           console.error('Error updating exhibit information:', error);
@@ -843,6 +861,7 @@ const updateExhibit = (requestData, res) => {
     return res.end(JSON.stringify({ error: 'Invalid request body' }));
   }
 };
+
 
 const markExhibitForDeletion = (requestData, res) => {
   const { Exhibit_id } = requestData; // Make sure the key matches the one in the request data
@@ -1097,7 +1116,18 @@ const exhibitReport = (req, res) => {
   });
 };
 
-
+const salesReport = (req, res) => {
+  pool.query(queries.salesReport, (error, results) => {
+    if (error) {
+      console.error("Error fetching sales report:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
 
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {
@@ -1182,5 +1212,7 @@ module.exports = {
   getEmployeeDepartment,
   getMessages,
   exhibitReport,
-  addOrder
+  addOrder,
+  salesReport,
+  markEmployeeForRehire
 };

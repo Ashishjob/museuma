@@ -5,10 +5,11 @@ const getDirectorIdByDepartment = "SELECT Director_ID FROM branch_directors WHER
 const getEmployees = "SELECT * FROM employees";
 const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const getExhibit = "SELECT * FROM exhibits";
-const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID) VALUES (?, ?, ?, ?)";
-const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ? WHERE Exhibit_id = ?";
+const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID, image_url, explanation) VALUES (?, ?, ?, ?, ?, ?)";
+const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ?, image_url = ?, explanation = ? WHERE Exhibit_id = ?";
 const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
+const markEmployeeForRehire ="UPDATE employees SET Active = 1 WHERE employee_id = ?";
 const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, customer_id, description) VALUES (?, ?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
@@ -84,12 +85,26 @@ e.Exhibit_id, e.Description;
 
 `;
 
+const salesReport = `SELECT 
+CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+i.title AS item_bought,
+o.quantity AS quantity_bought,
+o.total_price AS total_price,
+o.order_date AS order_date
+FROM 
+customers c
+JOIN 
+orders o ON c.customer_id = o.customer_id
+JOIN 
+items i ON o.item_id = i.item_id;`;
+
 module.exports = {
     getBranchDirectors,
     getEmployees,
     addEmployee,
     updateEmployeeInfo,
     markEmployeeForDeletion,
+    markEmployeeForRehire,
     checkEmailExists,
     getDirectorIdByDepartment,
     getExhibit,
@@ -118,5 +133,6 @@ module.exports = {
     getEmployeeDepartment,
     getMessages,
     exhibitReport,
-    addOrder
+    addOrder,
+    salesReport
 };

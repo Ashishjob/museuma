@@ -30,7 +30,10 @@ function router(req, res) {
                 } else if (data.action === 'markForDeletion') {
                     console.log("we made it to routes.js")
                     controller.markEmployeeForDeletion(requestData, res);
-                } else {
+                } else if (data.action === 'markForRehire') {
+                    console.log("we made it to routes.js")
+                    controller.markEmployeeForRehire(requestData, res);
+                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
                 }
@@ -129,6 +132,9 @@ function router(req, res) {
     
     else if (url.startsWith('/manage-restaurant') && method === 'GET') {
         controller.getFood(req, res);
+    }
+    else if (url.startsWith('/total-report') && method === 'GET') {
+        controller.salesReport(req, res);
     }
     else if (url.startsWith('/manage-restaurant') && method === 'POST') {
         controller.addFood(req, res);

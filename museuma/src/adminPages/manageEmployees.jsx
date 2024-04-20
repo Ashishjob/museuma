@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaTrash, FaEdit, FaArrowLeft } from "react-icons/fa";
+import { FaTrash, FaEdit, FaArrowLeft, FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import "../App.css";
@@ -10,6 +10,7 @@ const ManageEmployees = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [exhibits, setExhibits] = useState([]);
+  const [filter, setFilter] = useState('active');
   const [editedEmployee, setEditedEmployee] = useState({
     department: "",
     email: "",
@@ -220,23 +221,59 @@ const ManageEmployees = () => {
   };
 
   useEffect(() => {
-    const fetchExhibits = async () => {
-        try {
-            const response = await fetch("https://museuma.onrender.com/manage-exhibits");
-            if (!response.ok) {
-                throw new Error("Failed to fetch exhibits");
-            }
-            const data = await response.json();
-            setExhibits(data);
-        } catch (error) {
-            console.error("Error fetching exhibits:", error);
-            // Handle error as needed
+    const fetchEmployees = async () => {
+      try {
+        const response = await fetch("https://museuma.onrender.com/manage-employees");
+        if (!response.ok) {
+          throw new Error("Failed to fetch employees");
         }
+        const data = await response.json();
+        const filteredEmployees = data.filter(employee => (filter === 'active' ? employee.Active === 1 : employee.Active === 0));
+        setEmployees(filteredEmployees);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+        // Handle error as needed
+      }
     };
 
-    fetchExhibits();
-}, []);
+    fetchEmployees();
+  }, [filter]);
 
+  const [viewInactive, setViewInactive] = useState(false);
+
+  const rehireEmployee = async (employeeToRehire) => {
+    console.log("Rehire button is hit");
+    try {
+      // Send PUT request to rehire employee
+      const response = await fetch("http://localhost:8081/manage-employees", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "markForRehire",
+          employee_id: employeeToRehire.employee_id,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to rehire employee");
+      }
+  
+      // Update state to mark the employee as active
+      const updatedEmployees = employees.map((employee) =>
+        employee.employee_id === employeeToRehire.employee_id
+          ? { ...employee, Active: 1 }
+          : employee
+      );
+      setEmployees(updatedEmployees);
+    } catch (error) {
+      console.error("Error rehiring employee:", error);
+      // Handle error as needed
+    }
+  };
+
+  const filteredEmployees = employees.filter(employee => viewInactive ? employee.active === 0 : true);
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -250,33 +287,43 @@ const ManageEmployees = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Employee Management
         </h1>
-
+      <div className="flex flex-col items-start">
         <button
           onClick={toggleAddForm}
-          className="text-3xl mb-4 hover:text-[#C0BAA4]"
+          className="text-3xl mb-2 hover:text-[#C0BAA4]"
         >
           {showAddForm ? "Cancel" : "Add Employee"}
         </button>
-
-        <ul className="divide-y divide-gray-300 mb-6">
-          {employees.map((employee, index) => (
-            <li key={index} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
-                <span className="text-xl">{employee.email}</span>
-                <span className="text-xl">{employee.department}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editEmployee(employee)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
+        <button className="text-2xl mb-4" onClick={() => setFilter(filter === 'active' ? 'inactive' : 'active')}>
+        Show {filter === 'active' ? 'Inactive' : 'Active'} Employees
+      </button>
+      </div>
+       
+      <ul className="divide-y divide-gray-300 mb-6">
+        {employees.map((employee, index) => (
+          <li key={index} className="py-4 flex">
+            <div className="flex flex-col">
+              <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
+              <span className="text-xl">{employee.email}</span>
+              <span className="text-xl">{employee.department}</span>
+            </div>
+            <div className="ml-auto flex">
+              <button onClick={() => editEmployee(employee)} className="mr-2">
+                <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+              </button>
+              {employee.Active === 0 ? (
+                <button onClick={() => rehireEmployee(employee)}>
+                <FaUserPlus className="hover:text-[#C0BAA4] text-2xl" />
+              </button>
+              ) : (
                 <button onClick={() => confirmDelete(employee.employee_id)}>
                   <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
                 </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
 
         {showAddForm && (
           <div className="flex">
@@ -309,27 +356,27 @@ const ManageEmployees = () => {
                 }
               />
               <Select
-  id="branch"
-  name="Branch"
-  options={exhibits.filter(exhibit => exhibit.active === 1).map((exhibit) => ({
-    value: exhibit.Description,
-    label: exhibit.Description,
-}))}
-  value={
-    editedEmployee.exhibit
-      ? {
-          value: editedEmployee.exhibit,
-          label: editedEmployee.exhibit,
-        }
-      : null
-  }
-  onChange={(selectedOption) =>
-    setEditedEmployee({
-      ...editedEmployee,
-      exhibit: selectedOption.value,
-    })
-  }
-/>
+                id="branch"
+                name="Branch"
+                options={exhibits.filter(exhibit => exhibit.active === 1).map((exhibit) => ({
+                  value: exhibit.Description,
+                  label: exhibit.Description,
+                }))}
+                value={
+                  editedEmployee.exhibit
+                    ? {
+                      value: editedEmployee.exhibit,
+                      label: editedEmployee.exhibit,
+                    }
+                    : null
+                }
+                onChange={(selectedOption) =>
+                  setEditedEmployee({
+                    ...editedEmployee,
+                    exhibit: selectedOption.value,
+                  })
+                }
+              />
             </div>
             <button
               onClick={addEmployee}
@@ -408,27 +455,27 @@ const ManageEmployees = () => {
                   Branch
                 </label>
                 <Select
-  id="branch"
-  name="Branch"
-  options={exhibits.map((exhibit) => ({
-    value: exhibit.Description,
-    label: exhibit.Description,
-  }))}
-  value={
-    editedEmployee.exhibit
-      ? {
-          value: editedEmployee.exhibit,
-          label: editedEmployee.exhibit,
-        }
-      : null
-  }
-  onChange={(selectedOption) =>
-    setEditedEmployee({
-      ...editedEmployee,
-      exhibit: selectedOption.value,
-    })
-  }
-/>
+                  id="branch"
+                  name="Branch"
+                  options={exhibits.map((exhibit) => ({
+                    value: exhibit.Description,
+                    label: exhibit.Description,
+                  }))}
+                  value={
+                    editedEmployee.exhibit
+                      ? {
+                        value: editedEmployee.exhibit,
+                        label: editedEmployee.exhibit,
+                      }
+                      : null
+                  }
+                  onChange={(selectedOption) =>
+                    setEditedEmployee({
+                      ...editedEmployee,
+                      exhibit: selectedOption.value,
+                    })
+                  }
+                />
 
                 <div className="my-4">
                   <label
