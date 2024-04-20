@@ -42,10 +42,10 @@ function Exhibits() {
 
                     return (
                         <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg p-6">
-                            <img src={exhibition.image} alt={`Image for ${exhibition.title}`} className="w-full h-64 object-cover mb-4" />
+                            <img src={exhibition.image_url} alt={`${exhibition.title}`} className="w-full h-64 object-cover mb-4 rounded-xl" />
                             <div className="p-4">
                                 <h2 className="text-2xl mb-2">{exhibition.Description}</h2>
-                                <p className="text-gray-700 mb-4">{exhibition.description}</p>
+                                <p className="text-gray-700 mb-4">{exhibition.explanation}</p>
                                 <p className="text-sm text-gray-500">Location: {exhibition.Location}</p>
                             </div>
                         </div>

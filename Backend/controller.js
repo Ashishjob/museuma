@@ -181,6 +181,30 @@ const markEmployeeForDeletion = (requestData, res) => {
   });
 };
 
+const markEmployeeForRehire = (requestData, res) => {
+  const { employee_id } = requestData;
+
+  if (!employee_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Employee ID is missing' }));
+    return;
+  }
+
+  console.log('Employee ID:', employee_id);
+
+  pool.query(queries.markEmployeeForRehire, [employee_id], (error, results) => {
+    if (error) {
+      console.error('Error marking employee for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Employee marked for deletion' }));
+  });
+};
+
 const insertComplaints = (req, res) => {
   let body = '';
 
@@ -868,6 +892,34 @@ const markExhibitForDeletion = (requestData, res) => {
   });
 };
 
+const markExhibitForReactivation = (requestData, res) => {
+  const { Exhibit_id } = requestData; // Make sure the key matches the one in the request data
+
+  if (!Exhibit_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Exhibit ID is missing' }));
+    return;
+  }
+
+  console.log('Exhibit ID:', Exhibit_id);
+
+  pool.query(queries.markExhibitForReactivation, [Exhibit_id], (error, results) => {
+    if (error) {
+      console.error('Error marking exhibit for reactivation:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
+
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Exhibit marked for reactivation' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Exhibit not found' }));
+    }
+  });
+};
 
 const getFood = (req, res) => {
   pool.query(queries.getFood, (error, results) => {
@@ -1118,6 +1170,79 @@ const getMessages = (req, res) => {
   });
 };
 
+const addOrder = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { customer_id, item_id, quantity, total_price, order_date } = data;
+
+      // Insert order into the database
+      pool.query(
+        queries.addOrder,
+        [customer_id, item_id, quantity, total_price, order_date],
+        (error, results) => {
+          if (error) {
+            console.error('Error adding order:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          res.writeHead(201, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ message: 'Order added successfully' }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+
+const updateItemQuantity = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { item_id, quantity } = data;
+
+      // Update item quantity in the database
+      pool.query(
+        queries.updateItemQuantity,
+        [quantity, item_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating item quantity:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ message: 'Item quantity updated successfully' }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -1152,5 +1277,9 @@ module.exports = {
   getEmployeeDepartment,
   getMessages,
   exhibitReport,
-  salesReport
+  addOrder,
+  salesReport,
+  markEmployeeForRehire,
+  updateItemQuantity,
+  markExhibitForReactivation
 };

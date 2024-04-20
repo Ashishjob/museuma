@@ -21,7 +21,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8081/login", {
+      const response = await fetch("https://museuma.onrender.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,6 +39,7 @@ function Login() {
 
         // Redirect to home page
         navigate("/");
+        window.location.reload();
 
         // Retrieve the token from cookies
         const storedToken = Cookies.get("token");
@@ -95,16 +96,8 @@ function Login() {
             Sign Up
           </button>
         </a>
-        <div className="flex items-center justify-center mt-4 mb-2">
-          <div className="border-t border-[#DCD7C5] flex-grow"></div>
-          <p className="px-2 ">Are you an administrator?</p>
-          <div className="border-t border-[#DCD7C5] flex-grow"></div>
+        <div className="flex items-center justify-center mt-4">
         </div>
-        <a href="/admin-login">
-          <button className="w-full py-2 px-4 bg-[#DCD7C5] text-black rounded hover:bg-[#C4BFAC] mt-2">
-            Admin Login
-          </button>
-        </a>
       </div>
     </main>
   );

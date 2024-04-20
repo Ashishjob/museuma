@@ -27,7 +27,7 @@ function Complaints() {
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function Complaints() {
       const customer_id = customerId;
       console.log(JSON.stringify({ branch, description }));
       setSelectedBranch(branch);
-      const response = await fetch("http://localhost:8081/complaints", {
+      const response = await fetch("https://museuma.onrender.com/complaints", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

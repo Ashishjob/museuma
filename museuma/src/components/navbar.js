@@ -15,9 +15,9 @@ export default function NavBar() {
 
   useEffect(() => {
     const updateCartQuantity = () => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const quantity = cart.reduce((total, item) => total + item.quantity, 0);
-        setCartQuantity(quantity);
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const quantity = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartQuantity(quantity);
     };
 
     // Update the cart quantity when the component mounts
@@ -28,43 +28,43 @@ export default function NavBar() {
 
     // Clean up the event listener when the component unmounts
     return () => {
-        window.removeEventListener('storage', updateCartQuantity);
+      window.removeEventListener('storage', updateCartQuantity);
     };
-}, []);
+  }, []);
 
-// Create a context for the cart
-const CartContext = createContext();
+  // Create a context for the cart
+  const CartContext = createContext();
 
-// Create a provider component for the cart context
-const CartProvider = ({ children }) => {
+  // Create a provider component for the cart context
+  const CartProvider = ({ children }) => {
     const [cartQuantity, setCartQuantity] = useState(0);
 
     useEffect(() => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const quantity = cart.reduce((total, item) => total + item.quantity, 0);
-        setCartQuantity(quantity);
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const quantity = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartQuantity(quantity);
     }, []);
 
     const value = {
-        cartQuantity,
-        setCartQuantity,
+      cartQuantity,
+      setCartQuantity,
     };
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-};
+  };
 
-// Create a hook to use the cart context
-const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
+  // Create a hook to use the cart context
+  const useCart = () => {
+    const context = useContext(CartContext);
+    if (!context) {
+      throw new Error('useCart must be used within a CartProvider');
+    }
+    return context;
+  };
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const useCart = () => {
 
   const getFirstName = async (user_id, table_name) => {
     try {
-      const response = await fetch("http://localhost:8081/getFirstName", {
+      const response = await fetch("https://museuma.onrender.com/getFirstName", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const useCart = () => {
 
   const getEmployeeDepartment = async (employee_id) => {
     try {
-      const response = await fetch("http://localhost:8081/employee-department", {
+      const response = await fetch("https://museuma.onrender.com/employee-department", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,18 +167,18 @@ const useCart = () => {
         }
       });
     }
-  
+
     // Fetch messages and check for unresolved messages
     const fetchAndCheckMessages = async () => {
       try {
-        const response = await fetch('http://localhost:8081/admin#notifications');
+        const response = await fetch('https://museuma.onrender.com/admin#notifications');
         const data = await response.json();
         setQueue(data);
-  
+
         const unresolvedMessages = data.some(item => item.resolved === 0);
         setHasUnresolvedMessages(unresolvedMessages);
         console.log(unresolvedMessages);
-  
+
         // Check if there are unresolved messages to decide if popup should be open
         if (unresolvedMessages) {
           setIsPopupOpen(true);
@@ -189,7 +189,7 @@ const useCart = () => {
         console.error("Error fetching messages:", error);
       }
     };
-  
+
     // Check if the hash fragment is "notifications"
     if (window.location.hash === "#notifications") {
       fetchAndCheckMessages(); // Fetch messages when the popup is open
@@ -197,12 +197,12 @@ const useCart = () => {
       fetchAndCheckMessages(); // Fetch messages when the component mounts
     }
   }, []);
-  
-  
+
+
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch('http://localhost:8081/admin#notifications'); // Replace with your actual API endpoint
+      const response = await fetch('https://museuma.onrender.com/admin#notifications'); // Replace with your actual API endpoint
       const data = await response.json();
       setQueue(data);
     } catch (error) {
@@ -216,11 +216,12 @@ const useCart = () => {
     Cookies.remove("token");
     setIsLoggedIn(false);
     setShowDropdown(false);
+    localStorage.removeItem("cart");
   };
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
-    
+
     const fetchData = async () => {
       if (!isPopupOpen) {
         window.location.hash = "notifications";
@@ -229,24 +230,24 @@ const useCart = () => {
         window.location.hash = "";
       }
     };
-  
+
     fetchData();
   };
-  
-  
+
+
 
   const Popup = () => {
     // Filter out messages where resolved is false
     const resolvedMessages = queue.filter(item => item.resolved === 0);
 
     // Check if resolvedMessages is empty
-  if (resolvedMessages.length === 0) {
-    return (
-      <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64">
-        <p>No notifications</p>
-      </div>
-    );
-  }
+    if (resolvedMessages.length === 0) {
+      return (
+        <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64">
+          <p>No notifications</p>
+        </div>
+      );
+    }
 
     return (
       <div className="absolute top-16 right-0 bg-white border rounded shadow-lg p-4 w-64"> {/* Added w-64 for width */}
@@ -258,20 +259,20 @@ const useCart = () => {
       </div>
     );
   };
-  
+
 
   useEffect(() => {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
     }
-  
+
     // Check if the hash fragment is "notifications"
     if (window.location.hash === "#notifications") {
       setIsPopupOpen(true);
     }
   }, []);
-  
+
 
   return (
     <header className="text-[#313639] body-font z-1 shadow">
@@ -306,23 +307,30 @@ const useCart = () => {
           </nav>
           <div className="relative">
 
-          <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
-          {hasUnresolvedMessages && ( // Conditionally render the red dot
+            <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+            {hasUnresolvedMessages && ( // Conditionally render the red dot
               <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
             )}
-          
-          {isPopupOpen && <Popup />}
-        </div>
+
+            {isPopupOpen && <Popup />}
+          </div>
         </div>
         <div className="flex items-center">
-        <button className="relative inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">
-          <a href="/cart">My Cart</a>
-          {cartQuantity > 0 && (
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+          {isLoggedIn ? (
+            <button className="relative inline-flex justify-center items-center mr-4 bg-[#EFEDE5] border-0 py-1 px-3 focus:outline-none hover:bg-[#DCD7C5] rounded text-base">
+              <a href="/cart">My Cart</a>
+              {cartQuantity > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
                   {cartQuantity}
-              </span>
+                </span>
+              )}
+            </button>
+          ) : (
+            <button className="relative inline-flex justify-center items-center mr-4 bg-gray-300 border-0 py-1 px-3 rounded text-base" disabled>
+              My Cart
+            </button>
           )}
-      </button>
+
           {isLoggedIn ? (
             <div className="relative inline-block text-left">
               <button

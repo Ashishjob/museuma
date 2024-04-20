@@ -68,7 +68,7 @@ const ManageArtwork = () => {
     console.log(newArtworkData);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-artworks", {
+      const response = await fetch("https://museuma.onrender.com/manage-artworks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const ManageArtwork = () => {
       }
 
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-artworks"
+        "https://museuma.onrender.com/manage-artworks"
       );
 
       if (!updatedResponse.ok) {
@@ -114,7 +114,7 @@ const ManageArtwork = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +132,7 @@ const ManageArtwork = () => {
 
       // Fetch updated data after successful update (if needed)
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-artworks"
+        "https://museuma.onrender.com/manage-artworks"
       );
       const updatedData = await updatedResponse.json();
       setArtWork(updatedData);
@@ -153,7 +153,7 @@ const ManageArtwork = () => {
   const confirmDelete = async () => {
     console.log("Here is our art_id: ", selectedArtworkForDeletion);
     try {
-      const response = await fetch(`http://localhost:8081/manage-artworks`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const ManageArtwork = () => {
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-artworks"); // Endpoint URL should match your backend route
+        const response = await fetch("https://museuma.onrender.com/manage-artworks"); // Endpoint URL should match your backend route
         if (!response.ok) {
           throw new Error("Failed to fetch artworks");
         }
@@ -213,37 +213,13 @@ const ManageArtwork = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Manage Artworks
         </h1>
-
-        <ul className="divide-y divide-gray-300 mb-6">
-          {artworks.map((artwork, index) => (
-            <li key={index} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl">Title: {artwork.title}</span>
-                <span className="text-xl">Artist: {artwork.artist}</span>
-                <span className="text-xl">
-                  Creation Date: {formatDate(artwork.creationDate)}
-                </span>
-
-                <span className="text-xl">Medium: {artwork.medium}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editArtWork(artwork)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                <button onClick={() => deleteSet(artwork.art_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
         <button
           onClick={toggleAddForm}
           className="text-3xl mb-4 hover:text-[#C0BAA4]"
         >
-          Add Artwork
+          {showAddForm ? "Cancel" : "Add Artwork"}
         </button>
+
         {showAddForm && (
           <div className="flex">
             <div className="mb-6 flex">
@@ -315,6 +291,32 @@ const ManageArtwork = () => {
             </div>
           </div>
         )}
+        <ul className="divide-y divide-gray-300 mb-6">
+          {artworks.map((artwork, index) => (
+            <li key={index} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl">Title: {artwork.title}</span>
+                <span className="text-xl">Artist: {artwork.artist}</span>
+                <span className="text-xl">
+                  Creation Date: {formatDate(artwork.creationDate)}
+                </span>
+
+                <span className="text-xl">Medium: {artwork.medium}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editArtWork(artwork)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                <button onClick={() => deleteSet(artwork.art_id)}>
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        
+        
 
         {showEditForm && selectedArtWork && (
           <form onSubmit={handleEditSubmit}>

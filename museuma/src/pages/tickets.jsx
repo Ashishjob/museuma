@@ -101,6 +101,21 @@ function Tickets() {
         const exhibitionTitle = selectedExhibition;
         const exhibitionId = exhibitionIds[selectedExhibition]; // Get the ID for the selected exhibition
 
+        const mapTicketTypeToId = (type) => {
+            switch (type) {
+                case 'adult':
+                    return 9;
+                case 'student':
+                    return 10;
+                case 'child':
+                    return 11;
+                case 'military':
+                    return 12;
+                default:
+                    return null;
+            }
+        };
+
         // Add adult tickets to cart if quantity is greater than 0
         if (adultTickets > 0) {
             const existingAdultItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Adult Ticket`);
@@ -108,7 +123,7 @@ function Tickets() {
                 cartItems[existingAdultItemIndex].quantity += adultTickets;
             } else {
                 cartItems.push({
-                    item_id: `adult_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('adult'),
                     title: `${exhibitionTitle} - Adult Ticket`,
                     price: 20,
                     quantity: adultTickets,
@@ -126,7 +141,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `student_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('student'),
                     title: `${exhibitionTitle} - Student Ticket`,
                     price: 15,
                     quantity: studentTickets,
@@ -144,7 +159,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `child_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('child'),
                     title: `${exhibitionTitle} - Child Ticket`,
                     price: 10,
                     quantity: childTickets,
@@ -162,7 +177,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `military_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('military'),
                     title: `${exhibitionTitle} - Military Ticket`,
                     price: 10,
                     quantity: militaryTickets,
@@ -175,6 +190,8 @@ function Tickets() {
     };
 
     const [exhibits, setExhibits] = useState([]);
+    const selectedExhibit = exhibits.find(exhibit => exhibit.Description === selectedExhibition);
+
 
     useEffect(() => {
         const fetchExhibits = async () => {
@@ -195,30 +212,41 @@ function Tickets() {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col items-center" style={{ marginTop: '20px' }}>
-            <h1 className="text-4xl font-bold">Tickets</h1>
-            <p className="mb-6 text-2xl text-gray-600" style={{ marginTop: '32px', marginBottom: '24px', textAlign: 'center' }}>Explore the exquisite collection of artworks at the Baker Museum. <br /> Purchase your tickets now for an unforgettable experience.</p>
-            <div className="mt-4 w-full max-w-xs">
-                <h2 className="text-xl mb-2 flex justify-center">Select Exhibition</h2>
-                <select
-                    value={selectedExhibition}
-                    onChange={handleExhibitionChange}
-                    className="border border-gray-300 rounded p-2 w-full"
-                >
-                    <option value="" disabled hidden>Please select an exhibition</option>
-                    {exhibits && exhibits.map((exhibit) => (
-                        exhibit.active === 1 && (
-                        <option key={exhibit.Exhibit_id} value={exhibit.Description}>
-                            {exhibit.Description}
-                        </option>
-                    )))}
-                </select>
-                {selectedExhibitionDescription && (
-                    <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
-                )}
+        <main
+            className="min-h-screen flex flex-col items-center bg-white w-screen mt-2 pl-4"
+            style={{
+                backgroundImage: `url(https://d26jxt5097u8sr.cloudfront.net/s3fs-public/2021-09/1stFloor_Martin_Move-in_Jun2021_06-min.jpg)`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+            }}
+        >
+            <h1 className="text-[#313639] text-4xl flex flex-col pl-2 m-4 py-2 w-full bg-[#bfbaa3] rounded-xl">Tickets</h1>
+            <div className="flex flex-row w-full justify-center mt-24">
+                <div className="bg-white w-1/2 h-fit rounded-md shadow-2xl px-12 py-12 items-center justify-center">
+                    <p className="text-[#313639] text-2xl" style={{ textAlign: 'center' }}>Explore the exquisite collection of artworks at the Baker Museum. <br /> Purchase your tickets now for an unforgettable experience.</p>
+                    <div className="text-xl mt-5">
+                        <select
+                            value={selectedExhibition}
+                            onChange={handleExhibitionChange}
+                            className="w-full rounded-xl pl-2 border-[#bfbaa3] border-2"
+                        >
+                            <option value="" disabled hidden>Please select an exhibition</option>
+                            {exhibits && exhibits.map((exhibit) => (
+                                (exhibit.active === 1 && exhibit.Description.toLowerCase() !== 'restaurant') && (
+                                    <option key={exhibit.Exhibit_id} value={exhibit.Description}>
+                                        {exhibit.Description}
+                                    </option>
+                                )
+                            ))}
+                        </select>
+                    </div>
+                    {selectedExhibit && (
+                        <p className="mt-2 text-sm">{selectedExhibit.explanation}</p>
+                    )}
+                </div>
             </div>
             {selectedExhibition && (
-                <div className="mt-4 w-full max-w-xs">
+                <div className="mt-4 w-full max-w-xs bg-white p-16 rounded-xl">
                     <h2 className="text-xl mb-2 flex justify-center">Select Date</h2>
                     <div className="mt-4 w-full max-w-xs flex justify-center">
                         <DatePicker
@@ -233,7 +261,7 @@ function Tickets() {
                 </div>
             )}
             {selectedDate && (
-                <div className="mt-4 w-full max-w-xs">
+                <div className="mt-4 w-full p-12 max-w-xs bg-white rounded-xl">
                     <h2 className="text-xl mb-2 flex justify-center">Select Quantity</h2>
                     <div className="flex flex-col items-center"> {/* Added flexbox container */}
                         <div className="mb-4">
@@ -274,17 +302,19 @@ function Tickets() {
 
 
             {selectedDate && (
-                <div className="mt-6">
-                    <h2 className="text-xl">Total Price: ${totalPrice}</h2>
-                    <button
-                        className="mt-4 mb-10 text-black font-bold py-2 px-4 rounded" // Added mb-4 for margin-bottom
-                        style={{ backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s' }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}
-                        onClick={addToCart}
-                    >
-                        Add to Cart
-                    </button>
+                <div className="mt-4 w-full px-12 py-6 max-w-xs bg-white rounded-xl mb-24">
+                    <div className="flex flex-col items-center justify-center">
+                        <h2 className="text-xl">Total Price: ${totalPrice}</h2>
+                        <button
+                            className=" text-black font-bold py-2 px-4 rounded" // Added mb-4 for margin-bottom
+                            style={{ backgroundColor: '#BBB5A4', transition: 'background-color 0.3s, color 0.3s' }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = '#7D7869'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = '#BBB5A4'}
+                            onClick={addToCart}
+                        >
+                            Add to Cart
+                        </button>
+                        </div>
                     {showPopup && (
                         <div style={{
                             position: 'fixed',
@@ -304,7 +334,8 @@ function Tickets() {
                 </div>
             )}
 
-        </div>
+
+        </main>
     );
 }
 

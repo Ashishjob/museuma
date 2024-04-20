@@ -8,14 +8,16 @@ const getExhibit = "SELECT * FROM exhibits";
 const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID, image_url, explanation) VALUES (?, ?, ?, ?, ?, ?)";
 const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ?, image_url = ?, explanation = ? WHERE Exhibit_id = ?";
 const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
+const markExhibitForReactivation ="UPDATE exhibits SET active = 1 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
+const markEmployeeForRehire ="UPDATE employees SET Active = 1 WHERE employee_id = ?";
 const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, customer_id, description) VALUES (?, ?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 const addItem = "INSERT INTO items (title, price, description, quantity, image_url) VALUES(?, ?, ?, ?, ?)";
-const getItem ="SELECT * FROM items";
+const getItem ="SELECT * FROM items WHERE item_id NOT IN (9, 10, 11, 12)";
 const updateItem = "UPDATE items SET title = ?, price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
@@ -28,6 +30,9 @@ const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, 
 const getFood = "SELECT * FROM restaurant";
 const getMessages = "SELECT * FROM message_queue";
 const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
+const addOrder = "INSERT INTO orders (customer_id, item_id, quantity, total_price, order_date) VALUES (?, ?, ?, ?, ?)";
+const updateItemQuantity = "UPDATE items SET quantity = quantity - ? WHERE item_id = ?";
+
 const getComplaints = `
     SELECT 
     complaints.complaint_id,
@@ -102,6 +107,7 @@ module.exports = {
     addEmployee,
     updateEmployeeInfo,
     markEmployeeForDeletion,
+    markEmployeeForRehire,
     checkEmailExists,
     getDirectorIdByDepartment,
     getExhibit,
@@ -130,5 +136,8 @@ module.exports = {
     getEmployeeDepartment,
     getMessages,
     exhibitReport,
-    salesReport
+    addOrder,
+    salesReport,
+    updateItemQuantity,
+    markExhibitForReactivation
 };

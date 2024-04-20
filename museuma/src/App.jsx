@@ -25,7 +25,6 @@ import ExhibitReport from "./adminPages/exhibitReport";
 import ManageRestaurant from "./adminPages/manageRestaurant";
 import Login from "./components/login";
 import Signup from "./components/signup";
-import AdminLogin from "./components/adminLogin";
 import ThanksForOrder from "./pages/thanksForOrder";
 import ComplaintConfirmed from "./pages/complaintConfirmed";
 
@@ -50,7 +49,7 @@ function App() {
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +99,6 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/thanks-for-order" element={<ThanksForOrder />} />
         <Route path="/complaint-confirmed" element={<ComplaintConfirmed />} />
         <Route

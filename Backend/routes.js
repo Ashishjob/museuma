@@ -30,7 +30,10 @@ function router(req, res) {
                 } else if (data.action === 'markForDeletion') {
                     console.log("we made it to routes.js")
                     controller.markEmployeeForDeletion(requestData, res);
-                } else {
+                } else if (data.action === 'markForRehire') {
+                    console.log("we made it to routes.js")
+                    controller.markEmployeeForRehire(requestData, res);
+                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
                 }
@@ -151,6 +154,8 @@ function router(req, res) {
                     controller.updateExhibit(requestData, res);
                 } else if (data.action === 'markForDeletion') {
                     controller.markExhibitForDeletion(requestData, res);
+                } else if (data.action === 'markForReactivation') {
+                    controller.markExhibitForReactivation(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));
@@ -194,6 +199,12 @@ function router(req, res) {
     }
     else if (url.startsWith('/exhibit-report') && method === 'GET') {
         controller.exhibitReport(req, res);
+    }
+    else if (url.startsWith('/order-confirmed') && method === 'POST') {
+        controller.addOrder(req, res);
+    }
+    else if(url.startsWith('/update-item-quantity') && method === 'PUT'){
+        controller.updateItemQuantity(req, res);
     }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });

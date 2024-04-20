@@ -29,7 +29,7 @@ const ManageGiftshop = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-giftshop");
+        const response = await fetch("https://museuma.onrender.com/manage-giftshop");
         if (!response.ok) {
           throw new Error("Failed to fetch items");
         }
@@ -76,7 +76,7 @@ const ManageGiftshop = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const ManageGiftshop = () => {
 
       // Fetch updated data after successful update
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-giftshop"
+        "https://museuma.onrender.com/manage-giftshop"
       );
       const updatedData = await updatedResponse.json();
       setItems(updatedData);
@@ -131,7 +131,7 @@ const ManageGiftshop = () => {
     console.log(newItemData);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-giftshop", {
+      const response = await fetch("https://museuma.onrender.com/manage-giftshop", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +146,7 @@ const ManageGiftshop = () => {
       }
 
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-giftshop"
+        "https://museuma.onrender.com/manage-giftshop"
       );
 
       if (!updatedResponse.ok) {
@@ -168,7 +168,7 @@ const ManageGiftshop = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -226,28 +226,6 @@ const ManageGiftshop = () => {
         >
           {showAddForm ? "Cancel" : "Add Item"}
         </button>
-
-        <ul className="divide-y divide-gray-300 mb-6">
-          {items.map((item, index) => (
-            <li key={index} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl">Item Name: {item.title}</span>
-                <span className="text-xl">Description: {item.description}</span>
-                <span className="text-xl">Price: ${item.price}</span>
-                <span className="text-xl">Quantity: {item.quantity}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editItem(item)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                <button onClick={() => deleteItem(item.item_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
         {showAddForm && (
           <form onSubmit={handleAddSubmit}>
             <input
@@ -298,6 +276,29 @@ const ManageGiftshop = () => {
             </button>
           </form>
         )}
+
+        <ul className="divide-y divide-gray-300 mb-6">
+          {items.map((item, index) => (
+            <li key={index} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl">Item Name: {item.title}</span>
+                <span className="text-xl">Description: {item.description}</span>
+                <span className="text-xl">Price: ${item.price}</span>
+                <span className="text-xl">Quantity: {item.quantity}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editItem(item)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                <button onClick={() => deleteItem(item.item_id)}>
+                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        
         {selectedItemForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-md">

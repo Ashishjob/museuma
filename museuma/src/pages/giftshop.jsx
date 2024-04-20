@@ -9,7 +9,7 @@ function Giftshop() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("http://localhost:8081/giftshop");
+        const response = await fetch("https://museuma.onrender.com/giftshop");
         if (!response.ok) {
           throw new Error("Failed to fetch items");
         }

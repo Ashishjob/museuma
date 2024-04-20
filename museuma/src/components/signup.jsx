@@ -56,37 +56,8 @@ function Signup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         handleSubmitForm(formData); // Call the handleSubmitForm function with the form data
+        window.location.href = '/login';
     };
-
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      
-        try {
-            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyB6GnFc7p_KdxyUsm5iFKt1onNW7B5a1C4`);
-            const data = await response.json();
-            console.log(data); // Log the full response from the Geocoding API
-      
-          if (data.results && data.results.length > 0) {
-            const address = data.results[0].formatted_address;
-      
-            // Split the address into components
-            const components = address.split(', ');
-      
-            // Update the state with the address components
-            setAddress({
-              street: components[0],
-              city: components[1],
-              state: components[2].split(' ')[0],
-              zip: components[2].split(' ')[1],
-            });
-          } else {
-            console.error('No results from Geocoding API');
-          }
-        } catch (error) {
-            console.error('Error fetching from Geocoding API', error);
-          }
-        });
 
     return (
         <main className="flex items-center justify-center h-screen bg-[#EFEDE5]">
