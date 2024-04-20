@@ -82,12 +82,7 @@ function Complaints() {
       setDescription("");
       console.log("we lived?");
       alert("Complaint submitted successfully!");
-    } catch (error) {
-      console.log("Heres our error:", error);
-
-      console.error("Error submitting complaint:", error);
-      alert("Failed to submit complaint. Please try again later.");
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

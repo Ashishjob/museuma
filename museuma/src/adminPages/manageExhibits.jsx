@@ -14,12 +14,16 @@ const ManageExhibits = () => {
     Collections: "",
     Location: "",
     Director_ID: "",
+    image_url: "",
+    explanation: "",
   });
   const [newExhibit, setNewExhibit] = useState({
     Description: "",
     Collections: "",
     Location: "",
     Director_ID: "",
+    image_url: "",
+    explanation: "",
   });
   const [selectedExhibitForDeletion, setSelectedExhibitForDeletion] =
     useState(null);
@@ -30,7 +34,7 @@ const ManageExhibits = () => {
     setEditedExhibit({ ...editedExhibit, [name]: value });
   };
 
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
     const updatedExhibits = exhibits.map((exhibits) =>
       exhibits.Exhibit_id === editedExhibit.id
@@ -51,6 +55,8 @@ const ManageExhibits = () => {
       Collections: "",
       Location: "",
       Director_ID: "",
+      image_url: "",
+      explanation: "",
     });
   };
 
@@ -80,6 +86,8 @@ const ManageExhibits = () => {
       Collections: "test collection",
       Location: newExhibit.Location,
       Director_ID: Number(newExhibit.Director_ID),
+      image_url: newExhibit.image_url,
+      explanation: newExhibit.explanation,
     };
 
     console.log("Sending data:", newEmp);
@@ -151,6 +159,37 @@ const ManageExhibits = () => {
       );
       setExhibits(updatedExhibits);
       setSelectedExhibitForDeletion(null);
+    } catch (error) {
+      console.error("Error marking exhibit for deletion:", error);
+      // Handle error as needed
+    }
+  };
+
+  const Reactivate = async () => {
+    console.log("button is hit");
+    try {
+      // Send PUT request to mark exhibit for deletion
+      const response = await fetch("http://localhost:8081/manage-exhibits", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "markForReactivation",
+          Exhibit_id: selectedExhibitForDeletion,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to mark exhibit for deletion");
+      }
+
+      // Confirm deletion and update state
+      const updatedExhibits = exhibits.filter(
+        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
+      );
+      setExhibits(updatedExhibits);
+      setSelectedExhibitForDeletion(null);
 
     } catch (error) {
       console.error("Error marking exhibit for deletion:", error);
@@ -194,11 +233,13 @@ const ManageExhibits = () => {
     setSelectedExhibit(exhibit);
     setShowEditForm(true);
     setEditedExhibit({
-      Exhibit_id: exhibit.id,
+      Exhibit_id: exhibit.Exhibit_id,
       Description: exhibit.Description,
       Collections: exhibit.Collections,
       Location: exhibit.Location,
       Director_ID: exhibit.Director_ID,
+      image_url: exhibit.image_url,
+      explanation: exhibit.explanation,
     });
   };
 
@@ -283,6 +324,24 @@ const ManageExhibits = () => {
                 value={newExhibit.Director_ID}
                 onChange={(e) =>
                   setNewExhibit({ ...newExhibit, Director_ID: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Image URL"
+                className="border rounded mr-2 p-2 flex-1"
+                value={newExhibit.image_url}
+                onChange={(e) =>
+                  setNewExhibit({ ...newExhibit, image_url: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Explanation"
+                className="border rounded mr-2 p-2 flex-1"
+                value={newExhibit.explanation}
+                onChange={(e) =>
+                  setNewExhibit({ ...newExhibit, explanation: e.target.value })
                 }
               />
             </div>
@@ -371,7 +430,23 @@ const ManageExhibits = () => {
                     value={editedExhibit.Director_ID}
                     onChange={handleEditInputChange}
                   />
+                  <input
+                    type="text"
+                    id="Image URL"
+                    name="image_url"
+                    className="mt-1 p-2 border rounded-md w-full"
+                    value={editedExhibit.image_url}
+                    onChange={handleEditInputChange}
+                  />
                 </div>
+                <input
+                  type="text"
+                  id="Explanation"
+                  name="explanation"
+                  className="mt-1 p-2 border rounded-md w-full"
+                  value={editedExhibit.explanation}
+                  onChange={handleEditInputChange}
+                />
                 <div className="flex justify-end">
                   <button
                     type="button"
