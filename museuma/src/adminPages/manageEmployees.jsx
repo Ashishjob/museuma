@@ -9,6 +9,7 @@ const ManageEmployees = () => {
   const [employees, setEmployees] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [exhibits, setExhibits] = useState([]);
   const [editedEmployee, setEditedEmployee] = useState({
     department: "",
     email: "",
@@ -219,18 +220,23 @@ const ManageEmployees = () => {
   };
 
   useEffect(() => {
-    const fetchBranches = async () => {
-      // Replace this with actual fetch from your backend or data source
-      const simulatedBranchesData = [
-        { name: "Modern Art" },
-        { name: "Surrealism" },
-        // ... other branches ...
-      ];
-      setBranches(simulatedBranchesData);
+    const fetchExhibits = async () => {
+        try {
+            const response = await fetch("https://museuma.onrender.com/manage-exhibits");
+            if (!response.ok) {
+                throw new Error("Failed to fetch exhibits");
+            }
+            const data = await response.json();
+            setExhibits(data);
+        } catch (error) {
+            console.error("Error fetching exhibits:", error);
+            // Handle error as needed
+        }
     };
 
-    fetchBranches();
-  }, []);
+    fetchExhibits();
+}, []);
+
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -303,26 +309,27 @@ const ManageEmployees = () => {
                 }
               />
               <Select
-                options={branches.map((branch) => ({
-                  value: branch.name,
-                  label: branch.name,
-                }))}
-                onChange={(selectedOption) =>
-                  setNewEmployee({
-                    ...newEmployee,
-                    department: selectedOption.value,
-                  })
-                }
-                className="flex-1 mr-2"
-                placeholder="Select Branch"
-                styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    height: "100%",
-                    minHeight: "38px",
-                  }),
-                }}
-              />
+  id="branch"
+  name="Branch"
+  options={exhibits.filter(exhibit => exhibit.active === 1).map((exhibit) => ({
+    value: exhibit.Description,
+    label: exhibit.Description,
+}))}
+  value={
+    editedEmployee.exhibit
+      ? {
+          value: editedEmployee.exhibit,
+          label: editedEmployee.exhibit,
+        }
+      : null
+  }
+  onChange={(selectedOption) =>
+    setEditedEmployee({
+      ...editedEmployee,
+      exhibit: selectedOption.value,
+    })
+  }
+/>
             </div>
             <button
               onClick={addEmployee}
@@ -401,27 +408,27 @@ const ManageEmployees = () => {
                   Branch
                 </label>
                 <Select
-                  id="branch"
-                  name="Branch"
-                  options={branches.map((branch) => ({
-                    value: branch.name,
-                    label: branch.name,
-                  }))}
-                  value={
-                    editedEmployee.department
-                      ? {
-                          value: editedEmployee.department,
-                          label: editedEmployee.department,
-                        }
-                      : null
-                  }
-                  onChange={(selectedOption) =>
-                    setEditedEmployee({
-                      ...editedEmployee,
-                      department: selectedOption.value,
-                    })
-                  }
-                />
+  id="branch"
+  name="Branch"
+  options={exhibits.map((exhibit) => ({
+    value: exhibit.Description,
+    label: exhibit.Description,
+  }))}
+  value={
+    editedEmployee.exhibit
+      ? {
+          value: editedEmployee.exhibit,
+          label: editedEmployee.exhibit,
+        }
+      : null
+  }
+  onChange={(selectedOption) =>
+    setEditedEmployee({
+      ...editedEmployee,
+      exhibit: selectedOption.value,
+    })
+  }
+/>
 
                 <div className="my-4">
                   <label

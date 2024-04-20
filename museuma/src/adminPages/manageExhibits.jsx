@@ -124,12 +124,36 @@ const ManageExhibits = () => {
     setSelectedExhibitForDeletion(exhibitID);
   };
 
-  const confirmDelete = () => {
-    const updatedExhibits = exhibits.filter(
-      (exhibits) => exhibits.exhibits !== selectedExhibitForDeletion
-    );
-    setExhibits(updatedExhibits);
-    setSelectedExhibitForDeletion(null);
+  const confirmDelete = async () => {
+    console.log("button is hit");
+    try {
+      // Send PUT request to mark exhibit for deletion
+      const response = await fetch("http://localhost:8081/manage-exhibits", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "markForDeletion",
+          Exhibit_id: selectedExhibitForDeletion,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to mark exhibit for deletion");
+      }
+
+      // Confirm deletion and update state
+      const updatedExhibits = exhibits.filter(
+        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
+      );
+      setExhibits(updatedExhibits);
+      setSelectedExhibitForDeletion(null);
+
+    } catch (error) {
+      console.error("Error marking exhibit for deletion:", error);
+      // Handle error as needed
+    }
   };
 
   const editExhibit = (exhibit) => {
@@ -166,21 +190,23 @@ const ManageExhibits = () => {
 
         <ul className="divide-y divide-gray-300 mb-6">
           {exhibits.map((exhibit) => (
-            <li key={exhibit.Exhibit_id} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl">{exhibit.Description}</span>
-                <span className="text-xl">{exhibit.Location}</span>
-                <span className="text-xl">{exhibit.Director_ID}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editExhibit(exhibit)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              </div>
-            </li>
+            exhibit.active === 1 && (
+              <li key={exhibit.Exhibit_id} className="py-4 flex">
+                <div className="flex flex-col">
+                  <span className="text-2xl">{exhibit.Description}</span>
+                  <span className="text-xl">{exhibit.Location}</span>
+                  <span className="text-xl">{exhibit.Director_ID}</span>
+                </div>
+                <div className="ml-auto flex">
+                  <button onClick={() => editExhibit(exhibit)} className="mr-2">
+                    <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
+                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                </div>
+              </li>
+            )
           ))}
         </ul>
 
