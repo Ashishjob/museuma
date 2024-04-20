@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 
 const EditProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -250,7 +251,7 @@ const EditProfile = () => {
                   </div>
                   <div className="grid grid-cols-2">
                     <div className="px-4 py-2 font-semibold">Birthday</div>
-                    <div className="px-4 py-2">{birthday}</div>
+                    <div className="px-4 py-2">{moment(birthday).format('MM/DD/YYYY')}</div>
                   </div>
                 </div>
               )}
