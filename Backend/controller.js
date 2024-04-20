@@ -1178,6 +1178,43 @@ const addOrder = (req, res) => {
   });
 }
 
+const updateItemQuantity = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { item_id, quantity } = data;
+
+      // Update item quantity in the database
+      pool.query(
+        queries.updateItemQuantity,
+        [quantity, item_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating item quantity:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ message: 'Item quantity updated successfully' }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
+
+
 module.exports = {
   getBranchDirectors,
   getEmployees,
@@ -1214,5 +1251,6 @@ module.exports = {
   exhibitReport,
   addOrder,
   salesReport,
-  markEmployeeForRehire
+  markEmployeeForRehire,
+  updateItemQuantity
 };
