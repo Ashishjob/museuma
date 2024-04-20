@@ -195,7 +195,7 @@ const insertComplaints = (req, res) => {
       const requestBody = JSON.parse(body);
 
       // Extract complaint details from the request body
-      const { name, branch, description } = requestBody;
+      const { name, branch, customer_id, description } = requestBody;
 
       // Query to fetch exhibit_id based on branch
       const getExhibitIdQuery = 'SELECT Exhibit_id FROM exhibits WHERE Description = ?';
@@ -223,7 +223,7 @@ const insertComplaints = (req, res) => {
               // Insert complaint into the database using the query from the queries file
               pool.query(
                   queries.addComplaint,
-                  [name, branch, exhibit_id, description],
+                  [name, branch, exhibit_id, customer_id, description],
                   (error, results) => {
                       if (error) {
                           console.error('Error inserting complaint:', error);
@@ -304,6 +304,8 @@ const getComplaints = (req, res) => {
     res.end(JSON.stringify(results));
   });
 };
+
+
 
 const authenticateUser = (req, res) => {
   let body = "";

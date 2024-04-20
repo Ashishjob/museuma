@@ -14,7 +14,7 @@ const ViewComplaints = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const response = await fetch("https://museuma.onrender.com/complaints");
+        const response = await fetch("http://localhost:8081/complaints");
         if (!response.ok) {
           throw new Error("Failed to fetch complaints");
         }
@@ -158,6 +158,7 @@ const ViewComplaints = () => {
               <p className="text-xl mb-2">{`Date: ${complaint.date_and_time}`}</p>{" "}
               {/*We can adjust this time stamp later*/}
               <p>{`Message: ${complaint.description}`}</p>
+              <p>{`Name: ${complaint.first_name} ${complaint.last_name}`}</p>
             </div>
           ))}
         </div>
