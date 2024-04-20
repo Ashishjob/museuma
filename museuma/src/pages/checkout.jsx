@@ -259,7 +259,7 @@ function Checkout() {
                                 <div className="space-y-4">
                                     {items.map((item, index) => (
                                         <div className="flex" key={index}>
-                                            <img className="w-24 h-24 object-cover rounded-md mr-4" src={item.image} alt="Artwork" />
+                                            <img className="w-24 h-24 object-cover rounded-md mr-4" src={item.image_url} alt="Artwork" />
                                             <div className="flex flex-col">
                                                 <h3 className="text-lg">{item.title}</h3>
                                                 <p className="text-gray-600 mb-1">x {item.quantity}</p>
