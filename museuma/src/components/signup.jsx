@@ -13,7 +13,9 @@ function Signup() {
         email: "",
         phone_number: "",
         username: "",
-        password: ""
+        password: "",
+        date_of_birth : "",
+        address: "",
     });
     const [birthday, setBirthday] = useState('');
     const [address, setAddress] = useState({
@@ -34,28 +36,33 @@ function Signup() {
     const handleSubmitForm = async (formData) => {
         try {
             console.log(formData);
-            const response = await fetch("https://museuma.onrender.com/signup", {
+            const response = await fetch("http://localhost:8081/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData), // Include the form data in the request body
+                body: JSON.stringify({
+                    ...formData,
+                    address: `${address.street}, ${address.city}, ${address.state}, ${address.zip}`,
+                    date_of_birth: birthday
+                }), // Include the form data along with address and date_of_birth in the request body
             });
             if (!response.ok) {
                 throw new Error("Failed to submit sign-up form");
             }
-            const responseData = await response.json(); // Assuming the response contains JSON data
+            const responseData = await response.json();
             console.log(responseData); // Log the response data to the console
             // Optionally, you can perform any additional actions based on the response
             // For example, show a success message or redirect the user
             navigate('/login');
-
+    
         } catch (error) {
             console.log(error.body);
             console.error("Error submitting sign-up form:", error);
             // Handle error as needed
         }
     };
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
