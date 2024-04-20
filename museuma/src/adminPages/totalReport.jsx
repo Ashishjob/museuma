@@ -223,7 +223,7 @@ function TotalReport() {
                   <td className="px-4 py-2 border">{sale.item_bought}</td>
                   <td className="px-4 py-2 border">${sale.total_price}</td>
                   <td className="px-4 py-2 border">{sale.quantity_bought}</td>
-                  <td className="px-4 py-2 border">{new Date(sale.order_date).toLocaleDateString('en-US')}</td>
+                  <td className="px-4 py-2 border">{new Date(sale.order_date).toISOString().split('T')[0]}</td>
                 </tr>
               ))}
           </tbody>
