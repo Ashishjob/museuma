@@ -154,6 +154,8 @@ function router(req, res) {
                     controller.updateExhibit(requestData, res);
                 } else if (data.action === 'markForDeletion') {
                     controller.markExhibitForDeletion(requestData, res);
+                } else if (data.action === 'markForReactivation') {
+                    controller.markExhibitForReactivation(requestData, res);
                 } else {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Invalid action' }));

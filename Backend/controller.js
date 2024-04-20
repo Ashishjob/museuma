@@ -892,6 +892,34 @@ const markExhibitForDeletion = (requestData, res) => {
   });
 };
 
+const markExhibitForReactivation = (requestData, res) => {
+  const { Exhibit_id } = requestData; // Make sure the key matches the one in the request data
+
+  if (!Exhibit_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Exhibit ID is missing' }));
+    return;
+  }
+
+  console.log('Exhibit ID:', Exhibit_id);
+
+  pool.query(queries.markExhibitForReactivation, [Exhibit_id], (error, results) => {
+    if (error) {
+      console.error('Error marking exhibit for reactivation:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
+
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Exhibit marked for reactivation' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Exhibit not found' }));
+    }
+  });
+};
 
 const getFood = (req, res) => {
   pool.query(queries.getFood, (error, results) => {
@@ -1252,5 +1280,6 @@ module.exports = {
   addOrder,
   salesReport,
   markEmployeeForRehire,
-  updateItemQuantity
+  updateItemQuantity,
+  markExhibitForReactivation
 };
