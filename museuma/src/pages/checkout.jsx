@@ -12,58 +12,80 @@ function Checkout() {
         setItems(cartItems);
     }, []);
 
+    const updateItemQuantity = async (item_id, quantity) => {
+        try {
+            const response = await fetch('http://localhost:8081/update-item-quantity', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item_id, quantity }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update item quantity');
+            }
+
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error('Error updating item quantity:', error);
+            throw error;
+        }
+    };
+
     const decodeToken = async (token) => {
         try {
-          const response = await fetch("http://localhost:8081/decodeToken", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token }),
-          });
-          if (response.ok) {
-            const decodedToken = await response.json();
-            const { user_id, table_name } = decodedToken;
-            
-            // Log the values for verification
-            console.log("User ID:", user_id);
-            console.log("Table Name:", table_name);
-      
-            // Return user_id and table_name
-            return { user_id, table_name };
-          } else {
-            console.error("Failed to decode token:", response.statusText);
-          }
+            const response = await fetch("http://localhost:8081/decodeToken", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token }),
+            });
+            if (response.ok) {
+                const decodedToken = await response.json();
+                const { user_id, table_name } = decodedToken;
+
+                // Log the values for verification
+                console.log("User ID:", user_id);
+                console.log("Table Name:", table_name);
+
+                // Return user_id and table_name
+                return { user_id, table_name };
+            } else {
+                console.error("Failed to decode token:", response.statusText);
+            }
         } catch (error) {
-          console.error("Error decoding token:", error);
+            console.error("Error decoding token:", error);
         }
-      
+
         // If there's an error or response is not ok, return null or handle the error as needed
         return null;
     };
 
     const addOrder = async (orderData) => {
         try {
-          const response = await fetch('http://localhost:8081/order-confirmed', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderData)
-          });
-      
-          if (!response.ok) {
-            throw new Error('Failed to add order');
-          }
-      
-          const responseData = await response.json();
-          return responseData;
+            const response = await fetch('http://localhost:8081/order-confirmed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add order');
+            }
+
+            const responseData = await response.json();
+            return responseData;
         } catch (error) {
-          console.error('Error adding order:', error);
-          throw error;
+            console.error('Error adding order:', error);
+            throw error;
         }
     };
-      
+
     const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const handleIncrease = (id) => {
@@ -98,34 +120,34 @@ function Checkout() {
             alert('You must be logged in to place an order.');
             return;
         }
-    
+
         try {
             const decodedToken = await decodeToken(storedToken);
             if (!decodedToken || !decodedToken.user_id) {
                 alert('Failed to decode token or user ID is missing.');
                 return;
             }
-    
+
             const { user_id } = decodedToken;
-    
+
             // Get the current date
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear().toString().slice(2);
             const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed
-    
+
             const cardHolder = document.querySelector('input[placeholder="Card Holder"]').value;
             const cardNumber = document.querySelector('input[placeholder="Card Number"]').value;
             const expirationDate = document.querySelector('input[placeholder="Expiration Date (MM/YY)"]').value;
             const securityCode = document.querySelector('input[placeholder="Security Code"]').value;
             const cardType = document.querySelector('select').value;
-    
+
             const [inputMonth, inputYear] = expirationDate.split('/');
-    
+
             if (inputYear < currentYear || (inputYear === currentYear && inputMonth <= currentMonth)) {
                 alert('The expiration date must be greater than the current date.');
                 return;
             }
-    
+
             const orderDetails = {
                 cardHolder,
                 cardNumber,
@@ -133,10 +155,33 @@ function Checkout() {
                 securityCode,
                 cardType,
             };
-    
+
             const cartDataString = localStorage.getItem('cart');
             const cartData = JSON.parse(cartDataString);
-    
+
+            // Inside handlePlaceOrder function
+            for (const item of cartData) {
+                const updatedQuantity = item.quantity;
+                console.log("Updating quantity for item:", item.item_id, "to", updatedQuantity);
+                try {
+                    const updateResponse = await updateItemQuantity(item.item_id, updatedQuantity);
+                    console.log("Update response:", updateResponse);
+                    if (!updateResponse || updateResponse.message !== 'Item quantity updated successfully') {
+                        console.error('Failed to update item quantity:', updateResponse);
+                        alert('Failed to update item quantity.');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error updating item quantity:', error);
+                    alert('An error occurred while updating item quantity. Please try again later.');
+                    return;
+                }
+            }
+
+            // Rest of your code
+
+
+
             for (const item of cartData) {
                 const orderData = {
                     customer_id: user_id,
@@ -145,10 +190,10 @@ function Checkout() {
                     total_price: item.price * item.quantity,
                     order_date: currentDate.toISOString().slice(0, 10),
                 };
-    
+
                 await addOrder(orderData); // Wait for each order to be added
             }
-    
+
             localStorage.removeItem('cart');
             setItems([]);
             navigate('/thanks-for-order');
@@ -204,7 +249,7 @@ function Checkout() {
                                         <p className="text-sm font-medium text-gray-900">Total</p>
                                         <p className="text-2xl text-gray-900">${total.toFixed(2)}</p>
                                     </div>
-                                        <button onClick={handlePlaceOrder} disabled={!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType || items.length === 0} className={`w-full rounded-md px-6 py-3 font-medium text-white ${(!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType) ? 'bg-gray-900' : 'bg-gray-700'}`}>Place Order</button>
+                                    <button onClick={handlePlaceOrder} disabled={!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType || items.length === 0} className={`w-full rounded-md px-6 py-3 font-medium text-white ${(!email || !cardHolder || !cardNumber || !expirationDate || !securityCode || !cardType) ? 'bg-gray-900' : 'bg-gray-700'}`}>Place Order</button>
                                 </form>
 
                             </div>

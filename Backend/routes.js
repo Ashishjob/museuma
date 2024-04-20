@@ -201,6 +201,9 @@ function router(req, res) {
     else if (url.startsWith('/order-confirmed') && method === 'POST') {
         controller.addOrder(req, res);
     }
+    else if(url.startsWith('/update-item-quantity') && method === 'PUT'){
+        controller.updateItemQuantity(req, res);
+    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Route not found' }));

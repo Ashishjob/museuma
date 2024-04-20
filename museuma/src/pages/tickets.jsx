@@ -101,6 +101,21 @@ function Tickets() {
         const exhibitionTitle = selectedExhibition;
         const exhibitionId = exhibitionIds[selectedExhibition]; // Get the ID for the selected exhibition
 
+        const mapTicketTypeToId = (type) => {
+            switch (type) {
+                case 'adult':
+                    return 9;
+                case 'student':
+                    return 10;
+                case 'child':
+                    return 11;
+                case 'military':
+                    return 12;
+                default:
+                    return null;
+            }
+        };
+
         // Add adult tickets to cart if quantity is greater than 0
         if (adultTickets > 0) {
             const existingAdultItemIndex = cartItems.findIndex(item => item.title === `${exhibitionTitle} - Adult Ticket`);
@@ -108,7 +123,7 @@ function Tickets() {
                 cartItems[existingAdultItemIndex].quantity += adultTickets;
             } else {
                 cartItems.push({
-                    item_id: `adult_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('adult'),
                     title: `${exhibitionTitle} - Adult Ticket`,
                     price: 20,
                     quantity: adultTickets,
@@ -126,7 +141,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `student_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('student'),
                     title: `${exhibitionTitle} - Student Ticket`,
                     price: 15,
                     quantity: studentTickets,
@@ -144,7 +159,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `child_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('child'),
                     title: `${exhibitionTitle} - Child Ticket`,
                     price: 10,
                     quantity: childTickets,
@@ -162,7 +177,7 @@ function Tickets() {
             } else {
                 product.image = '/ticket.jpeg';
                 cartItems.push({
-                    item_id: `military_${exhibitionId}`,
+                    item_id: mapTicketTypeToId('military'),
                     title: `${exhibitionTitle} - Military Ticket`,
                     price: 10,
                     quantity: militaryTickets,

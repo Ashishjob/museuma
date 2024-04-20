@@ -39,6 +39,7 @@ function Login() {
 
         // Redirect to home page
         navigate("/");
+        window.location.reload();
 
         // Retrieve the token from cookies
         const storedToken = Cookies.get("token");

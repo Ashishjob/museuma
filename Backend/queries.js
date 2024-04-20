@@ -16,7 +16,7 @@ const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
 const addItem = "INSERT INTO items (title, price, description, quantity, image_url) VALUES(?, ?, ?, ?, ?)";
-const getItem ="SELECT * FROM items";
+const getItem ="SELECT * FROM items WHERE item_id NOT IN (9, 10, 11, 12)";
 const updateItem = "UPDATE items SET title = ?, price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
 const deleteItem = "DELETE FROM items WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
@@ -30,6 +30,8 @@ const getFood = "SELECT * FROM restaurant";
 const getMessages = "SELECT * FROM message_queue";
 const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
 const addOrder = "INSERT INTO orders (customer_id, item_id, quantity, total_price, order_date) VALUES (?, ?, ?, ?, ?)";
+const updateItemQuantity = "UPDATE items SET quantity = quantity - ? WHERE item_id = ?";
+
 const getComplaints = `
     SELECT 
     complaints.complaint_id,
@@ -134,5 +136,6 @@ module.exports = {
     getMessages,
     exhibitReport,
     addOrder,
-    salesReport
+    salesReport,
+    updateItemQuantity
 };
