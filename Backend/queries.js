@@ -9,8 +9,7 @@ const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Di
 const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ? WHERE Exhibit_id = ?";
 const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
-const getComplaints = "SELECT * FROM complaints";
-const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, description) VALUES (?, ?, ?, ?)';
+const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, customer_id, description) VALUES (?, ?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
@@ -29,6 +28,19 @@ const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, 
 const getFood = "SELECT * FROM restaurant";
 const getMessages = "SELECT * FROM message_queue";
 const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
+const getComplaints = `
+    SELECT 
+    complaints.complaint_id,
+    customers.first_name,
+    customers.last_name,
+    complaints.branch,
+    complaints.description,
+    complaints.date_and_time
+        FROM 
+        complaints
+    INNER JOIN 
+    customers ON complaints.customer_id = customers.customer_id
+  `;
 const getFirstName = `
 SELECT 
     CASE 

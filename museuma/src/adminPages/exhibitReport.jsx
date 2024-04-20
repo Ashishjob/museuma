@@ -28,14 +28,14 @@ function ExhibitReport() {
     }
   };
 
-  // const filteredData = exhibitsData?.filter((exhibit) => {
-  //   if (
-  //     filter === "totalSales" &&
-  //     exhibit?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  //   )
-  //     return true;
-  //   return false;
-  // });
+  const filteredData = exhibitsData?.filter((exhibit) => {
+    if (
+      filter === "totalSales" &&
+      exhibit?.Exhibit_Name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+      return true;
+    return false;
+  });
 
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
@@ -74,17 +74,17 @@ function ExhibitReport() {
               <th className="px-4 py-2 font-medium text-xl underline border">
                 # Of Complaints
               </th>
-              <th className="px-4 py-2 font-medium text-xl underline border">
+              {/* <th className="px-4 py-2 font-medium text-xl underline border">
                 Open Date
               </th>
               <th className="px-4 py-2 font-medium text-xl underline border">
                 Close Date
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
-            {exhibitsData &&
-              exhibitsData.map((exhibit, index) => (
+            {filteredData &&
+              filteredData.map((exhibit, index) => (
                 <tr key={index} className="text-gray-700">
                   <td className="px-4 py-2 border">{exhibit.Exhibit_Name}</td>
                   <td className="px-4 py-2 border">{exhibit.Tickets_Bought}</td>

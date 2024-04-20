@@ -1,21 +1,70 @@
 import { backIn } from "framer-motion";
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+
 
 function Complaints() {
   const [name, setName] = useState("");
   const [branch, setBranch] = useState("");
   const [description, setDescription] = useState("");
   const [exhibits, setExhibits] = useState([]);
+  const [customerId, setCustomerId] = useState(null); // State for customer_id
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedToken = Cookies.get("token");
+    if (storedToken) {
+      setIsLoggedIn(true);
+      decodeToken(storedToken).then((data) => {
+        if (data) {
+          const { user_id } = data;
+          console.log("Customer ID:", user_id);
+          setCustomerId(user_id); // Set customer_id state
+        }
+      });
+    }
+  }, []);
+
+  const decodeToken = async (token) => {
+    try {
+      const response = await fetch("http://localhost:8081/decodeToken", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        const decodedToken = await response.json();
+        const { user_id, table_name } = decodedToken;
+
+        // Log the values for verification
+        console.log("User ID:", user_id);
+        console.log("Table Name:", table_name);
+
+        // Return user_id and table_name
+        return { user_id, table_name };
+      } else {
+        console.error("Failed to decode token:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+
+    // If there's an error or response is not ok, return null or handle the error as needed
+    return null;
+  };
 
   const handleSubmit = async () => {
     try {
+      const customer_id = customerId;
       console.log(JSON.stringify({ name, branch, description }));
       const response = await fetch("http://localhost:8081/complaints", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, branch, description }),
+        body: JSON.stringify({ name, branch, customer_id, description }),
       });
 
       if (!response.ok) {
