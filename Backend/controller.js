@@ -418,14 +418,14 @@ const addCustomer = (req, res) => {
 
   req.on("end", () => {
     const parsedBody = JSON.parse(body);
-    const { first_name, last_name, email, phone_number, username, password } = parsedBody;
+    const { first_name, last_name, email, phone_number, username, password, address, date_of_birth } = parsedBody;
 
     // Check if all required fields are defined
-    if (!first_name || !last_name || !email || !phone_number || !username || !password) {
+    if (!first_name || !last_name || !email || !phone_number || !username || !password || !address || !date_of_birth) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          error: "All fields (first name, last name, email, phone number, username, password) are required.",
+          error: "All fields (first name, last name, email, phone number, username, password, address, date_of_birth) are required.",
         })
       );
       return;
@@ -434,7 +434,7 @@ const addCustomer = (req, res) => {
     // Execute the database query to insert the customer
     pool.query(
       queries.addCustomer,
-      [first_name, last_name, email, phone_number, username, password],
+      [first_name, last_name, email, phone_number, username, password, address, date_of_birth],
       (error, results) => {
         if (error) {
           console.error("Error adding customer:", error);
