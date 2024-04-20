@@ -27,6 +27,7 @@ import Login from "./components/login";
 import Signup from "./components/signup";
 import AdminLogin from "./components/adminLogin";
 import ThanksForOrder from "./pages/thanksForOrder";
+import ComplaintConfirmed from "./pages/complaintConfirmed";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -101,6 +102,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/thanks-for-order" element={<ThanksForOrder />} />
+        <Route path="/complaint-confirmed" element={<ComplaintConfirmed />} />
         <Route
           path="/profile"
           element={
