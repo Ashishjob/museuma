@@ -15,7 +15,7 @@ function ExhibitReport() {
 
   const fetchExhibitsData = async () => {
     try {
-      const response = await fetch("http://localhost:8081/exhibit-report");
+      const response = await fetch("https://museuma.onrender.com/exhibit-report");
       if (!response.ok) {
         throw new Error("Failed to fetch exhibit data");
       }

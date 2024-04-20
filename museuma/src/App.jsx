@@ -50,7 +50,7 @@ function App() {
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

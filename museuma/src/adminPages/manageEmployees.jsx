@@ -179,7 +179,7 @@ const ManageEmployees = () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark employee for deletion
-      const response = await fetch("http://localhost:8081/manage-employees", {
+      const response = await fetch("https://museuma.onrender.com/manage-employees", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -245,7 +245,7 @@ const ManageEmployees = () => {
     console.log("Rehire button is hit");
     try {
       // Send PUT request to rehire employee
-      const response = await fetch("http://localhost:8081/manage-employees", {
+      const response = await fetch("https://museuma.onrender.com/manage-employees", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

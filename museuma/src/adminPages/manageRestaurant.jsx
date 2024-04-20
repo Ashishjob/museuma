@@ -28,7 +28,7 @@ const ManageRestaurant = () => {
     // Fetch food items from backend
     const fetchFoodItems = async () => {
       try {
-        const response = await fetch("http://localhost:8081/manage-restaurant");
+        const response = await fetch("https://museuma.onrender.com/manage-restaurant");
         const data = await response.json();
         setItems(data); // Assuming the response is an array of items
       } catch (error) {
@@ -67,7 +67,7 @@ const ManageRestaurant = () => {
     };
     console.log(updatedFoodData);
     try {
-      const response = await fetch(`http://localhost:8081/manage-restaurant`, {
+      const response = await fetch(`https://museuma.onrender.com/manage-restaurant`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const ManageRestaurant = () => {
 
       // Fetch updated data after successful update
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-restaurant"
+        "https://museuma.onrender.com/manage-restaurant"
       );
       const updatedData = await updatedResponse.json();
       setItems(updatedData);
@@ -123,7 +123,7 @@ const ManageRestaurant = () => {
     console.log(newFoodData);
 
     try {
-      const response = await fetch("http://localhost:8081/manage-restaurant", {
+      const response = await fetch("https://museuma.onrender.com/manage-restaurant", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +138,7 @@ const ManageRestaurant = () => {
       }
 
       const updatedResponse = await fetch(
-        "http://localhost:8081/manage-restaurant"
+        "https://museuma.onrender.com/manage-restaurant"
       );
 
       if (!updatedResponse.ok) {

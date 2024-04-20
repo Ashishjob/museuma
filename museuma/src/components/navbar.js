@@ -64,7 +64,7 @@ export default function NavBar() {
 
   const decodeToken = async (token) => {
     try {
-      const response = await fetch("http://localhost:8081/decodeToken", {
+      const response = await fetch("https://museuma.onrender.com/decodeToken", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export default function NavBar() {
 
   const getFirstName = async (user_id, table_name) => {
     try {
-      const response = await fetch("http://localhost:8081/getFirstName", {
+      const response = await fetch("https://museuma.onrender.com/getFirstName", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export default function NavBar() {
 
   const getEmployeeDepartment = async (employee_id) => {
     try {
-      const response = await fetch("http://localhost:8081/employee-department", {
+      const response = await fetch("https://museuma.onrender.com/employee-department", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ export default function NavBar() {
     // Fetch messages and check for unresolved messages
     const fetchAndCheckMessages = async () => {
       try {
-        const response = await fetch('http://localhost:8081/admin#notifications');
+        const response = await fetch('https://museuma.onrender.com/admin#notifications');
         const data = await response.json();
         setQueue(data);
 
@@ -202,7 +202,7 @@ export default function NavBar() {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch('http://localhost:8081/admin#notifications'); // Replace with your actual API endpoint
+      const response = await fetch('https://museuma.onrender.com/admin#notifications'); // Replace with your actual API endpoint
       const data = await response.json();
       setQueue(data);
     } catch (error) {
