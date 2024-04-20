@@ -96,6 +96,9 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname.startsWith('/employee-department') && req.method === 'POST'){
             employeeRoutes(req, res);
         }
+        else if(parsedUrl.pathname.startsWith('/total-report') && req.method === 'GET'){
+            employeeRoutes(req, res);
+        }
         else if (req.url.startsWith('/admin') && req.method === 'GET') {
             // Get the hash from the URL
             const hash = new URL(req.url, `http://localhost:3000`).hash;

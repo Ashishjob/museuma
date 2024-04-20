@@ -96,6 +96,7 @@ function Giftshop() {
               />
               <h2 className="text-xl mt-2">{product.title}</h2>
               <p className="text-gray-500">{product.description}</p>
+              <p className="">{product.quantity} in Stock</p>
               <div className="flex justify-between items-center mt-2">
                 <p className="font-bold">${product.price}</p>
                 <div className="flex items-center">
