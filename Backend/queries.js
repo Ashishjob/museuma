@@ -9,6 +9,7 @@ const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Di
 const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ? WHERE Exhibit_id = ?";
 const markExhibitForDeletion ="UPDATE exhibits SET active = 0 WHERE Exhibit_id = ?";
 const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_id = ?";
+const markEmployeeForRehire ="UPDATE employees SET Active = 1 WHERE employee_id = ?";
 const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, customer_id, description) VALUES (?, ?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
 const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
@@ -102,6 +103,7 @@ module.exports = {
     addEmployee,
     updateEmployeeInfo,
     markEmployeeForDeletion,
+    markEmployeeForRehire,
     checkEmailExists,
     getDirectorIdByDepartment,
     getExhibit,

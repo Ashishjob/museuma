@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaTrash, FaEdit, FaArrowLeft } from "react-icons/fa";
+import { FaTrash, FaEdit, FaArrowLeft, FaRecycle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Select from "react-select"; // Import react-select
 import "../App.css";
@@ -41,6 +41,8 @@ const ManageExhibits = () => {
     setSelectedExhibit(null);
     setShowEditForm(false);
   };
+
+  const [showActive, setShowActive] = useState(true);
 
   const toggleAddForm = () => {
     setShowAddForm(!showAddForm);
@@ -156,6 +158,38 @@ const ManageExhibits = () => {
     }
   };
 
+  const Reactivate = async () => {
+    console.log("button is hit");
+    try {
+      // Send PUT request to mark exhibit for deletion
+      const response = await fetch("http://localhost:8081/manage-exhibits", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "markForReactivation",
+          Exhibit_id: selectedExhibitForDeletion,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to mark exhibit for deletion");
+      }
+
+      // Confirm deletion and update state
+      const updatedExhibits = exhibits.filter(
+        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
+      );
+      setExhibits(updatedExhibits);
+      setSelectedExhibitForDeletion(null);
+
+    } catch (error) {
+      console.error("Error marking exhibit for deletion:", error);
+      // Handle error as needed
+    }
+  };
+
   const editExhibit = (exhibit) => {
     setSelectedExhibit(exhibit);
     setShowEditForm(true);
@@ -181,34 +215,45 @@ const ManageExhibits = () => {
           Exhibit Management
         </h1>
 
+<div className="flex flex-col items-start">
         <button
           onClick={toggleAddForm}
-          className="text-3xl mb-4 hover:text-[#C0BAA4]"
+          className="text-3xl mb-2 hover:text-[#C0BAA4]"
         >
           {showAddForm ? "Cancel" : "Add Exhibit"}
         </button>
 
-        <ul className="divide-y divide-gray-300 mb-6">
-          {exhibits.map((exhibit) => (
-            exhibit.active === 1 && (
-              <li key={exhibit.Exhibit_id} className="py-4 flex">
-                <div className="flex flex-col">
-                  <span className="text-2xl">{exhibit.Description}</span>
-                  <span className="text-xl">{exhibit.Location}</span>
-                  <span className="text-xl">{exhibit.Director_ID}</span>
-                </div>
-                <div className="ml-auto flex">
-                  <button onClick={() => editExhibit(exhibit)} className="mr-2">
-                    <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                  </button>
-                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
-                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                  </button>
-                </div>
-              </li>
-            )
-          ))}
-        </ul>
+        {showActive ? (
+  <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
+) : (
+  <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
+)}
+</div>
+      <ul className="divide-y divide-gray-300 mb-6">
+      {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
+  <li key={exhibit.Exhibit_id} className="py-4 flex">
+    <div className="flex flex-col">
+      <span className="text-2xl">{exhibit.Description}</span>
+      <span className="text-xl">{exhibit.Location}</span>
+      <span className="text-xl">{exhibit.Director_ID}</span>
+    </div>
+    <div className="ml-auto flex">
+      <button onClick={() => editExhibit(exhibit)} className="mr-2">
+        <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+      </button>
+      {exhibit.active ? (
+        <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
+          <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+        </button>
+      ) : (
+        <button onClick={() => Reactivate(exhibit.Exhibit_id)}>
+          <FaRecycle className="hover:text-[#C0BAA4] text-2xl" /> {/* Replace with your reactivation icon */}
+        </button>
+      )}
+    </div>
+  </li>
+))}
+      </ul>
 
         {showAddForm && (
           <div className="flex">
