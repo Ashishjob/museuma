@@ -130,6 +130,9 @@ function router(req, res) {
     else if (url.startsWith('/manage-restaurant') && method === 'GET') {
         controller.getFood(req, res);
     }
+    else if (url.startsWith('/total-report') && method === 'GET') {
+        controller.salesReport(req, res);
+    }
     else if (url.startsWith('/manage-restaurant') && method === 'POST') {
         controller.addFood(req, res);
     } 
