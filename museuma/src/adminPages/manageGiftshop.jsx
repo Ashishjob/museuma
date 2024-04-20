@@ -342,7 +342,7 @@ const ManageGiftshop = () => {
                   type="text"
                   name="image"
                   placeholder="Item image URL"
-                  value={editedItem.image_url}
+                  value={editedItem.image}
                   onChange={handleEditInputChange}
                   className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
                 />

@@ -808,7 +808,7 @@ const addArtWork = (req, res) => {
 
 const updateExhibit = (requestData, res) => {
   try {
-    const { Description, Collections, Location, Director_ID, Exhibit_id } = requestData;
+    const { Description, Collections, Location, Director_ID, Exhibit_id, image_url, explanation } = requestData;
 
     console.log('Received data:', { Description, Collections, Location, Director_ID, Exhibit_id }); // Debugging line
 
@@ -820,7 +820,7 @@ const updateExhibit = (requestData, res) => {
     // Update exhibit in the database
     pool.query(
       queries.updateExhibit,
-      [Description, Collections, Location, Director_ID, Exhibit_id],
+      [Description, Collections, Location, Director_ID, Exhibit_id, image_url, explanation],
       (error, results) => {
         if (error) {
           console.error('Error updating exhibit information:', error);
@@ -1097,7 +1097,18 @@ const exhibitReport = (req, res) => {
   });
 };
 
-
+const salesReport = (req, res) => {
+  pool.query(queries.salesReport, (error, results) => {
+    if (error) {
+      console.error("Error fetching sales report:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
 
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {
@@ -1145,5 +1156,6 @@ module.exports = {
   getFirstName,
   getEmployeeDepartment,
   getMessages,
-  exhibitReport
+  exhibitReport,
+  salesReport
 };
