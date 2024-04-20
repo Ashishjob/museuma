@@ -29,6 +29,7 @@ const updateFood = "UPDATE restaurant SET name = ?, description = ?, image = ?, 
 const getFood = "SELECT * FROM restaurant";
 const getMessages = "SELECT * FROM message_queue";
 const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
+const addOrder = "INSERT INTO orders (customer_id, item_id, quantity, total_price, order_date) VALUES (?, ?, ?, ?, ?)";
 const getComplaints = `
     SELECT 
     complaints.complaint_id,
@@ -132,5 +133,6 @@ module.exports = {
     getEmployeeDepartment,
     getMessages,
     exhibitReport,
+    addOrder,
     salesReport
 };
