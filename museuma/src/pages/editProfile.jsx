@@ -45,12 +45,25 @@ const EditProfile = () => {
     return null;
   };
 
-  const fetchUserData = async (decodedToken1) => {
+  const fetchUserData = async (user_id1, table_name1) => {
     try {
-      console.log("decodedToken");
-      console.log(decodedToken1);
-      const call = `https://museuma.onrender.com/customer/${decodedToken1}`;
-      console.log(call);
+      console.log("fetching..." + user_id1 + " " + table_name1);
+      let call;
+      if (table_name1 === 'customers') {
+        call = `https://museuma.onrender.com/customer/${user_id1}`;
+      }
+      else if (table_name1 === 'employees') {
+        call = `http://localhost:8081/employeeInfo/${user_id1}`;
+      }
+      else if (table_name1 === 'branch_directors') {
+        call = `http://localhost:8081/adminInfo/${user_id1}`;
+        console.log(call);
+      }
+      else {
+        console.error("Invalid table name:", table_name1);
+        return;
+      }
+  
       const response = await fetch(call);
       if (response.ok) {
         const userData = await response.json();
@@ -63,7 +76,7 @@ const EditProfile = () => {
           gender: userData.gender || "",
           contactNumber: userData.phone_number || "",
           currentAddress: userData.address || "",
-          accessibilityNeeds: userData.accessibilityNeeds || "",
+          accessibilityNeeds: userData.accessibility_needs || "",
           email: userData.email || "",
           birthday: userData.date_of_birth || "",
           phoneNumber: userData.phone_number || "" // Assuming phone number is used for both contactNumber and phoneNumber
@@ -77,6 +90,7 @@ const EditProfile = () => {
       console.error("Error fetching user data:", error);
     }
   };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,9 +101,9 @@ const EditProfile = () => {
           ?.split('=')[1];
   
         if (token) {
-          const { user_id } = await decodeToken(token); // Decode the token and get user_id
+          const { user_id, table_name } = await decodeToken(token); // Decode the token and get user_id
           if (user_id) {
-            await fetchUserData(user_id); // Fetch user data using user_id
+            await fetchUserData(user_id, table_name); // Fetch user data using user_id
           } else {
             console.error("User ID not found in decoded token.");
           }
@@ -122,8 +136,8 @@ const EditProfile = () => {
         ?.split('=')[1];
   
       if (token) {
-        const { user_id } = await decodeToken(token); // Reuse the existing decodeToken function
-        console.log(user_id);
+        const { user_id, table_name } = await decodeToken(token); // Reuse the existing decodeToken function
+        console.log(user_id, table_name);
   
         // Fetch user details and update information here
         const userDetailsToSend = {
@@ -132,11 +146,28 @@ const EditProfile = () => {
           gender: userDetails.gender || null,
           phone_number: userDetails.phoneNumber || null,
           address: userDetails.currentAddress || null,
-          accessibilityNeeds: userDetails.accessibilityNeeds || null,
+          accessibility_needs: userDetails.accessibilityNeeds || null,
           email: userDetails.email || null,
           date_of_birth: userDetails.birthday || null
         };
-        const updateUserResponse = await fetch(`https://museuma.onrender.com/editCustomerInfo/${user_id}`, {
+        let call;
+
+        if (table_name === 'customers') {
+          call = `https://museuma.onrender.com/editCustomerInfo/${user_id}`;
+        }
+        else if (table_name === 'employees') {
+          call = `http://localhost:8081/editEmployeeInfo/${user_id}`;
+        }
+        else if (table_name === 'branch_directors') {
+          call = `http://localhost:8081/editAdminInfo/${user_id}`;
+          console.log(call);
+        }
+        else {
+          console.error("Invalid table name:", table_name);
+          return;
+        }
+
+        const updateUserResponse = await fetch(call, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -156,9 +187,6 @@ const EditProfile = () => {
       console.error("Error handling update submit:", error);
     }
   };
-  
-  
-  
 
   const { firstName, lastName, gender, contactNumber, currentAddress, accessibilityNeeds, email, birthday, phoneNumber } = userDetails;
 

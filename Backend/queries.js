@@ -13,9 +13,13 @@ const markEmployeeForDeletion ="UPDATE employees SET Active = 0 WHERE employee_i
 const markEmployeeForRehire ="UPDATE employees SET Active = 1 WHERE employee_id = ?";
 const addComplaint = 'INSERT INTO complaints (name, branch, exhibit_id, customer_id, description) VALUES (?, ?, ?, ?, ?)';
 const updateEmployeeInfo = "UPDATE employees SET department = ?, director_id = ?, email = ?, first_name = ?, last_name = ? WHERE employee_id = ?";
-const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password) VALUES (?, ?, ?, ?, ?, ?)";
+const addCustomer = "INSERT INTO customers (first_name, last_name, email, phone_number, username, password, address, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 const getCustomerInfo = "SELECT * FROM customers WHERE customer_id = ?";
+const getAdminInfo = "SELECT * FROM branch_directors WHERE Director_id = ?";
+const getEmployeeInfo = "SELECT * FROM employees WHERE employee_id = ?";
 const updateCustomerInfo = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE customer_id = ?";
+const updateAdminInfo = "UPDATE branch_directors SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE Director_id = ?";
+const updateEmployeeInfoAll = "UPDATE employees SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, accessibility_needs = ?, address = ?, date_of_birth = ? WHERE employee_id = ?";
 const addItem = "INSERT INTO items (title, price, description, quantity, image_url) VALUES(?, ?, ?, ?, ?)";
 const getItem ="SELECT * FROM items WHERE item_id NOT IN (9, 10, 11, 12)";
 const updateItem = "UPDATE items SET title = ?, price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
@@ -139,5 +143,9 @@ module.exports = {
     addOrder,
     salesReport,
     updateItemQuantity,
-    markExhibitForReactivation
+    markExhibitForReactivation,
+    updateAdminInfo,
+    updateEmployeeInfoAll,
+    getAdminInfo,
+    getEmployeeInfo
 };

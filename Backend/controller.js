@@ -418,14 +418,14 @@ const addCustomer = (req, res) => {
 
   req.on("end", () => {
     const parsedBody = JSON.parse(body);
-    const { first_name, last_name, email, phone_number, username, password } = parsedBody;
+    const { first_name, last_name, email, phone_number, username, password, address, date_of_birth } = parsedBody;
 
     // Check if all required fields are defined
-    if (!first_name || !last_name || !email || !phone_number || !username || !password) {
+    if (!first_name || !last_name || !email || !phone_number || !username || !password || !address || !date_of_birth) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          error: "All fields (first name, last name, email, phone number, username, password) are required.",
+          error: "All fields (first name, last name, email, phone number, username, password, address, date_of_birth) are required.",
         })
       );
       return;
@@ -434,7 +434,7 @@ const addCustomer = (req, res) => {
     // Execute the database query to insert the customer
     pool.query(
       queries.addCustomer,
-      [first_name, last_name, email, phone_number, username, password],
+      [first_name, last_name, email, phone_number, username, password, address, date_of_birth],
       (error, results) => {
         if (error) {
           console.error("Error adding customer:", error);
@@ -468,6 +468,58 @@ const getCustomerInfo = (customerId, res) => {
       if (results.length === 0) {
         res.writeHead(404, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Customer not found" }));
+        return;
+      }
+
+      const customerInfo = results[0]; // Assuming there's only one customer with this ID
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(customerInfo));
+    }
+  );
+};
+
+const getAdminInfo = (Director_id, res) => {
+  // Execute the database query to fetch customer information
+  pool.query(
+    queries.getAdminInfo,
+    [Director_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching admin information:", error);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+        return;
+      }
+
+      if (results.length === 0) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Admin not found" }));
+        return;
+      }
+
+      const customerInfo = results[0]; // Assuming there's only one customer with this ID
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(customerInfo));
+    }
+  );
+};
+
+const getEmployeeInfo = (employee_id, res) => {
+  // Execute the database query to fetch customer information
+  pool.query(
+    queries.getEmployeeInfo,
+    [employee_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching admin information:", error);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+        return;
+      }
+
+      if (results.length === 0) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Employee not found" }));
         return;
       }
 
@@ -541,6 +593,73 @@ const updateCustomerInfo = (customer_id, req, res) => {
   });
 };
 
+const updateAdminInfo = (Director_ID, req, res) => {
+  // Extract admin data from the request body
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth } = data;
+
+      // Update the customer information in the database
+      pool.query(
+        queries.updateAdminInfo,
+        [first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth, Director_ID],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating customer information:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Admin information updated successfully' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
+
+const updateEmployeeInfoAll = (employee_id, req, res) => {
+  // Extract admin data from the request body
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth } = data;
+
+      // Update the customer information in the database
+      pool.query(
+        queries.updateEmployeeInfoAll,
+        [first_name, last_name, email, phone_number, gender, accessibility_needs, address, date_of_birth, employee_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error updating customer information:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Employee information updated successfully' }));
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+};
 
 
 const addItem = (req, res) => {
@@ -1281,5 +1400,9 @@ module.exports = {
   salesReport,
   markEmployeeForRehire,
   updateItemQuantity,
-  markExhibitForReactivation
+  markExhibitForReactivation,
+  updateAdminInfo,
+  updateEmployeeInfoAll,
+  getAdminInfo,
+  getEmployeeInfo
 };
