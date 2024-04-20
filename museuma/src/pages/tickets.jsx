@@ -207,10 +207,11 @@ function Tickets() {
                 >
                     <option value="" disabled hidden>Please select an exhibition</option>
                     {exhibits && exhibits.map((exhibit) => (
+                        exhibit.active === 1 && (
                         <option key={exhibit.Exhibit_id} value={exhibit.Description}>
                             {exhibit.Description}
                         </option>
-                    ))}
+                    )))}
                 </select>
                 {selectedExhibitionDescription && (
                     <p className="mt-2 text-sm">{selectedExhibitionDescription}</p>
