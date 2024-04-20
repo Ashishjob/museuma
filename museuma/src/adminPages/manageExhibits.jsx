@@ -28,23 +28,6 @@ const ManageExhibits = () => {
     useState(null);
   const [selectedExhibit, setSelectedExhibit] = useState(null);
 
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedExhibit({ ...editedExhibit, [name]: value });
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    const updatedExhibits = exhibits.map((exhibits) =>
-      exhibits.Exhibit_id === editedExhibit.id
-        ? { ...exhibits, ...editedExhibit }
-        : exhibits
-    );
-    setExhibits(updatedExhibits);
-    setSelectedExhibit(null);
-    setShowEditForm(false);
-  };
-
   const [showActive, setShowActive] = useState(true);
 
   const toggleAddForm = () => {
@@ -154,7 +137,7 @@ const ManageExhibits = () => {
 
       // Confirm deletion and update state
       const updatedExhibits = exhibits.filter(
-        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
+        (exhibit) => exhibit.Exhibit_id !== selectedExhibitForDeletion
       );
       setExhibits(updatedExhibits);
       setSelectedExhibitForDeletion(null);
@@ -164,10 +147,10 @@ const ManageExhibits = () => {
     }
   };
 
-  const Reactivation = async () => {
+  const Reactivation = async (exhibitToReactivate) => {
     console.log("button is hit");
     try {
-      // Send PUT request to mark exhibit for deletion
+      // Send PUT request to mark exhibit for reactivation
       const response = await fetch("http://localhost:8081/manage-exhibits", {
         method: "PUT",
         headers: {
@@ -175,24 +158,67 @@ const ManageExhibits = () => {
         },
         body: JSON.stringify({
           action: "markForReactivation",
-          Exhibit_id: selectedExhibitForDeletion,
+          Exhibit_id: exhibitToReactivate.Exhibit_id,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to mark exhibit for deletion");
+        throw new Error("Failed to mark exhibit for reactivation");
       }
 
-      // Confirm deletion and update state
-      const updatedExhibits = exhibits.filter(
-        (exhibit) => exhibit.exhibit_id !== selectedExhibitForDeletion
+      // Confirm reactivation and update state
+      const updatedExhibits = exhibits.map((exhibit) =>
+        exhibit.Exhibit_id === exhibitToReactivate.Exhibit_id
+          ? { ...exhibit, active: 1 } // Assuming 'active' flag is used to mark active exhibits
+          : exhibit
       );
       setExhibits(updatedExhibits);
-      setSelectedExhibitForDeletion(null);
-
     } catch (error) {
-      console.error("Error marking exhibit for deletion:", error);
+      console.error("Error marking exhibit for reactivation:", error);
       // Handle error as needed
+    }
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedExhibit({ ...editedExhibit, [name]: value });
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    const { Exhibit_id, Description, Collections, Location, Director_ID, image_url, explanation } = editedExhibit;
+    const updatedExhibitData = { Exhibit_id, Description, Collections, Location, Director_ID, image_url, explanation };
+
+    try {
+      const response = await fetch("http://localhost:8081/manage-exhibits", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "update",
+          ...updatedExhibitData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      // Fetch updated data after successful update
+      const updatedResponse = await fetch("http://localhost:8081/manage-exhibits");
+      const updatedData = await updatedResponse.json();
+
+      const updatedExhibits = updatedData.filter((exhibit) => exhibit.active === 1); // Assuming 'active' flag is used to filter active exhibits
+      setExhibits(updatedExhibits);
+
+      setSelectedExhibit(null);
+      setShowEditForm(false);
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error updating exhibit: ${error.message}`);
     }
   };
 
@@ -223,45 +249,45 @@ const ManageExhibits = () => {
           Exhibit Management
         </h1>
 
-<div className="flex flex-col items-start">
-        <button
-          onClick={toggleAddForm}
-          className="text-3xl mb-2 hover:text-[#C0BAA4]"
-        >
-          {showAddForm ? "Cancel" : "Add Exhibit"}
-        </button>
+        <div className="flex flex-col items-start">
+          <button
+            onClick={toggleAddForm}
+            className="text-3xl mb-2 hover:text-[#C0BAA4]"
+          >
+            {showAddForm ? "Cancel" : "Add Exhibit"}
+          </button>
 
-        {showActive ? (
-  <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
-) : (
-  <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
-)}
-</div>
-      <ul className="divide-y divide-gray-300 mb-6">
-      {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
-  <li key={exhibit.Exhibit_id} className="py-4 flex">
-    <div className="flex flex-col">
-      <span className="text-2xl">{exhibit.Description}</span>
-      <span className="text-xl">{exhibit.Location}</span>
-      <span className="text-xl">{exhibit.Director_ID}</span>
-    </div>
-    <div className="ml-auto flex">
-      <button onClick={() => editExhibit(exhibit)} className="mr-2">
-        <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-      </button>
-      {exhibit.active ? (
-        <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
-          <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-        </button>
-      ) : (
-        <button onClick={() => Reactivation(exhibit.Exhibit_id)}>
-          <FaRecycle className="hover:text-[#C0BAA4] text-2xl" /> {/* Replace with your reactivation icon */}
-        </button>
-      )}
-    </div>
-  </li>
-))}
-      </ul>
+          {showActive ? (
+            <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
+          ) : (
+            <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
+          )}
+        </div>
+        <ul className="divide-y divide-gray-300 mb-6">
+          {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
+            <li key={exhibit.Exhibit_id} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl underline">{exhibit.Description}</span>
+                <span className="text-xl w-1/2 my-2">{exhibit.explanation}</span>
+                <span className="text-lg">Located in: {exhibit.Location}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editExhibit(exhibit)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                {exhibit.active ? (
+                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
+                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                ) : (
+                  <button onClick={() => Reactivation({ Exhibit_id: exhibit.Exhibit_id })}>
+                    <FaRecycle className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
 
         {showAddForm && (
           <div className="flex">
@@ -355,7 +381,7 @@ const ManageExhibits = () => {
                     htmlFor="Description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Description
+                    Title
                   </label>
                   <input
                     type="text"
@@ -397,15 +423,27 @@ const ManageExhibits = () => {
                     value={editedExhibit.Director_ID}
                     onChange={handleEditInputChange}
                   />
+                  <label
+                    htmlFor="Image URL"
+                    className="block text-sm font-medium text-gray-700 mt-4"
+                  >
+                    Image URL
+                  </label>
                   <input
                     type="text"
-                    id="Image URL"
+                    id="image_url"
                     name="image_url"
                     className="mt-1 p-2 border rounded-md w-full"
                     value={editedExhibit.image_url}
                     onChange={handleEditInputChange}
                   />
                 </div>
+                <label
+                  htmlFor="Description"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
                 <input
                   type="text"
                   id="Explanation"
@@ -414,7 +452,7 @@ const ManageExhibits = () => {
                   value={editedExhibit.explanation}
                   onChange={handleEditInputChange}
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-4">
                   <button
                     type="button"
                     onClick={() => setShowEditForm(false)}
