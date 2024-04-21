@@ -68,13 +68,16 @@ const ManageArtwork = () => {
     console.log(newArtworkData);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-artworks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newArtworkData),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-artworks",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newArtworkData),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -114,16 +117,19 @@ const ManageArtwork = () => {
     };
 
     try {
-      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "update",
-          ...updatedArtworkData,
-        }),
-      });
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-artworks`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "update",
+            ...updatedArtworkData,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -153,16 +159,19 @@ const ManageArtwork = () => {
   const confirmDelete = async () => {
     console.log("Here is our art_id: ", selectedArtworkForDeletion);
     try {
-      const response = await fetch(`https://museuma.onrender.com/manage-artworks`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "markForDeletion",
-          art_id: selectedArtworkForDeletion,
-        }),
-      });
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-artworks`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "markForDeletion",
+            art_id: selectedArtworkForDeletion,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -185,7 +194,9 @@ const ManageArtwork = () => {
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
-        const response = await fetch("https://museuma.onrender.com/manage-artworks"); // Endpoint URL should match your backend route
+        const response = await fetch(
+          "https://museuma.onrender.com/manage-artworks"
+        ); // Endpoint URL should match your backend route
         if (!response.ok) {
           throw new Error("Failed to fetch artworks");
         }
@@ -315,9 +326,6 @@ const ManageArtwork = () => {
           ))}
         </ul>
 
-        
-        
-
         {showEditForm && selectedArtWork && (
           <form onSubmit={handleEditSubmit}>
             <input
@@ -361,7 +369,7 @@ const ManageArtwork = () => {
               onChange={(e) =>
                 setEditedArtwork({
                   ...editedArtwork,
-                  image: e.target.files[0],
+                  image: e.target.value,
                 })
               }
             />
