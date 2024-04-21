@@ -1,9 +1,9 @@
 //basically add any possible query we may need here
 const checkEmailExists = "SELECT * FROM employees WHERE email = ?";
 const getBranchDirectors = "SELECT * FROM branch_directors";
-const getDirectorIdByDepartment = "SELECT Director_ID FROM branch_directors WHERE Branch_title = ?";
+const getDirectorIdByDepartment = "SELECT Director_id FROM branch_directors WHERE Branch_title = ?";
 const getEmployees = "SELECT * FROM employees";
-const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
+const addEmployee = "INSERT INTO employees (department, director_id, email, first_name, last_name, username, password, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 const getExhibit = "SELECT * FROM exhibits";
 const addExhibit = "INSERT INTO exhibits (Description, Collections, Location, Director_ID, image_url, explanation) VALUES (?, ?, ?, ?, ?, ?)";
 const updateExhibit = "UPDATE exhibits SET Description = ?, Collections = ?, Location = ?, Director_ID = ?, image_url = ?, explanation = ? WHERE Exhibit_id = ?";
