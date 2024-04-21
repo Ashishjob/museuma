@@ -765,52 +765,35 @@ const updateItemInfo = (req, res) => {
   });
 };
 
-const deleteItem = (req, res) => {
-  let requestData = '';
+const markItemForDeletion = (requestData, res) => {
+  const { item_id } = requestData;
+  
+  if (!item_id) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'item_id is missing' }));
+    return;
+  }
 
-  req.on('data', (chunk) => {
-    requestData += chunk.toString();
-  });
+  console.log('Item ID:', item_id);
 
-  req.on('end', () => {
-    try {
-      const { item_id } = JSON.parse(requestData);
+  pool.query(queries.markItemForDeletion, [item_id], (error, results) => {
+    if (error) {
+      console.error('Error marking item for deletion:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+      return;
+    }
 
-      console.log('Received data:', { item_id }); // Debugging line
-
-      if (typeof item_id === 'undefined') {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'item_id is undefined' }));
-        return;
-      }
-
-      // Delete item from the database
-      pool.query(
-        queries.deleteItem,
-        [item_id],
-        (error, results) => {
-          if (error) {
-            console.error('Error deleting item:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal server error' }));
-          } else {
-            if (results.affectedRows > 0) {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'Item deleted successfully' }));
-            } else {
-              res.writeHead(404, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: 'Item not found' }));
-            }
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error parsing request body:', error);
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    if (results.affectedRows > 0) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Item marked for deletion' }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Item not found' }));
     }
   });
 };
+
 
 const getArtWorks = (req, res) => {
   pool.query(queries.getArtWorks, (error, results) => {
@@ -1383,7 +1366,7 @@ module.exports = {
   addItem,
   getItem,
   updateItemInfo,
-  deleteItem,
+  markItemForDeletion,
   getArtWorks,
   updateArtWork,
   markArtWorkForDeletion,

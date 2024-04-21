@@ -23,7 +23,7 @@ const updateEmployeeInfoAll = "UPDATE employees SET first_name = ?, last_name = 
 const addItem = "INSERT INTO items (title, price, description, quantity, image_url) VALUES(?, ?, ?, ?, ?)";
 const getItem ="SELECT * FROM items WHERE item_id NOT IN (9, 10, 11, 12)";
 const updateItem = "UPDATE items SET title = ?, price = ?, description = ?, quantity = ?, image_url = ? WHERE item_id= ?";
-const deleteItem = "DELETE FROM items WHERE item_id = ?";
+const markItemForDeletion ="UPDATE items SET active = 0 WHERE item_id = ?";
 const getArtWorks = "SELECT * FROM art_pieces";
 const updateArtWork = "UPDATE art_pieces SET title = ?, artist = ?, image = ?, medium = ?, creationDate = ? WHERE art_id = ?";
 const markArtWorkForDeletion ="UPDATE art_pieces SET active = 0 WHERE art_id = ?";
@@ -127,7 +127,7 @@ module.exports = {
     addItem,
     getItem,
     updateItem,
-    deleteItem,
+    markItemForDeletion,
     getArtWorks,
     updateArtWork,
     markArtWorkForDeletion,
