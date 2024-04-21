@@ -94,7 +94,9 @@ function Giftshop() {
           </select>
         </div>
         <div className="grid grid-cols-4 gap-7">
-          {filteredProducts.map((product, index) => (
+        {filteredProducts
+          .filter(product => product.active !== 0)
+          .map((product, index) => (
             <div
               key={index}
               className="border border-gray-200 rounded-lg p-2 w-full"

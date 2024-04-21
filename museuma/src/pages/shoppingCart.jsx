@@ -128,11 +128,11 @@ function ShoppingCart() {
                       className="flex flex-col space-y-3 py-2 my-2 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
                     >
                       <div className="shrink-0">
-                        <img
-                          className="h-24 w-24 max-w-full rounded-lg object-cover"
-                          src={item.image_url}
-                          alt="Product"
-                        />
+                      <img
+                        className="h-24 w-24 max-w-full rounded-lg object-cover"
+                        src={item.image_url || '/ticket.jpeg'}
+                        alt="Product"
+                    />
                       </div>
 
                       <div className="relative flex flex-1 flex-col justify-between">
