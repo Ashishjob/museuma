@@ -180,9 +180,9 @@ export default function NavBar() {
         console.log(unresolvedMessages);
 
         // Check if there are unresolved messages to decide if popup should be open
-        if (unresolvedMessages) {
+        if (isPopupOpen && unresolvedMessages) {
           setIsPopupOpen(true);
-        } else {
+        } else if (isPopupOpen && !unresolvedMessages) {
           setIsPopupOpen(false);
         }
       } catch (error) {
@@ -190,12 +190,9 @@ export default function NavBar() {
       }
     };
 
-    // Check if the hash fragment is "notifications"
-    if (window.location.hash === "#notifications") {
-      fetchAndCheckMessages(); // Fetch messages when the popup is open
-    } else {
+
       fetchAndCheckMessages(); // Fetch messages when the component mounts
-    }
+    
   }, []);
 
 
@@ -221,17 +218,6 @@ export default function NavBar() {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
-
-    const fetchData = async () => {
-      if (!isPopupOpen) {
-        window.location.hash = "notifications";
-        await fetchMessages(); // Fetch messages when the popup is opened
-      } else {
-        window.location.hash = "";
-      }
-    };
-
-    fetchData();
   };
 
 
@@ -265,11 +251,6 @@ export default function NavBar() {
     const storedToken = Cookies.get("token");
     if (storedToken) {
       setIsLoggedIn(true);
-    }
-
-    // Check if the hash fragment is "notifications"
-    if (window.location.hash === "#notifications") {
-      setIsPopupOpen(true);
     }
   }, []);
 
@@ -306,17 +287,16 @@ export default function NavBar() {
             </a>
           </nav>
           <div className="relative">
-
-          {['employees', 'branch_directors'].includes(userRole) && (
-  <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
-)}
-
-            {hasUnresolvedMessages && ( // Conditionally render the red dot
-              <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
-            )}
-
-            {isPopupOpen && <Popup />}
-          </div>
+  {['branch_directors', 'employees'].includes(userRole) && (
+    <>
+      <HiArchiveBox className="text-2xl cursor-pointer" onClick={() => setIsPopupOpen(!isPopupOpen)} />
+      {hasUnresolvedMessages && (
+        <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
+      )}
+      {isPopupOpen && <Popup />}
+    </>
+  )}
+</div>
         </div>
         <div className="flex items-center">
           {isLoggedIn ? (
