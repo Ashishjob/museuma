@@ -232,7 +232,7 @@ function Tickets() {
                         >
                             <option value="" disabled hidden>Please select an exhibition</option>
                             {exhibits && exhibits.map((exhibit) => (
-                                (exhibit.active === 1 && exhibit.Description.toLowerCase() !== 'restaurant') && (
+                                (exhibit.active === 1 && exhibit.Description.toLowerCase() !== 'restaurant' && exhibit.Description.toLowerCase() !== 'gift shop') && (
                                     <option key={exhibit.Exhibit_id} value={exhibit.Description}>
                                         {exhibit.Description}
                                     </option>
