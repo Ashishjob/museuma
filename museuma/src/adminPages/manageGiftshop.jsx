@@ -292,7 +292,9 @@ const ManageGiftshop = () => {
         )}
 
         <ul className="divide-y divide-gray-300 mb-6">
-          {items.map((item, index) => (
+        {items
+          .filter(item => item.active !== 0)
+          .map((item, index) => (
             <li key={index} className="py-4 flex">
               <div className="flex flex-col">
                 <span className="text-2xl">Item Name: {item.title}</span>

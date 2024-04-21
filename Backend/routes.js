@@ -97,6 +97,9 @@ function router(req, res) {
     else if ((url.startsWith('/giftshop') || url.startsWith('/manage-giftshop')) && method === 'GET') {
         controller.getItem(req, res);
     }
+    else if (url.startsWith('/getQuantity') && method === 'POST') {
+        controller.getQuantity(req, res);
+    }
     else if (url === '/manage-giftshop' && method === 'PUT') {
         res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with your frontend URL
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');

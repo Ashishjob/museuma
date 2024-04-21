@@ -387,7 +387,7 @@ function Checkout() {
                     <div className="flex" key={index}>
                       <img
                         className="w-24 h-24 object-cover rounded-md mr-4"
-                        src={item.image_url}
+                        src={item.image_url || '/ticket.jpeg'}
                         alt="Artwork"
                       />
                       <div className="flex flex-col">

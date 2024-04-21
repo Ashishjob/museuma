@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import "../index.css";
+import { useNavigate } from "react-router-dom";
 
 function ShoppingCart() {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [discountedTotal, setDiscountedTotal] = useState(0);
   const [discounted, setDiscount] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const fetchQuantity = async (item_id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/getQuantity`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ item_id }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error fetching quantity");
+      }
+      const data = await response.json();
+      return data.quantity;
+    } catch (error) {
+      console.error("Error fetching quantity:", error);
+      return 0;
+    }
+  };
 
   useEffect(() => {
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
@@ -64,6 +90,24 @@ function ShoppingCart() {
     localStorage.setItem("cart", JSON.stringify(updatedItems));
   };
 
+  const handleCheckout = async () => {
+    try {
+      for (const item of items) {
+        const fetchedQuantity = await fetchQuantity(item.item_id);
+        console.log(`Item ${item.item_id}: Quantity in cart = ${item.quantity}, Fetched quantity = ${fetchedQuantity}`);
+        if (item.quantity > fetchedQuantity) {
+          setErrorMessage(`ERROR: Quantity for ${item.title} exceeds available quantity (${fetchedQuantity})`);
+          return;
+        }
+      }
+      navigate("/checkout");
+      // Proceed with checkout logic here
+    } catch (error) {
+      console.error("Error during checkout:", error.message);
+    }
+  };
+
+
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen pb-16">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,11 +128,11 @@ function ShoppingCart() {
                       className="flex flex-col space-y-3 py-2 my-2 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
                     >
                       <div className="shrink-0">
-                        <img
-                          className="h-24 w-24 max-w-full rounded-lg object-cover"
-                          src={item.image_url}
-                          alt="Product"
-                        />
+                      <img
+                        className="h-24 w-24 max-w-full rounded-lg object-cover"
+                        src={item.image_url || '/ticket.jpeg'}
+                        alt="Product"
+                    />
                       </div>
 
                       <div className="relative flex flex-1 flex-col justify-between">
@@ -104,7 +148,7 @@ function ShoppingCart() {
 
                           <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
                             <p className="shrink-0 w-20 text-base text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                              ${item.price * item.quantity}
+                              ${(item.price * item.quantity).toFixed(2)}
                             </p>
                             <div className="sm:order-1">
                               <div className="mx-auto flex h-8 items-stretch text-gray-600">
@@ -150,6 +194,7 @@ function ShoppingCart() {
                               />
                             </svg>
                           </button>
+
                         </div>
                       </div>
                     </li>
@@ -180,30 +225,34 @@ function ShoppingCart() {
                   ${discountedTotal.toFixed(2)} {/* Convert to string here */}
                 </p>
               </div>
+              {errorMessage && (
+                <p className="text-red-500 mt-4">{errorMessage}</p>
+              )}
               <div className="mt-6 text-center">
-                <a href="/checkout">
-                  <button
-                    type="button"
-                    className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
-                    disabled={items.length === 0}
+                {/* <a href="/checkout"> */}
+                <button
+                  onClick={handleCheckout}
+                  type="button"
+                  className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
+                  disabled={items.length === 0}
+                >
+                  Checkout
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="group-hover:ml-8 ml-4 h-6 w-6 transition-all"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
                   >
-                    Checkout
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="group-hover:ml-8 ml-4 h-6 w-6 transition-all"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </button>
-                </a>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </button>
+                {/* </a> */}
               </div>
             </div>
           </div>
@@ -214,3 +263,4 @@ function ShoppingCart() {
 }
 
 export default ShoppingCart;
+
