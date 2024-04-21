@@ -105,7 +105,10 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname.startsWith('/employee-department') && req.method === 'POST'){
             employeeRoutes(req, res);
         }
-        else if(parsedUrl.pathname.startsWith('/total-report') && req.method === 'GET'){
+        else if(parsedUrl.pathname.startsWith('/total-report') && req.method === 'POST'){
+            employeeRoutes(req, res);
+        }
+        else if (parsedUrl.pathname.startsWith('/getQuantity') && req.method === 'POST') {
             employeeRoutes(req, res);
         }
         else if(parsedUrl.pathname.startsWith('/items-report') && req.method === 'GET'){

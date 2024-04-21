@@ -1370,6 +1370,48 @@ const updateItemQuantity = (req, res) => {
   });
 }
 
+const getQuantity = (req, res) => {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      const { item_id } = data;
+
+      // Retrieve item quantity from the database
+      pool.query(
+        queries.getQuantity,
+        [item_id],
+        (error, results) => {
+          if (error) {
+            console.error('Error fetching item quantity:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+            return;
+          }
+
+          if (results.length === 0) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Item not found' }));
+            return;
+          }
+
+          const quantity = results[0].quantity;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ quantity }));
+        }
+      );
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid request body' }));
+    }
+  });
+}
 
 module.exports = {
   getBranchDirectors,
@@ -1415,5 +1457,6 @@ module.exports = {
   getAdminInfo,
   getEmployeeInfo,
   itemsReport,
-  ticketsReport
+  ticketsReport,
+  getQuantity
 };
