@@ -718,16 +718,9 @@ const getItem = (req, res) => {
   });
 };
 
-const updateItemInfo = (req, res) => {
-  let requestData = '';
-
-  req.on('data', (chunk) => {
-    requestData += chunk.toString();
-  });
-
-  req.on('end', () => {
-    try {
-      const { title, price, description, quantity, image_url, item_id } = JSON.parse(requestData);
+const updateItemInfo = (requestData, res) => {
+  try {
+      const { title, price, description, quantity, image_url, item_id } = requestData;
 
       console.log('Received data:', { title, price, description, quantity, image_url, item_id }); // Debugging line
 
@@ -757,13 +750,13 @@ const updateItemInfo = (req, res) => {
               }
           }
       );
-    } catch (error) {
+  } catch (error) {
       console.error('Error parsing request body:', error);
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Invalid request body' }));
-    }
-  });
+  }
 };
+
 
 const markItemForDeletion = (requestData, res) => {
   const { item_id } = requestData;

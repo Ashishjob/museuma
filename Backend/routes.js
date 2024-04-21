@@ -98,6 +98,9 @@ function router(req, res) {
         controller.getItem(req, res);
     }
     else if (url === '/manage-giftshop' && method === 'PUT') {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with your frontend URL
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         const contentType = req.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {
             let body = '';
