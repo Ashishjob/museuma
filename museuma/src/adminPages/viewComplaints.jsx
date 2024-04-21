@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import moment from 'moment';
 import "../App.css";
 import "../index.css";
 
@@ -155,7 +156,7 @@ const ViewComplaints = () => {
               className="bg-white rounded-lg p-4 shadow-md"
             >
               <h2 className="text-2xl mb-2">{`Branch: ${complaint.branch}`}</h2>
-              <p className="text-xl mb-2">{`Date: ${complaint.date_and_time}`}</p>{" "}
+              <p className="text-xl mb-2">{`Date: ${moment(complaint.date_and_time).format('MM-DD-YYYY HH:mm')}`}</p>{" "}
               {/*We can adjust this time stamp later*/}
               <p>{`Message: ${complaint.description}`}</p>
               <p>{`Name: ${complaint.first_name} ${complaint.last_name}`}</p>
