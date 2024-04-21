@@ -79,7 +79,7 @@ This database system enables efficient tracking of museum activities, financial 
 ### Cloning The Repository
 
 ```bash
-git clone [https://github.com/tthn0/CoogExpress](https://github.com/Ashishjob/museuma.git)
+git clone https://github.com/Ashishjob/museuma.git
 cd museuma
 code .
 ```
