@@ -97,6 +97,9 @@ function router(req, res) {
     else if ((url.startsWith('/giftshop') || url.startsWith('/manage-giftshop')) && method === 'GET') {
         controller.getItem(req, res);
     }
+    else if (url.startsWith('/getQuantity') && method === 'POST') {
+        controller.getQuantity(req, res);
+    }
     else if (url === '/manage-giftshop' && method === 'PUT') {
         const contentType = req.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {

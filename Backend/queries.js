@@ -36,6 +36,7 @@ const getMessages = "SELECT * FROM message_queue";
 const getEmployeeDepartment = "SELECT department FROM employees WHERE employee_id = ?";
 const addOrder = "INSERT INTO orders (customer_id, item_id, quantity, total_price, order_date) VALUES (?, ?, ?, ?, ?)";
 const updateItemQuantity = "UPDATE items SET quantity = quantity - ? WHERE item_id = ?";
+const getQuantity = "SELECT quantity FROM items WHERE item_id = ?";
 
 const getComplaints = `
     SELECT 
@@ -175,5 +176,6 @@ module.exports = {
     getAdminInfo,
     getEmployeeInfo,
     itemsReport,
-    ticketsReport
+    ticketsReport,
+    getQuantity
 };

@@ -11,7 +11,6 @@ function Giftshop() {
       try {
         const response = await fetch("https://museuma.onrender.com/giftshop");
         if (!response.ok) {
-          throw new Error("Failed to fetch items");
         }
         const data = await response.json();
         setItems(data);
@@ -22,6 +21,7 @@ function Giftshop() {
     };
 
     fetchItems();
+    console.log("items", items)
   }, []);
 
   const filteredProducts = items
@@ -41,6 +41,15 @@ function Giftshop() {
   const [showPopup, setShowPopup] = useState(false);
 
   const addToCart = (product, quantity) => {
+    if (product.quantity <= 0 || quantity <= 0) {
+      return; // Do nothing if the product quantity is 0 or negative, or if the selected quantity is 0 or negative
+    }
+
+    if (quantity > product.quantity) {
+      // If the selected quantity exceeds the available quantity, set the quantity to the available quantity
+      quantity = product.quantity;
+    }
+
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 2000);
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
@@ -58,6 +67,7 @@ function Giftshop() {
 
     localStorage.setItem("cart", JSON.stringify(cartItems));
   };
+
 
 
   return (
@@ -112,27 +122,21 @@ function Giftshop() {
                   <button
                     className="px-4 py-2 rounded text-black"
                     style={{
-                      backgroundColor: "#BBB5A4",
+                      backgroundColor: product.quantity <= 0 ? "#DDDDDD" : "#BBB5A4",
+                      cursor: product.quantity <= 0 ? "not-allowed" : "pointer",
                       transition: "background-color 0.3s, color 0.3s",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "#7D7869")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "#BBB5A4")
-                    }
                     onClick={() =>
                       addToCart(
                         product,
-                        parseInt(
-                          document.getElementById(`quantity-${product.item_id}`)
-                            .value
-                        )
+                        parseInt(document.getElementById(`quantity-${product.item_id}`).value)
                       )
                     }
+                    disabled={product.quantity <= 0}
                   >
                     Add to Cart
                   </button>
+
                   {showPopup && (
                     <div style={{
                       position: 'fixed',
