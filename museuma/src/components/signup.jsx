@@ -14,7 +14,7 @@ function Signup() {
         phone_number: "",
         username: "",
         password: "",
-        date_of_birth : "",
+        date_of_birth: "",
         address: "",
     });
     const [birthday, setBirthday] = useState('');
@@ -55,14 +55,14 @@ function Signup() {
             // Optionally, you can perform any additional actions based on the response
             // For example, show a success message or redirect the user
             navigate('/login');
-    
+
         } catch (error) {
             console.log(error.body);
             console.error("Error submitting sign-up form:", error);
             // Handle error as needed
         }
     };
-    
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -97,27 +97,27 @@ function Signup() {
                 <form onSubmit={handleSubmit}>
                     <div className="flex flex-row">
                         <div className="flex flex-col w-full">
-                        <label htmlFor="firstname" className="block text-sm text-gray-600">First Name</label>
-                        <input
-                            type="text"
-                            className="w-full p-2 mb-4 mr-2 border border-[#DCD7C5] rounded"
-                            value={formData.first_name}
-                            onChange={(e) =>
-                                setFormData({ ...formData, first_name: e.target.value })
-                            }
-                        />
+                            <label htmlFor="firstname" className="block text-sm text-gray-600">First Name</label>
+                            <input
+                                type="text"
+                                className="w-full p-2 mb-4 mr-2 border border-[#DCD7C5] rounded"
+                                value={formData.first_name}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, first_name: e.target.value })
+                                }
+                            />
                         </div>
                         <div className="flex flex-col w-full">
-                        <label htmlFor="lastname" className="block text-sm text-gray-600">Last Name</label>
-                        <input
-                            type="text"
-                            className="w-full p-2 mb-4 ml-2 border border-[#DCD7C5] rounded"
-                            value={formData.last_name}
-                            onChange={(e) =>
-                                setFormData({ ...formData, last_name: e.target.value })
-                            }
-                        />
-                    </div>
+                            <label htmlFor="lastname" className="block text-sm text-gray-600">Last Name</label>
+                            <input
+                                type="text"
+                                className="w-full p-2 mb-4 ml-2 border border-[#DCD7C5] rounded"
+                                value={formData.last_name}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, last_name: e.target.value })
+                                }
+                            />
+                        </div>
                     </div>
                     <label htmlFor="email" className="block text-sm text-gray-600">Email</label>
                     <input
@@ -129,14 +129,17 @@ function Signup() {
                         }
                     />
                     <label htmlFor="phonenumber" className="block text-sm text-gray-600">Phone Number</label>
-                    <input
+                        <input
                         type="tel"
                         className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
                         value={formData.phone_number}
                         onChange={(e) =>
                             setFormData({ ...formData, phone_number: e.target.value })
                         }
-                    />
+                        maxLength={10}
+                        minLength={10}
+                        pattern="\d*"
+                        />
                     <label htmlFor="username" className="block text-sm text-gray-600">Username</label>
                     <input
                         type="text"
@@ -169,6 +172,7 @@ function Signup() {
                         className="w-full p-2 mb-4 border border-[#DCD7C5] rounded"
                         value={birthday}
                         onChange={(e) => setBirthday(e.target.value)}
+                        max={new Date().toISOString().split('T')[0]}
                     />
                     <label htmlFor="address" className="block text-sm text-gray-600">Street Address</label>
                     <input
@@ -249,6 +253,9 @@ function Signup() {
                         className="w-full p-2 mb-6 border border-[#DCD7C5] rounded"
                         value={address.zip}
                         onChange={(e) => setAddress({ ...address, zip: e.target.value })}
+                        maxLength="5"
+                        minLength="5"
+                        pattern="\d*"
                     />
                     {formData.password.length < 6 || formData.password !== confirmPassword ? (
                         <p className="text-red-500 text-xs -mt-4">
