@@ -14,14 +14,14 @@ const ManageGiftshop = () => {
     price: "",
     description: "",
     quantity: "",
-    image: "",
+    image_url: "",
   });
   const [newItem, setNewItem] = useState({
     title: "",
     price: "",
     description: "",
     quantity: "",
-    image: "",
+    image_url: "",
   });
   const [selectedItemForDeletion, setSelectedItemForDeletion] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -74,23 +74,20 @@ const ManageGiftshop = () => {
       price: Number(editedItem.price),
       description: editedItem.description,
       quantity: Number(editedItem.quantity),
-      image_url: editedItem.image,
+      image_url: editedItem.image_url,
     };
 
     try {
-      const response = await fetch(
-        `https://museuma.onrender.com/manage-giftshop`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            action: "update",
-            ...updatedItemData,
-          }),
-        }
-      );
+      const response = await fetch(`http://localhost:8081/manage-giftshop`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "update",
+          ...updatedItemData,
+        }),
+      });
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -121,7 +118,7 @@ const ManageGiftshop = () => {
       price: "",
       description: "",
       quantity: "",
-      image: "",
+      image_url: "",
     });
   };
 
@@ -133,7 +130,7 @@ const ManageGiftshop = () => {
       price: Number(newItem.price),
       description: newItem.description,
       quantity: Number(newItem.quantity),
-      image_url: newItem.image,
+      image_url: newItem.image_url,
     };
 
     console.log(newItemData);
@@ -220,7 +217,7 @@ const ManageGiftshop = () => {
       price: item.price,
       description: item.description,
       quantity: item.quantity,
-      image: item.image,
+      image_url: item.image_url,
     });
   };
 
@@ -263,9 +260,9 @@ const ManageGiftshop = () => {
             />
             <input
               type="text"
-              name="image"
+              name="image_url"
               placeholder="Item image URL"
-              value={newItem.image}
+              value={newItem.image_url}
               onChange={handleAddInputChange}
               className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
             />
@@ -359,9 +356,9 @@ const ManageGiftshop = () => {
                 />
                 <input
                   type="text"
-                  name="image"
+                  name="image_url"
                   placeholder="Item image URL"
-                  value={editedItem.image}
+                  value={editedItem.image_url}
                   onChange={handleEditInputChange}
                   className="p-2 border-2 border-[#C0BAA4] rounded-lg mb-4 w-full"
                 />
