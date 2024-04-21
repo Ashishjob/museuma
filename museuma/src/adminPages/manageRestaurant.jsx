@@ -28,7 +28,9 @@ const ManageRestaurant = () => {
     // Fetch food items from backend
     const fetchFoodItems = async () => {
       try {
-        const response = await fetch("https://museuma.onrender.com/manage-restaurant");
+        const response = await fetch(
+          "https://museuma.onrender.com/manage-restaurant"
+        );
         const data = await response.json();
         setItems(data); // Assuming the response is an array of items
       } catch (error) {
@@ -67,16 +69,19 @@ const ManageRestaurant = () => {
     };
     console.log(updatedFoodData);
     try {
-      const response = await fetch(`https://museuma.onrender.com/manage-restaurant`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "update",
-          ...updatedFoodData,
-        }),
-      });
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-restaurant`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "update",
+            ...updatedFoodData,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -123,13 +128,16 @@ const ManageRestaurant = () => {
     console.log(newFoodData);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-restaurant", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newFoodData),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-restaurant",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newFoodData),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -158,12 +166,39 @@ const ManageRestaurant = () => {
     setSelectedItemForDeletion(itemID);
   };
 
-  const confirmDelete = () => {
-    const updatedItems = items.filter(
-      (item) => item.item_id !== selectedItemForDeletion
-    );
-    setItems(updatedItems);
-    setSelectedItemForDeletion(null);
+  const confirmDelete = async () => {
+    console.log("Here is our art_id: ", selectedItemForDeletion);
+    try {
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-restaurant`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "markForDeletion",
+            restaurant_id: selectedItemForDeletion,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Server error: ${errorMessage}`);
+      }
+
+      const updatedItems = items.filter(
+        (item) => item.restaurant_id !== selectedItemForDeletion
+      );
+      setItems(updatedItems);
+      setSelectedItemForDeletion(null);
+
+      console.log("Item deleted successfully!");
+    } catch (error) {
+      console.error("Client error:", error.message);
+      alert(`Error deleting item: ${error.message}`);
+    }
   };
 
   const editItem = (item) => {
@@ -260,7 +295,6 @@ const ManageRestaurant = () => {
           ))}
         </ul>
 
-        
         {selectedItemForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-md">
