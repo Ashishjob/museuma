@@ -78,9 +78,6 @@ const server = http.createServer((req, res) => {
         else if(parsedUrl.pathname.startsWith('/manage-giftshop') && req.method === 'PUT'){
             employeeRoutes(req, res);
         }
-        else if(parsedUrl.pathname.startsWith('/manage-giftshop') && req.method === 'DELETE'){
-            employeeRoutes(req, res);
-        }
         else if(parsedUrl.pathname.startsWith('/manage-artworks') && req.method === 'GET'){
             employeeRoutes(req, res);
         }

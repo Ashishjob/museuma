@@ -29,7 +29,9 @@ const ManageGiftshop = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("https://museuma.onrender.com/manage-giftshop");
+        const response = await fetch(
+          "https://museuma.onrender.com/manage-giftshop"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch items");
         }
@@ -76,13 +78,19 @@ const ManageGiftshop = () => {
     };
 
     try {
-      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedItemData),
-      });
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-giftshop`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "update",
+            ...updatedItemData,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -131,13 +139,16 @@ const ManageGiftshop = () => {
     console.log(newItemData);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-giftshop", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newItemData),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-giftshop",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newItemData),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -168,13 +179,19 @@ const ManageGiftshop = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://museuma.onrender.com/manage-giftshop`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ item_id: selectedItemForDeletion }),
-      });
+      const response = await fetch(
+        `https://museuma.onrender.com/manage-giftshop`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "markForDeletion",
+            item_id: selectedItemForDeletion,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -298,7 +315,6 @@ const ManageGiftshop = () => {
           ))}
         </ul>
 
-        
         {selectedItemForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-md">
