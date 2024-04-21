@@ -1259,6 +1259,32 @@ const salesReport = (req, res) => {
   });
 };
 
+const itemsReport = (req, res) => {
+  pool.query(queries.itemsReport, (error, results) => {
+    if (error) {
+      console.error("Error fetching sales report:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
+
+const ticketsReport = (req, res) => {
+  pool.query(queries.ticketsReport, (error, results) => {
+    if (error) {
+      console.error("Error fetching sales report:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal server error" }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(results));
+  });
+};
+
 const getMessages = (req, res) => {
   pool.query(queries.getMessages, (error, results) => {
     if (error) {
@@ -1387,5 +1413,7 @@ module.exports = {
   updateAdminInfo,
   updateEmployeeInfoAll,
   getAdminInfo,
-  getEmployeeInfo
+  getEmployeeInfo,
+  itemsReport,
+  ticketsReport
 };

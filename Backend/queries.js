@@ -105,6 +105,32 @@ orders o ON c.customer_id = o.customer_id
 JOIN 
 items i ON o.item_id = i.item_id;`;
 
+const itemsReport = `SELECT 
+CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+i.title AS item_bought,
+o.quantity AS quantity_bought,
+o.total_price AS total_price,
+o.order_date AS order_date
+FROM 
+customers c
+JOIN 
+orders o ON c.customer_id = o.customer_id
+JOIN 
+items i ON o.item_id = i.item_id AND i.item_id NOT IN (9, 10, 11, 12);`;
+
+const ticketsReport = `SELECT 
+CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+i.title AS item_bought,
+o.quantity AS quantity_bought,
+o.total_price AS total_price,
+o.order_date AS order_date
+FROM 
+customers c
+JOIN 
+orders o ON c.customer_id = o.customer_id
+JOIN 
+items i ON o.item_id = i.item_id AND i.item_id IN (9, 10, 11, 12);`;
+
 module.exports = {
     getBranchDirectors,
     getEmployees,
@@ -147,5 +173,7 @@ module.exports = {
     updateAdminInfo,
     updateEmployeeInfoAll,
     getAdminInfo,
-    getEmployeeInfo
+    getEmployeeInfo,
+    itemsReport,
+    ticketsReport
 };

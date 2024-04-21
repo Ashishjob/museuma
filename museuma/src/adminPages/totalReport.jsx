@@ -44,12 +44,13 @@ function TotalReport() {
     let url;
     switch (reportType) {
       case "giftShop":
-        url = "https://museuma.onrender.com/gift-shop-report";
+        url = "http://localhost:8081/items-report";
         break;
       case "tickets":
-        url = "https://museuma.onrender.com/ticket-report";
+        url = "http://localhost:8081/tickets-report";
         break;
       default:
+        console.log("yoyoyo");
         url = "https://museuma.onrender.com/total-report";
     }
     try {
@@ -115,9 +116,7 @@ function TotalReport() {
         dateMatches = moment(sale?.date).isAfter(moment().subtract(1, "weeks"));
         break;
       case "lastMonth":
-        dateMatches = moment(sale?.date).isAfter(
-          moment().subtract(1, "months")
-        );
+        dateMatches = moment(sale?.date).isAfter(moment().subtract(1, "months"));
         break;
       case "lastYear":
         dateMatches = moment(sale?.date).isAfter(moment().subtract(1, "years"));
@@ -130,11 +129,15 @@ function TotalReport() {
           "[]"
         );
         break;
+      case "all":
+        dateMatches = true; // Allow all dates
+        break;
       default:
-        dateMatches = true;
+        dateMatches = true; // Default to true for other filters
     }
     return customerNameMatches && itemBoughtMatches && dateMatches;
   });
+  
 
   const customerCounts = filteredData
     ? filteredData.reduce((counts, sale) => {
