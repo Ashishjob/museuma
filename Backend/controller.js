@@ -120,16 +120,16 @@ const addExhibits = (req, res) => {
   
   req.on("end", () => {
       const parsedBody = JSON.parse(body);
-      const { Description, Collections, Location, Director_ID, image_url, explanation } = parsedBody;
+      const { Description, Collections, Location, image_url, explanation } = parsedBody;
   
       console.log("Received data:", parsedBody); // Log received data
 
       // Check if exhibit_name, exhibit_description, and exhibit_image are defined
-      if (!Description || !Collections || !Location || !Director_ID) {
+      if (!Description || !Collections || !Location ) {
           res.writeHead(400, { "Content-Type": "application/json" });
           res.end(
               JSON.stringify({
-                  error: "Description, Collection, Location, and Director_ID are required.",
+                  error: "Description, Collection, Location, are required.",
               })
           );
           return;
@@ -138,7 +138,7 @@ const addExhibits = (req, res) => {
       // Add exhibit to the database
       pool.query(
           queries.addExhibit,
-          [Description, Collections, Location, Director_ID, image_url, explanation],
+          [Description, Collections, Location, image_url, explanation],
           (error, results) => {
               if (error) {
                   console.error('Error adding exhibit:', error);
@@ -945,19 +945,19 @@ const addArtWork = (req, res) => {
 
 const updateExhibit = (requestData, res) => {
   try {
-    const { Description, Collections, Location, Director_ID, Exhibit_id, image_url, explanation } = requestData;
+    const { Description, Collections, Location, Exhibit_id, image_url, explanation } = requestData;
 
-    console.log('Received data:', { Description, Collections, Location, Director_ID, Exhibit_id }); // Debugging line
+    console.log('Received data:', { Description, Collections, Location, Exhibit_id }); // Debugging line
 
-    if (!Description || !Collections || !Location || !Director_ID || !Exhibit_id) {
+    if (!Description || !Collections || !Location || !Exhibit_id) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ error: 'Description, Collections, Location, Director_ID, and/or Exhibit_id are undefined' }));
+      return res.end(JSON.stringify({ error: 'Description, Collections, Location, and/or Exhibit_id are undefined' }));
     }
 
     // Update exhibit in the database
     pool.query(
       queries.updateExhibit,
-      [Description, Collections, Location, Director_ID, image_url, explanation, Exhibit_id], // Changed the order of parameters
+      [Description, Collections, Location, image_url, explanation, Exhibit_id], // Changed the order of parameters
       (error, results) => {
         if (error) {
           console.error('Error updating exhibit information:', error);
