@@ -307,7 +307,10 @@ export default function NavBar() {
           </nav>
           <div className="relative">
 
-            <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+          {['employees', 'branch_directors'].includes(userRole) && (
+  <HiArchiveBox className="text-2xl cursor-pointer" onClick={togglePopup} />
+)}
+
             {hasUnresolvedMessages && ( // Conditionally render the red dot
               <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
             )}
