@@ -53,10 +53,10 @@ const EditProfile = () => {
         call = `https://museuma.onrender.com/customer/${user_id1}`;
       }
       else if (table_name1 === 'employees') {
-        call = `http://localhost:8081/employeeInfo/${user_id1}`;
+        call = `https://museuma.onrender.com/employeeInfo/${user_id1}`;
       }
       else if (table_name1 === 'branch_directors') {
-        call = `http://localhost:8081/adminInfo/${user_id1}`;
+        call = `https://museuma.onrender.com/adminInfo/${user_id1}`;
         console.log(call);
       }
       else {
@@ -156,10 +156,10 @@ const EditProfile = () => {
           call = `https://museuma.onrender.com/editCustomerInfo/${user_id}`;
         }
         else if (table_name === 'employees') {
-          call = `http://localhost:8081/editEmployeeInfo/${user_id}`;
+          call = `https://museuma.onrender.com/editEmployeeInfo/${user_id}`;
         }
         else if (table_name === 'branch_directors') {
-          call = `http://localhost:8081/editAdminInfo/${user_id}`;
+          call = `https://museuma.onrender.com/editAdminInfo/${user_id}`;
           console.log(call);
         }
         else {

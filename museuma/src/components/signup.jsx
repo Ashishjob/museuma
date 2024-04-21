@@ -36,7 +36,7 @@ function Signup() {
     const handleSubmitForm = async (formData) => {
         try {
             console.log(formData);
-            const response = await fetch("http://localhost:8081/signup", {
+            const response = await fetch("https://museuma.onrender.com/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
