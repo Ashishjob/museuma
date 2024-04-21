@@ -44,10 +44,10 @@ function TotalReport() {
     let url;
     switch (reportType) {
       case "giftShop":
-        url = "http://localhost:8081/items-report";
+        url = "https://museuma.onrender.com/items-report";
         break;
       case "tickets":
-        url = "http://localhost:8081/tickets-report";
+        url = "https://museuma.onrender.com/tickets-report";
         break;
       default:
         console.log("yoyoyo");
