@@ -96,8 +96,7 @@ function Login() {
             Sign Up
           </button>
         </a>
-        <div className="flex items-center justify-center mt-4">
-        </div>
+        <div className="flex items-center justify-center mt-4"></div>
       </div>
     </main>
   );
