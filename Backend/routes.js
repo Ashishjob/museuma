@@ -174,6 +174,12 @@ function router(req, res) {
     else if (url.startsWith('/total-report') && method === 'GET') {
         controller.salesReport(req, res);
     }
+    else if (url.startsWith('/items-report') && method === 'GET') {
+        controller.itemsReport(req, res);
+    }
+    else if (url.startsWith('/tickets-report') && method === 'GET') {
+        controller.ticketsReport(req, res);
+    }
     else if (url.startsWith('/manage-restaurant') && method === 'POST') {
         controller.addFood(req, res);
     } 
