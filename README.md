@@ -141,10 +141,69 @@ We have plenty of pages through which the admin or employee of that branch can a
 
 <a name="triggers"></a>
 ## Triggers
-Implement the description of each trigger, screenshots of the popup messages concerning them, and the code snippets
+
+### Stock Notification Trigger:
+This trigger is designed to update the purchasable flag of an item and send a message to a message queue when the quantity of the item falls to zero from a positive value during an update operation.
+
+```sql
+update_purchasable_flag
+BEGIN
+     -- Check if quantity becomes 0
+     IF NEW.quantity = 0 AND OLD.quantity > 0 THEN
+         -- Set the purchasable flag to FALSE
+         SET NEW.purchasable = FALSE;
+ 
+         -- Insert message into message_queue using item title
+         INSERT INTO message_queue (Item_id, message)
+         VALUES (NEW.item_id, CONCAT('Item "', NEW.title, '" is out of stock. Please restock.'));
+     END IF;
+ END
+```
+
+### Restock Notification Clear Trigger:
+This trigger ensures that when an item's quantity changes from zero or less to a positive value, the item's purchasable status is updated and any outstanding notifications about the item being out of stock are marked as resolved.
+
+```sql
+update_purchasable_flag_on
+BEGIN
+     -- Check if quantity becomes greater than 0
+     IF NEW.quantity > 0 AND OLD.quantity <= 0 THEN
+         -- Set the purchasable flag to TRUE
+         SET NEW.purchasable = TRUE;
+ 
+         -- Set the resolved value to TRUE
+         UPDATE message_queue
+         SET resolved = TRUE
+         WHERE Item_id = NEW.item_id AND resolved = FALSE;
+     END IF;
+ END
+```
+
+### Bulk Discount Trigger:
+This trigger helps in automating the application of bulk discounts for customers based on their ticket purchase history, aiming to incentivize larger ticket purchases.
+
+```sql
+apply_bulk_discount
+BEGIN
+     DECLARE total_tickets int;
+     DECLARE discount float;
+     DECLARE new_price float;
+ 
+     -- Calculate total number of tickets for the customer
+     SELECT COUNT(*) INTO total_tickets
+     FROM tickets
+     WHERE customer_id = NEW.customer_id;
+ 
+     -- Check if total_tickets is 5 or more
+     IF total_tickets >= 5 THEN
+         SET discount = NEW.Price * 0.15;
+         SET new_price = NEW.Price - discount;
+         SET NEW.Price = new_price;
+     END IF;
+ END
+```
 
 <a name="queries"></a>
-
 ## Queries
 We have 3 queries that go with the 3 reports we go more into detail later: one for a Sales Report, an Exhibit Report, and a Complaints Report.
 
