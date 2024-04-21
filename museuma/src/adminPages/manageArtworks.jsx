@@ -283,7 +283,7 @@ const ManageArtwork = () => {
                   type="text"
                   name="image"
                   value={newArtwork.image}
-                  placeholder="Image File"
+                  placeholder="Image URL"
                   className="border rounded mr-2 p-2 flex-1"
                   onChange={(e) =>
                     setNewArtwork({
@@ -331,6 +331,7 @@ const ManageArtwork = () => {
             <input
               type="text"
               placeholder="Title"
+              className="border rounded mr-2 p-2 flex-1"
               value={editedArtwork.title}
               onChange={(e) =>
                 setEditedArtwork({ ...editedArtwork, title: e.target.value })
@@ -339,6 +340,7 @@ const ManageArtwork = () => {
             <input
               type="text"
               placeholder="Artist"
+              className="border rounded mr-2 p-2 flex-1"
               value={editedArtwork.artist}
               onChange={(e) =>
                 setEditedArtwork({ ...editedArtwork, artist: e.target.value })
@@ -347,6 +349,7 @@ const ManageArtwork = () => {
             <input
               type="date"
               placeholder="Creation Date"
+              className="border rounded mr-2 p-2 flex-1"
               value={editedArtwork.creationDate}
               onChange={(e) =>
                 setEditedArtwork({
@@ -358,6 +361,7 @@ const ManageArtwork = () => {
             <input
               type="text"
               placeholder="Medium"
+              className="border rounded mr-2 p-2 flex-1"
               value={editedArtwork.medium}
               onChange={(e) =>
                 setEditedArtwork({ ...editedArtwork, medium: e.target.value })
@@ -365,7 +369,8 @@ const ManageArtwork = () => {
             />
             <input
               type="text"
-              placeholder="Image File"
+              placeholder="Image URL"
+              className="border rounded mr-2 p-2 flex-1"
               onChange={(e) =>
                 setEditedArtwork({
                   ...editedArtwork,
