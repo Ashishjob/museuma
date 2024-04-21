@@ -14,7 +14,7 @@ function ShoppingCart() {
   const fetchQuantity = async (item_id) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/getQuantity`,
+        `https://museuma.onrender.com/getQuantity`,
         {
           method: "POST",
           headers: {
