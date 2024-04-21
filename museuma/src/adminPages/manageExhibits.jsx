@@ -12,7 +12,6 @@ const ManageExhibits = () => {
     Description: "",
     Collections: "",
     Location: "",
-    Director_ID: "",
     image_url: "",
     explanation: "",
   });
@@ -20,7 +19,6 @@ const ManageExhibits = () => {
     Description: "",
     Collections: "",
     Location: "",
-    Director_ID: "",
     image_url: "",
     explanation: "",
   });
@@ -36,7 +34,6 @@ const ManageExhibits = () => {
       Description: "",
       Collections: "",
       Location: "",
-      Director_ID: "",
       image_url: "",
       explanation: "",
     });
@@ -67,7 +64,6 @@ const ManageExhibits = () => {
       Description: newExhibit.Description,
       Collections: "test collection",
       Location: newExhibit.Location,
-      Director_ID: Number(newExhibit.Director_ID),
       image_url: newExhibit.image_url,
       explanation: newExhibit.explanation,
     };
@@ -75,13 +71,16 @@ const ManageExhibits = () => {
     console.log("Sending data:", newEmp);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEmp),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-exhibits",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newEmp),
+        }
+      );
 
       console.log("Response status:", response.status);
 
@@ -120,16 +119,19 @@ const ManageExhibits = () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark exhibit for deletion
-      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "markForDeletion",
-          Exhibit_id: selectedExhibitForDeletion,
-        }),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-exhibits",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "markForDeletion",
+            Exhibit_id: selectedExhibitForDeletion,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to mark exhibit for deletion");
@@ -151,16 +153,19 @@ const ManageExhibits = () => {
     console.log("button is hit");
     try {
       // Send PUT request to mark exhibit for reactivation
-      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "markForReactivation",
-          Exhibit_id: exhibitToReactivate.Exhibit_id,
-        }),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-exhibits",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "markForReactivation",
+            Exhibit_id: exhibitToReactivate.Exhibit_id,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to mark exhibit for reactivation");
@@ -187,20 +192,40 @@ const ManageExhibits = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
 
-    const { Exhibit_id, Description, Collections, Location, Director_ID, image_url, explanation } = editedExhibit;
-    const updatedExhibitData = { Exhibit_id, Description, Collections, Location, Director_ID, image_url, explanation };
+    const {
+      Exhibit_id,
+      Description,
+      Collections,
+      Location,
+      image_url,
+      explanation,
+    } = editedExhibit;
+
+    const updatedExhibitData = {
+      Exhibit_id,
+      Description,
+      Collections,
+      Location,
+      image_url,
+      explanation,
+    };
+
+    console.log(updatedExhibitData);
 
     try {
-      const response = await fetch("https://museuma.onrender.com/manage-exhibits", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "update",
-          ...updatedExhibitData,
-        }),
-      });
+      const response = await fetch(
+        "https://museuma.onrender.com/manage-exhibits",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "update",
+            ...updatedExhibitData,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -208,10 +233,14 @@ const ManageExhibits = () => {
       }
 
       // Fetch updated data after successful update
-      const updatedResponse = await fetch("https://museuma.onrender.com/manage-exhibits");
+      const updatedResponse = await fetch(
+        "https://museuma.onrender.com/manage-exhibits"
+      );
       const updatedData = await updatedResponse.json();
 
-      const updatedExhibits = updatedData.filter((exhibit) => exhibit.active === 1); // Assuming 'active' flag is used to filter active exhibits
+      const updatedExhibits = updatedData.filter(
+        (exhibit) => exhibit.active === 1
+      ); // Assuming 'active' flag is used to filter active exhibits
       setExhibits(updatedExhibits);
 
       setSelectedExhibit(null);
@@ -230,7 +259,6 @@ const ManageExhibits = () => {
       Description: exhibit.Description,
       Collections: exhibit.Collections,
       Location: exhibit.Location,
-      Director_ID: exhibit.Director_ID,
       image_url: exhibit.image_url,
       explanation: exhibit.explanation,
     });
@@ -257,96 +285,113 @@ const ManageExhibits = () => {
             {showAddForm ? "Cancel" : "Add Exhibit"}
           </button>
           {showAddForm && (
-          <div className="flex">
-            <div className="mb-6 flex">
-              <input
-                type="text"
-                placeholder="Description"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.Description}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, Description: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Location"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.Location}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, Location: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Director ID"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.Director_ID}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, Director_ID: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Image URL"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.image_url}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, image_url: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Explanation"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newExhibit.explanation}
-                onChange={(e) =>
-                  setNewExhibit({ ...newExhibit, explanation: e.target.value })
-                }
-              />
+            <div className="flex">
+              <div className="mb-6 flex">
+                <input
+                  type="text"
+                  placeholder="Description"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newExhibit.Description}
+                  onChange={(e) =>
+                    setNewExhibit({
+                      ...newExhibit,
+                      Description: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Location"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newExhibit.Location}
+                  onChange={(e) =>
+                    setNewExhibit({ ...newExhibit, Location: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newExhibit.image_url}
+                  onChange={(e) =>
+                    setNewExhibit({ ...newExhibit, image_url: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Explanation"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newExhibit.explanation}
+                  onChange={(e) =>
+                    setNewExhibit({
+                      ...newExhibit,
+                      explanation: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <button
+                onClick={addExhibit}
+                className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
+              >
+                Submit
+              </button>
             </div>
-            <button
-              onClick={addExhibit}
-              className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
-            >
-              Submit
-            </button>
-          </div>
-        )}
+          )}
 
           {showActive ? (
-            <button className="mb-4 text-2xl" onClick={() => setShowActive(false)}>Show Inactive</button>
+            <button
+              className="mb-4 text-2xl"
+              onClick={() => setShowActive(false)}
+            >
+              Show Inactive
+            </button>
           ) : (
-            <button className="mb-4 text-2xl" onClick={() => setShowActive(true)}>Show Active</button>
+            <button
+              className="mb-4 text-2xl"
+              onClick={() => setShowActive(true)}
+            >
+              Show Active
+            </button>
           )}
         </div>
         <ul className="divide-y divide-gray-300 mb-6">
-          {exhibits.filter(exhibit => exhibit.active === (showActive ? 1 : 0)).map((exhibit) => (
-            <li key={exhibit.Exhibit_id} className="py-4 flex">
-              <div className="flex flex-col">
-                <span className="text-2xl underline">{exhibit.Description}</span>
-                <span className="text-xl w-1/2 my-2">{exhibit.explanation}</span>
-                <span className="text-lg">Located in: {exhibit.Location}</span>
-              </div>
-              <div className="ml-auto flex">
-                <button onClick={() => editExhibit(exhibit)} className="mr-2">
-                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-                {exhibit.active ? (
-                  <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
-                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+          {exhibits
+            .filter((exhibit) => exhibit.active === (showActive ? 1 : 0))
+            .map((exhibit) => (
+              <li key={exhibit.Exhibit_id} className="py-4 flex">
+                <div className="flex flex-col">
+                  <span className="text-2xl underline">
+                    {exhibit.Description}
+                  </span>
+                  <span className="text-xl w-1/2 my-2">
+                    {exhibit.explanation}
+                  </span>
+                  <span className="text-lg">
+                    Located in: {exhibit.Location}
+                  </span>
+                </div>
+                <div className="ml-auto flex">
+                  <button onClick={() => editExhibit(exhibit)} className="mr-2">
+                    <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
                   </button>
-                ) : (
-                  <button onClick={() => Reactivation({ Exhibit_id: exhibit.Exhibit_id })}>
-                    <FaRecycle className="hover:text-[#C0BAA4] text-2xl" />
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
+                  {exhibit.active ? (
+                    <button onClick={() => deleteExhibit(exhibit.Exhibit_id)}>
+                      <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        Reactivation({ Exhibit_id: exhibit.Exhibit_id })
+                      }
+                    >
+                      <FaRecycle className="hover:text-[#C0BAA4] text-2xl" />
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
         </ul>
-
-        
 
         {selectedExhibitForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
@@ -410,20 +455,6 @@ const ManageExhibits = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label
-                    htmlFor="Director_ID"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Director ID
-                  </label>
-                  <input
-                    type="text"
-                    id="Director_ID"
-                    name="Director_ID"
-                    className="mt-1 p-2 border rounded-md w-full"
-                    value={editedExhibit.Director_ID}
-                    onChange={handleEditInputChange}
-                  />
                   <label
                     htmlFor="Image URL"
                     className="block text-sm font-medium text-gray-700 mt-4"
