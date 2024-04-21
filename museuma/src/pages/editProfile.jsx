@@ -242,8 +242,15 @@ const EditProfile = () => {
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold text-[#313639]">Birthday:</label>
-                    <input type="date" value={birthday} onChange={(e) => setUserDetails({...userDetails, birthday: e.target.value})} className="p-2 border border-[#313639] rounded" />
-                  </div>
+                    <input
+  type="date"
+  id="birthday"
+  className="p-2 border border-[#313639] rounded"
+  value={birthday}
+  onChange={(e) => setUserDetails({...userDetails, birthday: e.target.value})}
+  max={new Date().toISOString().split('T')[0]}
+/>
+                                      </div>
                 </form>
               ) : (
                 <div className="grid md:grid-cols-2 text-sm">
