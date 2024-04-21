@@ -11,6 +11,7 @@ const ManageEmployees = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [exhibits, setExhibits] = useState([]);
   const [filter, setFilter] = useState('active');
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [editedEmployee, setEditedEmployee] = useState({
     department: "",
     email: "",
@@ -22,6 +23,9 @@ const ManageEmployees = () => {
     email: "",
     first_name: "",
     last_name: "",
+    username: "",
+    password: "",
+    phone_number: "",
   });
   const [selectedEmployeeForDeletion, setSelectedEmployeeForDeletion] =
     useState(null);
@@ -122,18 +126,26 @@ const ManageEmployees = () => {
   }, []);
 
   const addEmployee = async () => {
+  
+    if (newEmployee.password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     const newEmp = {
       department: newEmployee.department,
       email: newEmployee.email,
       first_name: newEmployee.first_name,
       last_name: newEmployee.last_name,
+      username: newEmployee.username,
+      password: newEmployee.password,
+      phone_number: newEmployee.phone_number,
     };
 
     console.log(newEmp);
 
     try {
       const response = await fetch(
-        "https://museuma.onrender.com/manage-employees",
+        "http://localhost:8081/manage-employees",
         {
           method: "POST",
           headers: {
@@ -235,9 +247,26 @@ const ManageEmployees = () => {
         // Handle error as needed
       }
     };
-
     fetchEmployees();
   }, [filter]);
+
+  useEffect(() => {
+    const fetchExhibits = async () => {
+      try {
+        const response = await fetch("https://museuma.onrender.com/manage-exhibits");
+        if (!response.ok) {
+          throw new Error("Failed to fetch exhibits");
+        }
+        const data = await response.json();
+        setExhibits(data);
+      } catch (error) {
+        console.error("Error fetching exhibits:", error);
+        // Handle error as needed
+      }
+    };
+
+    fetchExhibits();
+  }, []);
 
   const [viewInactive, setViewInactive] = useState(false);
 
@@ -255,11 +284,11 @@ const ManageEmployees = () => {
           employee_id: employeeToRehire.employee_id,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to rehire employee");
       }
-  
+
       // Update state to mark the employee as active
       const updatedEmployees = employees.map((employee) =>
         employee.employee_id === employeeToRehire.employee_id
@@ -287,106 +316,134 @@ const ManageEmployees = () => {
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">
           Employee Management
         </h1>
-      <div className="flex flex-col items-start">
-        <button
-          onClick={toggleAddForm}
-          className="text-3xl mb-2 hover:text-[#C0BAA4]"
-        >
-          {showAddForm ? "Cancel" : "Add Employee"}
-        </button>
-        {showAddForm && (
-          <div className="flex">
-            <div className="mb-6 flex">
-              <input
-                type="text"
-                placeholder="First Name"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.first_name}
-                onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, first_name: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.last_name}
-                onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, last_name: e.target.value })
-                }
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="border rounded mr-2 p-2 flex-1"
-                value={newEmployee.email}
-                onChange={(e) =>
-                  setNewEmployee({ ...newEmployee, email: e.target.value })
-                }
-              />
-              <Select
-                id="branch"
-                name="Branch"
-                options={exhibits.filter(exhibit => exhibit.active === 1).map((exhibit) => ({
-                  value: exhibit.Description,
-                  label: exhibit.Description,
-                }))}
-                value={
-                  editedEmployee.exhibit
-                    ? {
-                      value: editedEmployee.exhibit,
-                      label: editedEmployee.exhibit,
-                    }
-                    : null
-                }
-                onChange={(selectedOption) =>
-                  setEditedEmployee({
-                    ...editedEmployee,
-                    exhibit: selectedOption.value,
-                  })
-                }
-              />
-            </div>
-            <button
-              onClick={addEmployee}
-              className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
-            >
-              Submit
-            </button>
-          </div>
-        )}
-        <button className="text-2xl mb-4" onClick={() => setFilter(filter === 'active' ? 'inactive' : 'active')}>
-        Show {filter === 'active' ? 'Inactive' : 'Active'} Employees
-      </button>
-      </div>
-       
-      <ul className="divide-y divide-gray-300 mb-6">
-        {employees.map((employee, index) => (
-          <li key={index} className="py-4 flex">
-            <div className="flex flex-col">
-              <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
-              <span className="text-xl">{employee.email}</span>
-              <span className="text-xl">{employee.department}</span>
-            </div>
-            <div className="ml-auto flex">
-              <button onClick={() => editEmployee(employee)} className="mr-2">
-                <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
-              </button>
-              {employee.Active === 0 ? (
-                <button onClick={() => rehireEmployee(employee)}>
-                <FaUserPlus className="hover:text-[#C0BAA4] text-2xl" />
-              </button>
-              ) : (
-                <button onClick={() => confirmDelete(employee.employee_id)}>
-                  <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
-                </button>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+        <div className="flex flex-col items-start">
+          <button
+            onClick={toggleAddForm}
+            className="text-3xl mb-2 hover:text-[#C0BAA4]"
+          >
+            {showAddForm ? "Cancel" : "Add Employee"}
+          </button>
+          {showAddForm && (
+            <div className="flex">
+              <div className="mb-6 flex">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.first_name}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, first_name: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.last_name}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, last_name: e.target.value })
+                  }
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.email}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, email: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.phone_number}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, phone_number: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="username"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.username}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, username: e.target.value })
+                  }
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={newEmployee.password}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, password: e.target.value })
+                  }
+                />
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  className="border rounded mr-2 p-2 flex-1"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
 
-        
+                <select
+                  value={newEmployee.department}
+                  onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+                  className="w-full rounded-xl pl-2 border-[#bfbaa3] border-2"
+                >
+                  <option value="" disabled hidden>Please select an exhibition</option>
+                  {exhibits && exhibits.map((exhibit) => (
+                    (exhibit.active === 1) && (
+                      <option key={exhibit.Exhibit_id} value={exhibit.Description}>
+                        {exhibit.Description}
+                      </option>
+                    )
+                  ))}
+                </select>
+
+              </div>
+              <button
+                onClick={addEmployee}
+                className="w-fit p-2 px-4 bg-[#313639] mb-6 text-white rounded-md hover:bg-[#5a5a5a]"
+              >
+                Submit
+              </button>
+            </div>
+          )}
+          <button className="text-2xl mb-4" onClick={() => setFilter(filter === 'active' ? 'inactive' : 'active')}>
+            Show {filter === 'active' ? 'Inactive' : 'Active'} Employees
+          </button>
+        </div>
+
+        <ul className="divide-y divide-gray-300 mb-6">
+          {employees.map((employee, index) => (
+            <li key={index} className="py-4 flex">
+              <div className="flex flex-col">
+                <span className="text-2xl">{`${employee.first_name} ${employee.last_name}`}</span>
+                <span className="text-xl">{employee.email}</span>
+                <span className="text-xl">{employee.department}</span>
+              </div>
+              <div className="ml-auto flex">
+                <button onClick={() => editEmployee(employee)} className="mr-2">
+                  <FaEdit className="hover:text-[#C0BAA4] text-2xl" />
+                </button>
+                {employee.Active === 0 ? (
+                  <button onClick={() => rehireEmployee(employee)}>
+                    <FaUserPlus className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                ) : (
+                  <button onClick={() => confirmDelete(employee.employee_id)}>
+                    <FaTrash className="hover:text-[#C0BAA4] text-2xl" />
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+
+
 
         {selectedEmployeeForDeletion && (
           <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-gray-800 bg-opacity-50">

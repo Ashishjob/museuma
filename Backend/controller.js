@@ -37,14 +37,14 @@ const addEmployee = (req, res) => {
 
   req.on("end", () => {
     const parsedBody = JSON.parse(body);
-    const { department, email, first_name, last_name } = parsedBody;
+    const { department, email, first_name, last_name, username, password, phone_number } = parsedBody;
 
     // Check if department, fname, lname, and email are defined
-    if (!department || !first_name || !last_name || !email) {
+    if (!department || !first_name || !last_name || !email || !username || !password || !phone_number) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          error: "Department, first name, last name, and email are required.",
+          error: "Department, first name, last name, email, username, password, and phone_number are required.",
         })
       );
       return;
@@ -78,7 +78,7 @@ const addEmployee = (req, res) => {
         // Add employee to the database with retrieved director_id
         pool.query(
           queries.addEmployee,
-          [department, directorId, email, first_name, last_name],
+          [department, directorId, email, first_name, last_name, username, password, phone_number],
           (error, results) => {
             if (error) {
               console.error("Error adding employee:", error);
