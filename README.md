@@ -24,7 +24,7 @@
 
 ### About the Museum of Fine Arts Project
 
-Welcome to the Museum of Fine Arts database and full-stack website project! This initiative was undertaken as part of the Database Systems course (COSC 3380) at the University of Houston. Our aim was to design and implement a sophisticated database system tailored for an art museum environment.
+Welcome to the Museum of Fine Arts database and full-stack website project! We aimed to design and implement a sophisticated database system tailored for an art museum environment.
 
 #### Mini-World Description:
 Our mini-world revolves around two main sections:
