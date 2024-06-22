@@ -16,7 +16,7 @@
     The Baker Museum
   </h1>
   <p>
-    Welcome to the Baker Museum database system and full-stack website project! This initiative was developed as part of the Database Systems course (COSC 3380) at the University of Houston. Our goal was to design and implement a comprehensive database system tailored for an art museum setting, enabling efficient management of collections, exhibits, inventory, ticketing, and customer interactions.
+    Welcome to the Baker Museum database system and full-stack website project! Our goal was to design and implement a comprehensive database system tailored for an art museum setting, enabling efficient management of collections, exhibits, inventory, ticketing, and customer interactions.
   </p>
 </div>
 
